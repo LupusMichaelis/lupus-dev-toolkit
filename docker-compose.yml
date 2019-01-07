@@ -1,0 +1,27 @@
+version: '3'
+
+volumes:
+    db:
+        driver: local
+
+services:
+    db:
+        container_name: proximity
+        restart: "no"
+        environment:
+            MYSQL_USER_NAME: dummy
+            MYSQL_USER_HOST: '%'
+            MYSQL_USER_PASSWORD: test
+            MYSQL_USER_DATABASE: sandbox
+        build:
+            context: ./build/db
+            args:
+                MYSQL_SYSUSER: mysql
+                MYSQL_SYSGROUP: mysql
+                MYSQL_DATA_PATH: /var/lib/mysql
+                MYSQL_SECRET:
+
+        ports:
+            - 3306
+        volumes:
+            - ./conf/mysql/mariadb.cnf:/etc/mysql/mariadb.cnf:ro
