@@ -1,0 +1,4 @@
+[mysqld]
+plugin-load-add = unix_socket.so
+plugin-load-add = auth_socket.so
+
