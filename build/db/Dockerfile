@@ -9,15 +9,13 @@ ARG MYSQL_USER_PASSWORD
 ARG MYSQL_DATA_PATH
 
 # MariaDB
-RUN export
 RUN apk update && \
 	apk --no-cache add mariadb mariadb-server-utils
 RUN mkdir -p $MYSQL_DATA_PATH
 RUN chown -R ${MYSQL_SYSUSER}:${MYSQL_SYSGROUP} ${MYSQL_DATA_PATH}
 RUN mysql_install_db \
         --user=${MYSQL_SYSUSER} \
-        --datadir=${MYSQL_DATA_PATH} \
-        --auth-root-authentication-method=socket
+        --datadir=${MYSQL_DATA_PATH}
 RUN echo !include /etc/mysql/mariadb.cnf >> /etc/mysql/my.cnf
 COPY docker-entrypoint.sh /usr/local/sbin/docker-entrypoint.sh
 ENTRYPOINT ["docker-entrypoint.sh"]
