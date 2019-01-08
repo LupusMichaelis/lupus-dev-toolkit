@@ -10,8 +10,8 @@ ARG MYSQL_DATA_PATH
 
 # MariaDB
 RUN export
-RUN apk update
-RUN apk --no-cache add mariadb mariadb-server-utils
+RUN apk update && \
+	apk --no-cache add mariadb mariadb-server-utils
 RUN mkdir -p $MYSQL_DATA_PATH
 RUN chown -R ${MYSQL_SYSUSER}:${MYSQL_SYSGROUP} ${MYSQL_DATA_PATH}
 RUN mysql_install_db \
