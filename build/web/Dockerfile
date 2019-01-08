@@ -1,11 +1,11 @@
 FROM httpd:2.4-alpine
-# FROM alpine
 
 # Apache with PHP5 module
-RUN \
-	apk update ;\
-	apk add \
-		php5-apache2
+RUN apk update && \
+	apk add php5-apache2
+
+# Tweak Apache
+RUN sed -i '/LoadModule rewrite_module/s/^#//g' /etc/apache2/httpd.conf
 
 # Tweak PHP5
 RUN sed -i \

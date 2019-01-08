@@ -5,8 +5,19 @@ volumes:
         driver: local
 
 services:
+    web:
+        container_name: test-web
+        restart: "no"
+        build: ./build/web
+        depends_on:
+            - db
+        ports:
+            - 80:80
+        volumes:
+            - ./conf/apache2/vhosts.conf:/etc/apache2/conf.d/vhosts.conf:ro
+
     db:
-        container_name: blog
+        container_name: test-db
         restart: "no"
         environment:
             MYSQL_USER_NAME: dummy
