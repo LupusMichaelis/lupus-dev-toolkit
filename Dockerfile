@@ -1,5 +1,5 @@
 FROM debian:buster
-LABEL description="Alpine Linux with Elm"
+LABEL description="Debian Buster GNU/Linux with Elm"
 RUN sed -i 's/main/main non-free contrib/g' /etc/apt/sources.list
 # libtinfo5 : elm dependency
 RUN apt update && apt install -y bash npm yarn libtinfo5
