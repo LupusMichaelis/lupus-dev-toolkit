@@ -38,7 +38,7 @@ start()
 			docker start $(container_id)
 		;;
 		*)
-			docker run -v $PWD:/home/workshop -idt $image > run/container.id
+			docker run -v $PWD:/home/mickael/workshop -idt $image > run/container.id
 		;;
 	esac
 
