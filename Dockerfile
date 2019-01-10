@@ -1,18 +1,19 @@
-FROM alpine
+FROM debian:buster
 LABEL description="Alpine Linux with Elm"
-RUN apk add --no-cache bash npm yarn
-RUN adduser --uid 1000 --disabled-password mickael --home /home
+RUN sed -i 's/main/main non-free contrib/g' /etc/apt/sources.list
+RUN apt update && apt install -y bash npm yarn
+RUN adduser --uid 1000 --disabled-password mickael --home /home/mickael
 
 USER mickael
 
 RUN echo \
-	'export PATH="/home/bin:$PATH"\
+	'export PATH="/home/mickael/bin:$PATH"\
 	export PS1="\w $ "\
-	' > /home/.bashrc
+	' > /home/mickael/.bashrc
 
-RUN mkdir /home/bin
-RUN mkdir /home/workshop
-VOLUME ["/home/workshop"]
-WORKDIR /home/workshop
+RUN mkdir /home/mickael/bin
+RUN mkdir /home/mickael/workshop
+VOLUME ["/home/mickael/workshop"]
+WORKDIR /home/mickael/workshop
 
 CMD ["bash"]
