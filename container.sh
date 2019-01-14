@@ -34,7 +34,7 @@ start()
 	fi
 
 	case $(container_status) in
-		exited)
+		exited|running)
 			docker start $(container_id)
 		;;
 		*)
