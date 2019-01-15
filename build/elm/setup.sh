@@ -1,7 +1,7 @@
 #!/bin/sh
 
-yarn init
-yarn add elm@0.18
-ln -s ../workshop/node_modules/elm/binwrappers/* ~/bin/
+npm init
+npm install elm@0.18
+ln -s ../anvil/node_modules/elm/binwrappers/* ~/bin/
 
 elm init
