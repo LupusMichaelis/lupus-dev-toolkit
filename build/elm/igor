@@ -1,0 +1,39 @@
+#!/bin/bash
+
+program=$0
+
+main()
+{
+    if [ $# -gt 0 ]
+    then
+        action=$1
+        shift
+    fi
+
+    case $action in
+    "setup")
+        npm init
+        npm install elm@0.18
+        ln -s ../anvil/node_modules/elm/binwrappers/* ~/bin/
+
+        ;;
+    "setup-web")
+        elm-package install -y elm-lang/html
+        ;;
+
+    "run")
+        echo Machine IP are: $(get-ip)
+        exec elm reactor -a 0.0.0.0
+        ;;
+    *)
+        echo "Usage: $program [setup|run|setup-web]"
+        ;;
+    esac
+}
+
+get-ip()
+{
+    /sbin/ip -o -4 addr list eth0 | awk '{print $4}' | cut -d/ -f1
+}
+
+main $@

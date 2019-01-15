@@ -23,6 +23,6 @@ RUN mkdir ${ANVIL}
 VOLUME ["${ANVIL}"]
 WORKDIR ${ANVIL}
 
-COPY ./setup.sh ${HOME}/bin/
+COPY ./igor ${HOME}/bin/
 
 CMD ["bash"]
