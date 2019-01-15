@@ -36,3 +36,15 @@ services:
             - 3306
         volumes:
             - ./conf/mysql/mariadb.cnf:/etc/mysql/mariadb.cnf:ro
+
+    elm-tutorial:
+        container_name: elm-tutorial
+        restart: "no"
+        build:
+            context: ./build/elm
+            args:
+                USER: mickael
+                HOME: /home/mickael
+                ANVIL: /home/mickael/anvil
+        volumes:
+            - /home/mickael/Workshop/elm-tutorial:/home/mickael/anvil:rw
