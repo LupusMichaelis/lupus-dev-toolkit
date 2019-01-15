@@ -48,3 +48,15 @@ services:
                 ANVIL: /home/mickael/anvil
         volumes:
             - /home/mickael/Workshop/elm-tutorial:/home/mickael/anvil:rw
+
+    elm-rpg:
+        container_name: elm-rpg
+        restart: "no"
+        build:
+            context: ./build/elm
+            args:
+                USER: mickael
+                HOME: /home/mickael
+                ANVIL: /home/mickael/anvil
+        volumes:
+            - /home/mickael/Workshop/elm-rpg:/home/mickael/anvil:rw
