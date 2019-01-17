@@ -12,13 +12,14 @@ main()
 
     case $action in
     "setup")
-        npm init
-        npm install elm@0.18
-        ln -s ../anvil/node_modules/elm/binwrappers/* ~/bin/
-
+        setup-bin
+        setup
+        ;;
+    "setup-bin")
+        setup-bin
         ;;
     "setup-web")
-        elm-package install -y elm-lang/html
+        setup-web
         ;;
 
     "run")
@@ -29,6 +30,62 @@ main()
         echo "Usage: $program [setup|run|setup-web]"
         ;;
     esac
+}
+
+setup-bin()
+{
+    ln -s ../anvil/node_modules/yarn/bin/yarn ~/bin
+    ln -s ../anvil/node_modules/elm/binwrappers/elm{,-package,-repl,-reactor} \
+        ~/bin/
+}
+
+setup()
+{
+    npm init -q
+    npm install yarn
+
+    # Install language base
+    yarn add \
+        elm@0.18
+
+    # Install fake API provider
+    yarn add \
+        json-server@0.9.5
+
+    # Install web app bundler
+    yarn add \
+        webpack@2.2\
+        elm-webpack-loader@4.2\
+        webpack-dev-server@2.5.0\
+        webpack-cli@1.0.0\
+        file-loader@0.10.0\
+        style-loader@0.31.1\
+        css-loader@0.26.1\
+        url-loader@0.5.7
+
+    # XXX That's BS, I had to base dependencies on Webpack 2.2.1 release date!!!
+    # webpack@2.2.1: '2017-01-30T21:13:32.135Z'
+    # webpack-cli@1.0.0: '2015-05-30T16:03:23.836Z'
+    # file-loader@0.10.0: '2017-01-28T09:23:12.620Z'
+    # style-loader@0.13.1: '2016-03-24T19:29:51.615Z'
+    # css-loader@0.26.1: '2016-12-02T14:05:07.047Z'
+    # url-loader@0.5.7: '2015-11-23T21:48:28.086Z'
+
+    # Additionnal helper
+    yarn add \
+        ace-css@1.1\
+        font-awesome@4
+
+    # XXX make it write infile or find a better tool
+    # jq '."source-directories"'='["src"]'  elm-package.json
+}
+
+setup-web()
+{
+    setup
+    elm-package install -y \
+        elm-lang/html
+    mkdir -p src
 }
 
 get-ip()
