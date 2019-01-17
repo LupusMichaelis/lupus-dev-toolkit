@@ -24,7 +24,7 @@ main()
 
     "run")
         echo Machine IP are: $(get-ip)
-        exec elm reactor -a 0.0.0.0
+        exec yarn exec elm-reactor -a 0.0.0.0
         ;;
     *)
         echo "Usage: $program [setup|run|setup-web]"
@@ -35,8 +35,6 @@ main()
 setup-bin()
 {
     ln -s ../anvil/node_modules/yarn/bin/yarn ~/bin
-    ln -s ../anvil/node_modules/elm/binwrappers/elm{,-package,-repl,-reactor} \
-        ~/bin/
 }
 
 setup()
@@ -83,7 +81,7 @@ setup()
 setup-web()
 {
     setup
-    elm-package install -y \
+    yarn exec elm-package install -y \
         elm-lang/html
     mkdir -p src
 }
