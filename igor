@@ -1,0 +1,39 @@
+#!/bin/sh
+
+# To be a CLI arg
+project=elm-rpg
+
+workshop=$HOME/Workshop/
+anvil=$workshop/$project
+rack=$HOME/Repositories
+bare=$rack/$project.git
+
+git init \
+    --bare $rack \
+    --shared=group
+cd $rack
+echo "Project $project" > description
+
+git clone $bare/$project.git $anvil
+
+cd $anvil
+
+echo package.json >> .gitignore
+echo elm-stuff >> .gitignore
+echo node_modules >> .gitignore
+
+# XXX Create docker compose configuration
+docker-compose build $project
+docker-compose run $project igor setup
+docker-compose run $project igor setup-web
+docker-compose up $project
+
+docker-compose run -d elm-rpg 
+
+git add .gitignore \
+    elm-package.json \
+    package-lock.json
+
+git ci -m 'Starting $project'
+
+docker-compose exec -e DEBUG='express:*' $project yarn client
