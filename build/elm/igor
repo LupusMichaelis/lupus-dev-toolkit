@@ -24,7 +24,7 @@ main()
 
     "run")
         echo Machine IP are: $(get-ip)
-        exec yarn exec elm-reactor -a 0.0.0.0
+        exec yarn run elm-reactor -a 0.0.0.0
         ;;
     *)
         echo "Usage: $program [setup|run|setup-web]"
