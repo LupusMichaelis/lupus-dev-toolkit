@@ -15,6 +15,7 @@ RUN apt update \
 RUN adduser --uid 1000 --disabled-password ${USER} --home ${HOME}
 
 ENV PATH "${HOME}/bin:$PATH"
+ENV PATH "${ANVIL}/node_modules/.bin:$PATH"
 
 USER ${USER}
 
