@@ -81,8 +81,14 @@ setup()
 setup-web()
 {
     setup
-    yarn exec elm-package install -y \
-        elm-lang/html
+    for package in \
+        elm-lang/html \
+        elm-lang/http \
+        elm-lang/json \
+        elm-lang/random \
+        elm-lang/time
+        do yarn exec elm-package install -y $package
+    done
     mkdir -p src
 }
 
