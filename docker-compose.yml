@@ -60,3 +60,15 @@ services:
                 ANVIL: /home/mickael/anvil
         volumes:
             - /home/mickael/Workshop/elm-rpg:/home/mickael/anvil:rw
+
+    elm-conway:
+        container_name: elm-conway
+        restart: "no"
+        build:
+            context: ./build/elm
+            args:
+                USER: mickael
+                HOME: /home/mickael
+                ANVIL: /home/mickael/anvil
+        volumes:
+            - /home/mickael/Workshop/elm-conway:/home/mickael/anvil:rw
