@@ -72,3 +72,13 @@ services:
                 ANVIL: /home/mickael/anvil
         volumes:
             - /home/mickael/Workshop/elm-conway:/home/mickael/anvil:rw
+
+    bulma-sandbox:
+        container_name: bulma-sandbox
+        restart: "no"
+        build:
+            context: ./build/lighttpd
+        ports:
+            - 80
+        volumes:
+            - /home/mickael/Workshop/bulma-sandbox/public_html:/var/www/localhost/htdocs:rw
