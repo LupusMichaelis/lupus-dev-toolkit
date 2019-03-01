@@ -59,24 +59,63 @@ ygor-main()
 
 ygor-usage()
 {
-    echo "Usage: \n"
+    printf "Usage: \n"
     ygor-byobu-usage "$@"
     ygor-docker-usage "$@"
+    ygor-x-clipboard-usage "$@"
     exit 1
 }
 
 # Utils ########################################################################
 ygor-die()
 {
-    echo "Dying on: '$1'"
+    printf "Dying on: '$1'\n"
     exit 255
+}
+
+# Hexes ########################################################################
+ygor-x-clipboard-usage()
+{
+    printf "\t$0 x [bs|byobu-session]\n"
+    printf "\t$0 x [cpush|clip-push]\n"
+    printf "\t$0 x [cpull|clip-pull]\n"
+    printf "\t$0 x [spush|selection-push]\n"
+    printf "\t$0 x [spull|selection-pull]\n"
+}
+
+ygor-x-clipboard-push()
+{
+    file=$1
+    if [ -f "$file" ]
+    then
+        xsel -b -a < $file
+    fi
+}
+
+ygor-x-clipboard-pull()
+{
+    xsel -b -o
+}
+
+ygor-x-selection-push()
+{
+    file=$1
+    if [ -f "$file" ]
+    then
+        xsel -p -a < $file
+    fi
+}
+
+ygor-x-selection-pull()
+{
+    xsel -p -o
 }
 
 # Byobu ########################################################################
 
 ygor-byobu-usage()
 {
-    echo "\t$0 [bs|byobu-session]"
+    printf "\t$0 [bs|byobu-session]\n"
 }
 
 # Byobu session named after current working directory
@@ -89,8 +128,8 @@ ygor-byobu-session()
 # Docker #######################################################################
 ygor-docker-usage()
 {
-    echo "\t$0 [d|docker] [last-ip|last-id]"
-    echo "\t$0 [d|docker] ip <docker-id>"
+    printf "\t$0 [d|docker] [last-ip|last-id]\n"
+    printf "\t$0 [d|docker] ip <docker-id>\n"
 }
 
 ygor-docker-last-id()
@@ -113,8 +152,8 @@ ygor-docker-ip()
 ################################################################################
 ygor-elm-usage()
 {
-    echo "\t$0 [e|elm] [f|format] <file>..."
-    echo "\t$0 [e|elm] [fgc|format-git-cache]"
+    printf "\t$0 [e|elm] [f|format] <file>...\n"
+    printf "\t$0 [e|elm] [fgc|format-git-cache]\n"
 }
 
 ygor-elm-format()
