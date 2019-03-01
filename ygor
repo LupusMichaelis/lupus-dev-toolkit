@@ -13,6 +13,24 @@ ygor-main()
         bs|byobu-session)
             ygor-byobu-session "$@"
             ;;
+
+        d|docker)
+            local action=$1; shift
+            case $action in
+                last-ip)
+                    ygor-docker-last-ip
+                    ;;
+                ip)
+                    ygor-docker-ip "$@"
+                    ;;
+                last-id)
+                    ygor-docker-last-id
+                    ;;
+                *)
+                    ygor-docker-usage "$@"
+                    exit 2
+            esac
+            ;;
         *)
             ygor-usage
     esac
@@ -22,6 +40,7 @@ ygor-usage()
 {
     echo "Usage: \n"
     ygor-byobu-usage "$@"
+    ygor-docker-usage "$@"
     exit 1
 }
 
@@ -44,6 +63,30 @@ ygor-byobu-session()
 {
     byobu new -s $(basename $PWD) "$@" \
         || byobu attach -t $(basename $PWD) "$@"
+}
+
+# Docker #######################################################################
+ygor-docker-usage()
+{
+    echo "\t$0 [d|docker] [last-ip|last-id]"
+    echo "\t$0 [d|docker] ip <docker-id>"
+}
+
+ygor-docker-last-id()
+{
+    docker ps -ql
+}
+
+ygor-docker-last-ip()
+{
+    ygor-docker-ip $(ygor-docker-last-id)
+}
+
+ygor-docker-ip()
+{
+    docker inspect \
+        --format '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' \
+        "$@"
 }
 
 # Ygor, LIGHT IT UP!!! #########################################################
