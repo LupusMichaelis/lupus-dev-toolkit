@@ -1,0 +1,50 @@
+#!/bin/bash
+
+# Ygor, DEFINE!!! ##############################################################
+ygor-main()
+{
+    if [ "$#" -lt "1" ]
+    then
+        ygor-usage "$@"
+    fi
+
+    local component=$1; shift
+    case $component in
+        bs|byobu-session)
+            ygor-byobu-session "$@"
+            ;;
+        *)
+            ygor-usage
+    esac
+}
+
+ygor-usage()
+{
+    echo "Usage: \n"
+    ygor-byobu-usage "$@"
+    exit 1
+}
+
+# Utils ########################################################################
+ygor-die()
+{
+    echo "Dying on: '$1'"
+    exit 255
+}
+
+# Byobu ########################################################################
+
+ygor-byobu-usage()
+{
+    echo "\t$0 [bs|byobu-session]"
+}
+
+# Byobu session named after current working directory
+ygor-byobu-session()
+{
+    byobu new -s $(basename $PWD) "$@" \
+        || byobu attach -t $(basename $PWD) "$@"
+}
+
+# Ygor, LIGHT IT UP!!! #########################################################
+ygor-main "$@"
