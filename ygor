@@ -1,6 +1,10 @@
-#!/bin/bash
+#!/bin/bash -x
 
 # Ygor, DEFINE!!! ##############################################################
+
+YARN="npx yarn"
+
+# Ygor, RUN!!!!!! ##############################################################
 ygor-main()
 {
     if [ "$#" -lt "1" ]
@@ -31,6 +35,23 @@ ygor-main()
                     exit 2
             esac
             ;;
+
+        e|elm)
+            local action=$1; shift
+            case $action in
+                f|format)
+                    ygor-elm-format "$@"
+                    ;;
+                fgc|format-git-cache)
+                    ygor-elm-format-git-cache
+                    ;;
+                *)
+                    ygor-elm-usage "$@"
+                    exit 3
+                    ;;
+            esac
+            ;;
+
         *)
             ygor-usage
     esac
@@ -87,6 +108,27 @@ ygor-docker-ip()
     docker inspect \
         --format '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' \
         "$@"
+}
+
+################################################################################
+ygor-elm-usage()
+{
+    echo "\t$0 [e|elm] [f|format] <file>..."
+    echo "\t$0 [e|elm] [fgc|format-git-cache]"
+}
+
+ygor-elm-format()
+{
+    $YARN elm-format --yes "$@"
+}
+
+ygor-elm-format-git-cache()
+{
+    files=$(git diff --name-only --cached | grep \.elm)
+    if [[ ! -z "$files" ]]
+    then
+        ygor-elm-format $files
+    fi
 }
 
 # Ygor, LIGHT IT UP!!! #########################################################
