@@ -52,6 +52,27 @@ ygor-main()
             esac
             ;;
 
+        x)
+            local action=$1; shift
+            case $action in
+                cpush|clip-push)
+                    ygor-x-clipboard-push "$@"
+                    ;;
+                cpull|clip-pull)
+                    ygor-x-clipboard-pull "$@"
+                    ;;
+                spush|selection-push)
+                    ygor-x-selection-push "$@"
+                    ;;
+                spull|selection-pull)
+                    ygor-x-selection-pull "$@"
+                    ;;
+                *)
+                    ygor-x-clipboard-usage "$@"
+                    exit 3
+                    ;;
+            esac
+            ;;
         *)
             ygor-usage
     esac
