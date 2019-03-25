@@ -55,6 +55,28 @@ ygor-main()
             esac
             ;;
 
+        f|files)
+            local action=$1; shift
+            case $action in
+                oc|open-cached)
+                    ygor-files-open-cached "$@"
+                    ;;
+                om|open-modified)
+                    ygor-files-open-modified "$@"
+                    ;;
+                ou|open-unmerged)
+                    ygor-files-open-unmerged "$@"
+                    ;;
+                clean-up)
+                    ygor-files-clean-up
+                    ;;
+                *)
+                    ygor-files-usage
+                    exit 4
+                    ;;
+            esac
+            ;;
+
         x)
             local action=$1; shift
             case $action in
@@ -88,6 +110,7 @@ ygor-usage()
 
     ygor-byobu-usage $program
     ygor-docker-usage $program
+    ygor-files-usage $program
     ygor-x-clipboard-usage $program
     exit 1
 }
@@ -203,6 +226,47 @@ ygor-elm-format-git-cache()
     then
         ygor-elm-format $files
     fi
+}
+
+################################################################################
+ygor-files-usage()
+{
+    printf "\t$1 [f|files] [clean-up]\n"
+    printf "\t$1 [f|files] [oc|open-cached] <vim-options>\n"
+    printf "\t$1 [f|files] [om|open-modified] <vim-options>\n"
+    printf "\t$1 [f|files] [ou|open-unmerged] <vim-options>\n"
+}
+
+ygor-files-open-cached()
+{
+    files=$(git ls-files -c)
+    if [[ ! -z "$files" ]]
+    then
+        gvim "$@" -- $files
+    fi
+}
+
+ygor-files-open-modified()
+{
+    files=$(git ls-files -m)
+    if [[ ! -z "$files" ]]
+    then
+        gvim "$@" -- $files
+    fi
+}
+
+ygor-files-open-unmerged()
+{
+    files=$(git ls-files -u)
+    if [[ ! -z "$files" ]]
+    then
+        gvim "$@" -- $files
+    fi
+}
+
+ygor-files-clean-up()
+{
+    find ~ -name .\*.sw\? -delete -print
 }
 
 # Ygor, LIGHT IT UP!!! #########################################################
