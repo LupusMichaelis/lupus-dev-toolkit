@@ -51,6 +51,9 @@ ygor-main()
                 fgh|format-git-head)
                     ygor-elm-format-git-head
                     ;;
+                fgm|format-git-modified)
+                    ygor-elm-format-git-modified
+                    ;;
                 *)
                     ygor-elm-usage
                     exit 3
@@ -213,6 +216,7 @@ ygor-elm-usage()
     printf "\t$1 [e|elm] [f|format] <file>...\n"
     printf "\t$1 [e|elm] [fgc|format-git-cache]\n"
     printf "\t$1 [e|elm] [fgh|format-git-head]\n"
+    printf "\t$1 [e|elm] [fgm|format-git-modified]\n"
 }
 
 ygor-elm-format()
@@ -232,6 +236,15 @@ ygor-elm-format-git-head()
 ygor-elm-format-git-cache()
 {
     files=$(git diff --name-only --cached | grep \.elm)
+    if [[ ! -z "$files" ]]
+    then
+        ygor-elm-format $files
+    fi
+}
+
+ygor-elm-format-git-modified()
+{
+    files=$(git ls-files -m | grep \.elm)
     if [[ ! -z "$files" ]]
     then
         ygor-elm-format $files
