@@ -10,9 +10,12 @@ RUN sed -i 's/main/main non-free contrib/g' /etc/apt/sources.list
 # libtinfo5 : elm dependency
 # cmdtest provides a command yarn that is not the yarn we know in the NodeJS realm
 RUN apt update \
-    && apt install -y bash npm libtinfo5 \
-    && dpkg -P cmdtest
-RUN adduser --uid 1000 --disabled-password ${USER} --home ${HOME}
+    && apt install -y \
+		bash \
+		libtinfo5 \
+		npm \
+	&& apt-get clean
+RUN adduser --uid 1000 --disabled-password --home ${HOME} ${USER}
 
 ENV PATH "${HOME}/bin:$PATH"
 ENV PATH "${ANVIL}/node_modules/.bin:$PATH"
