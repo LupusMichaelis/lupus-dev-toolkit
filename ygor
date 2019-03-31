@@ -21,6 +21,9 @@ ygor-main()
         d|docker)
             local action=$1; shift
             case $action in
+                c|clean)
+                    ygor-docker-clean
+                    ;;
                 last-ip)
                     ygor-docker-last-ip
                     ;;
@@ -176,8 +179,15 @@ ygor-byobu-session()
 # Docker #######################################################################
 ygor-docker-usage()
 {
+    printf "\t$1 [d|docker] [c|clean]\n"
     printf "\t$1 [d|docker] [last-ip|last-id]\n"
     printf "\t$1 [d|docker] ip <docker-id>\n"
+}
+
+ygor-docker-clean()
+{
+	ids=$(docker ps -qf status=exited)
+	docker rm $ids
 }
 
 ygor-docker-last-id()
