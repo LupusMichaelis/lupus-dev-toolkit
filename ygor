@@ -43,7 +43,7 @@ ygor-main()
             local action=$1; shift
             case $action in
                 f|format)
-                    ygor-elm-format
+                    ygor-elm-format "$@"
                     ;;
                 fgc|format-git-cache)
                     ygor-elm-format-git-cache
