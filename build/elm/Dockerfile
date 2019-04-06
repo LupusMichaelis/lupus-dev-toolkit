@@ -2,9 +2,7 @@ FROM debian:buster
 
 LABEL description="Debian Buster GNU/Linux with Elm"
 
-ARG HOME
-ARG USER
-ARG ANVIL
+### Configure system ###########################################################
 
 RUN sed -i 's/main/main non-free contrib/g' /etc/apt/sources.list
 # libtinfo5 : elm dependency
@@ -15,23 +13,37 @@ RUN apt update \
 		libtinfo5 \
 		npm \
 	&& apt-get clean
-RUN adduser --uid 1000 --disabled-password --home ${HOME} ${USER}
 
-ENV PATH "${HOME}/bin:$PATH"
-ENV PATH "${ANVIL}/node_modules/.bin:$PATH"
+### Configure user #############################################################
+ARG USER_ALIAS
+ARG UID
 
-USER ${USER}
+RUN rmdir /home
+RUN adduser --uid ${UID} \
+	--gecos "" \
+	--disabled-password \
+	--home /home \
+	${USER_ALIAS}
 
 RUN echo \
 	'export PS1="\w $ "'\
-	> ${HOME}/.bashrc
+	> /home/.bashrc
 
-RUN mkdir ${HOME}/bin
-RUN mkdir ${ANVIL}
-VOLUME ["${ANVIL}"]
-WORKDIR ${ANVIL}
+RUN mkdir /home/bin
+ENV PATH "/home/bin:$PATH"
 
-COPY ./igor ${HOME}/bin/
-RUN ["igor", "setup-bin"]
+### Configure workspace ########################################################
+USER ${USER_ALIAS}
+
+RUN mkdir /home/anvil
+VOLUME ["/home/anvil"]
+WORKDIR /home/anvil
+
+ENV PATH "/home/anvil/node_modules/.bin:$PATH"
+
+### Ensure consistency of workspace ############################################
+COPY ./igor /home/bin/
+
+#ENTRYPOINT ["igor", "setup"]
 
 CMD ["igor", "run"]
