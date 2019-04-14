@@ -1,0 +1,65 @@
+#!/bin/bash -eu
+
+program=$0
+
+main()
+{
+    if [ $# -gt 0 ]
+    then
+        action=$1
+        shift
+    fi
+
+    case $action in
+    "setup")
+        setup
+        ;;
+
+    "run")
+        echo Machine IP are: $(get-ip)
+        exec npx yarn dev
+        ;;
+    *)
+        echo "Usage: $program [setup|run]"
+        ;;
+    esac
+}
+
+setup()
+{
+    npm init -q
+    npm install yarn
+    npm install
+
+    # Install language base
+    npx yarn add \
+        elm@0.19
+
+    # Install fake API provider
+    npx yarn add \
+        json-server@0.9.5
+
+    npx yarn install
+
+    # XXX make it write infile or find a better tool
+    # jq '."source-directories"'='["src"]'  elm-package.json
+
+    for package in \
+        elm-lang/html \
+        elm-lang/http \
+        elm-lang/json \
+        elm-lang/random \
+        elm-lang/time
+        do npx yarn exec elm package install -y $package
+    done
+    mkdir -p src
+
+	exec "$@"
+}
+
+get-ip()
+{
+    /sbin/ip -o -4 addr list eth0 | awk '{print $4}' | cut -d/ -f1
+}
+
+main $@
