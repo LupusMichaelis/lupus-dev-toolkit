@@ -15,19 +15,13 @@ main()
         setup-bin
         setup
         ;;
-    "setup-bin")
-        setup-bin
-        ;;
-    "setup-web")
-        setup-web
-        ;;
 
     "run")
         echo Machine IP are: $(get-ip)
         exec yarn run elm-reactor -a 0.0.0.0
         ;;
     *)
-        echo "Usage: $program [setup|run|setup-web]"
+        echo "Usage: $program [setup|run]"
         ;;
     esac
 }
@@ -68,11 +62,6 @@ setup()
     # style-loader@0.13.1: '2016-03-24T19:29:51.615Z'
     # css-loader@0.26.1: '2016-12-02T14:05:07.047Z'
     # url-loader@0.5.7: '2015-11-23T21:48:28.086Z'
-
-    # Additionnal helper
-    yarn add \
-        ace-css@1.1\
-        font-awesome@4
 
     # XXX make it write infile or find a better tool
     # jq '."source-directories"'='["src"]'  elm-package.json
