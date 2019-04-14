@@ -1,3 +1,8 @@
+#
+#
+# You need environment variables set on how to find repository and workshop directories
+#
+
 version: '3'
 
 volumes:
@@ -37,17 +42,23 @@ services:
         volumes:
             - ./conf/mysql/mariadb.cnf:/etc/mysql/mariadb.cnf:ro
 
-    elm-tutorial:
-        container_name: elm-tutorial
+    elm-sandbox:
+        container_name: elm-sandbox
         restart: "no"
+        environment:
+            - UID=${UID?Please export UID}
+            - GID=${GID?Please export GID}
+            - USER_ALIAS=${USER_ALIAS:-elm}
+            - WORKSHOP_DIR=${WORKSHOP_DIR?Please export WORKSHOP_DIR}
         build:
             context: ./build/elm
             args:
-                USER: mickael
-                HOME: /home/mickael
-                ANVIL: /home/mickael/anvil
+                UID: ${UID?Please export}
+                USER: ${USER_ALIAS:-elm}
+                HOME: /home/
+                ANVIL: /home/anvil
         volumes:
-            - /home/mickael/Workshop/elm-tutorial:/home/mickael/anvil:rw
+            - ${WORKSHOP_DIR?Please export WORKSHOP_DIR}/elm-sandbox:/home/anvil:rw
 
     elm-rpg:
         container_name: elm-rpg
@@ -55,26 +66,29 @@ services:
         build:
             context: ./build/elm
             args:
-                USER: mickael
-                HOME: /home/mickael
-                ANVIL: /home/mickael/anvil
+                UID: ${UID}
+                USER: ${USER_ALIAS:-elm}
+                HOME: /home
+                ANVIL: /home/anvil
         volumes:
-            - /home/mickael/Workshop/elm-rpg:/home/mickael/anvil:rw
+            - ${WORKSHOP_DIR}/elm-rpg:/home/anvil:rw
 
     elm-conway:
         container_name: elm-conway
         restart: "no"
         environment:
-            UID: ${UID?Please export UID}
-            USER_ALIAS: elm
-            WORKSHOP_DIR: ${WORKSHOP_DIR:-~/workshop}
+            - UID=${UID?Please export UID}
+            - GID=${GID?Please export GID}
+            - USER_ALIAS=${USER_ALIAS:-elm}
+            - WORKSHOP_DIR=${WORKSHOP_DIR?Please export WORKSHOP_DIR}
         build:
             context: ./build/elm
             args:
                 - UID=${UID?Please export UID}
+                - GID=${GID?Please export GID}
                 - USER_ALIAS=elm
         volumes:
-            - ~/workshop/elm-conway:/home/anvil:rw
+            - ${WORKSHOP_DIR?Please export WORKSHOP_DIR}/elm-conway:/home/anvil:rw
 
     bulma-sandbox:
         container_name: bulma-sandbox
@@ -84,4 +98,4 @@ services:
         ports:
             - 80
         volumes:
-            - /home/mickael/Workshop/bulma-sandbox/public_html:/var/www/localhost/htdocs:rw
+            - ${WORKSHOP_DIR}/bulma-sandbox/public_html:/var/www/localhost/htdocs:rw
