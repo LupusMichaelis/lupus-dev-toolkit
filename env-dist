@@ -6,8 +6,8 @@ WORKSHOP_DIR=$HOME/workshop
 USER_ALIAS=dev
 GID=$(id -g)
 
-export UID
 export GID
 export REPOSITORY_DIR
+export UID
 export USER_ALIAS
 export WORKSHOP_DIR
