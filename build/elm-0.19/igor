@@ -17,7 +17,7 @@ main()
 
     "run")
         echo Machine IP are: $(get-ip)
-        exec npx yarn dev
+        exec $YARNCMD dev
         ;;
     *)
         echo "Usage: $program [setup|run]"
@@ -27,22 +27,22 @@ main()
 
 setup()
 {
-    npm init -q
-    npm install yarn
-    npm install
+    $YARNCMD init -yp
 
     # Install language base
-    npx yarn add \
+    $YARNCMD add \
         elm@0.19
 
     # Install fake API provider
-    npx yarn add \
+    $YARNCMD add \
         json-server@0.9.5
 
-    npx yarn install
+    $YARNCMD install
 
     # XXX make it write infile or find a better tool
     # jq '."source-directories"'='["src"]'  elm-package.json
+
+    elm init
 
     for package in \
         elm-lang/html \
@@ -50,11 +50,11 @@ setup()
         elm-lang/json \
         elm-lang/random \
         elm-lang/time
-        do npx yarn exec elm package install -y $package
+        do $YARNCMD exec elm package install -y $package
     done
     mkdir -p src
 
-	exec "$@"
+    exec "$@"
 }
 
 get-ip()

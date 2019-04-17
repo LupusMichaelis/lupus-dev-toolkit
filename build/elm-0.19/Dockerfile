@@ -42,6 +42,8 @@ ENV PATH "/home/anvil/node_modules/.bin:$PATH"
 ### Ensure consistency of workspace ############################################
 COPY ./igor /home/bin/
 
+ENV YARNCMD="npx yarn"
+
 #ENTRYPOINT ["igor", "setup"]
 
 CMD ["igor", "run"]
