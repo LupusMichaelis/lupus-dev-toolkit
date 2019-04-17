@@ -51,7 +51,7 @@ services:
             - USER_ALIAS=${USER_ALIAS:-elm}
             - WORKSHOP_DIR=${WORKSHOP_DIR?Please export WORKSHOP_DIR}
         build:
-            context: ./build/elm
+            context: ./build/elm-0.19
             args:
                 UID: ${UID?Please export}
                 USER: ${USER_ALIAS:-elm}
@@ -64,7 +64,7 @@ services:
         container_name: elm-rpg
         restart: "no"
         build:
-            context: ./build/elm
+            context: ./build/elm-0.19
             args:
                 UID: ${UID}
                 USER: ${USER_ALIAS:-elm}
@@ -82,7 +82,7 @@ services:
             - USER_ALIAS=${USER_ALIAS:-elm}
             - WORKSHOP_DIR=${WORKSHOP_DIR?Please export WORKSHOP_DIR}
         build:
-            context: ./build/elm
+            context: ./build/elm-0.19
             args:
                 - UID=${UID?Please export UID}
                 - GID=${GID?Please export GID}
