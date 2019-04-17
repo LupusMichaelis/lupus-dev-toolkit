@@ -1,0 +1,13 @@
+# Set those variables to your liking, they'll be used by Docker Compose to know where to
+# look and how set set up your machines
+
+REPOSITORY_DIR=$HOME/repositories
+WORKSHOP_DIR=$HOME/workshop
+USER_ALIAS=dev
+GID=$(id -g)
+
+export UID
+export GID
+export REPOSITORY_DIR
+export USER_ALIAS
+export WORKSHOP_DIR
