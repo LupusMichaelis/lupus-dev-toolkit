@@ -99,3 +99,18 @@ services:
             - 80
         volumes:
             - ${WORKSHOP_DIR}/bulma-sandbox/public_html:/var/www/localhost/htdocs:rw
+
+    alpine-elm-0.19:
+        image: alpine-elm-0.19
+        build:
+            context: ./build/alpine-elm-0.19
+            args:
+                - UID=${UID?Please export UID}
+                - GID=${GID?Please export GID}
+                - USER_ALIAS=elm
+        restart: "no"
+        environment:
+            - UID=${UID?Please export UID}
+            - GID=${GID?Please export GID}
+            - USER_ALIAS=${USER_ALIAS:-elm}
+            - WORKSHOP_DIR=${WORKSHOP_DIR?Please export WORKSHOP_DIR}
