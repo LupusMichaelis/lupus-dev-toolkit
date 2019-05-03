@@ -1,0 +1,9 @@
+#!/bin/bash
+
+. env-dist
+
+
+for build in alpine alpine-nodejs alpine-ts alpine-react alpine-react-ts
+do
+    docker build --build-arg UID --build-arg USER_ALIAS -t $build build/$build
+done
