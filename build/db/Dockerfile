@@ -1,4 +1,4 @@
-FROM alpine
+FROM mickael/alpine
 
 ARG MYSQL_SYSUSER
 ARG MYSQL_SYSGROUP
