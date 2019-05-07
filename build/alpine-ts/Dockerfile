@@ -1,4 +1,4 @@
-FROM alpine-nodejs
+FROM mickael/alpine-nodejs
 
 LABEL description="Alpine Linux with user and TypeScript on NodeJS"
 

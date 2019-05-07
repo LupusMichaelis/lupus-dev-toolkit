@@ -2,8 +2,9 @@
 
 . env-dist
 
+realm=$USER
 
 for build in alpine alpine-nodejs alpine-ts alpine-react alpine-react-ts
 do
-    docker build --build-arg UID --build-arg USER_ALIAS -t $build build/$build
+    docker build --build-arg UID --build-arg USER_ALIAS -t $realm/$build build/$build
 done

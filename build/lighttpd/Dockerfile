@@ -1,4 +1,4 @@
-FROM alpine
+FROM mickael/alpine
 LABEL description="Alpine Linux providing Bulma through Lighttpd"
 
 RUN apk add --no-cache lighttpd ca-certificates
