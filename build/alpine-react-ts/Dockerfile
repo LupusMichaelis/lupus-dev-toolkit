@@ -7,7 +7,12 @@ LABEL description="Alpine Linux with user and React on NodeJS using TypeScript"
 USER root
 
 RUN npm install -g \
-    tslint \
+    ts-loader \
+    eslint \
+    eslint-config-prettier \
+    eslint-plugin-react \
+    @typescript-eslint/parser \
+    @typescript-eslint/eslint-plugin \
     typescript
 
 ARG USER_ALIAS

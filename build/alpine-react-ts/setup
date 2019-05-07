@@ -1,4 +1,9 @@
 #!/bin/bash
 
-npm install -g create-react-app
 create-react-app . --use-npm --typescript
+
+npm install -g \
+    ts-loader \
+    eslint \
+    eslint-plugin-react \
+    typescript
