@@ -1,0 +1,65 @@
+#!/bin/bash -eu
+
+program=$0
+
+main()
+{
+    if [ $# -gt 0 ]
+    then
+        action=$1
+        shift
+    fi
+
+    case $action in
+    "setup")
+        setup
+        ;;
+
+    "run")
+        echo Machine IP are: $(get-ip)
+        exec $YARNCMD dev
+        ;;
+    *)
+        echo "Usage: $program [setup|run]"
+        ;;
+    esac
+}
+
+setup()
+{
+    $YARNCMD init -yp
+
+    # Install language base
+    $YARNCMD add \
+        elm@0.19
+
+    # Install fake API provider
+    $YARNCMD add \
+        json-server@0.9.5
+
+    $YARNCMD install
+
+    # XXX make it write infile or find a better tool
+    # jq '."source-directories"'='["src"]'  elm-package.json
+
+    elm init
+
+    for package in \
+        elm-lang/html \
+        elm-lang/http \
+        elm-lang/json \
+        elm-lang/random \
+        elm-lang/time
+        do $YARNCMD exec elm package install -y $package
+    done
+    mkdir -p src
+
+    exec "$@"
+}
+
+get-ip()
+{
+    /sbin/ip -o -4 addr list eth0 | awk '{print $4}' | cut -d/ -f1
+}
+
+main $@
