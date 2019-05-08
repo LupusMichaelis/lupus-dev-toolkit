@@ -18,4 +18,4 @@ USER ${USER_ALIAS}
 ### Configure workspace ########################################################
 USER ${USER_ALIAS}
 
-CMD ["npm", "start"]
+CMD ["yarn", "start"]

@@ -6,9 +6,9 @@ LABEL description="Alpine Linux with user"
 
 USER 0
 RUN apk update \
-    apk upgrade --no-cache \
-    apk add --no-cache bash \
-    echo Apk done
+        && apk upgrade --no-cache \
+        && apk add --no-cache bash \
+        && echo Apk done
 
 ### Configure user #############################################################
 RUN rmdir /home

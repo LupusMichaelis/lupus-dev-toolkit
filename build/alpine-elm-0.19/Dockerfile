@@ -1,39 +1,23 @@
-FROM alpine:latest
+FROM mickael/alpine-nodejs:latest
 
-LABEL description="Alpine Linux with Elm 0.19"
+LABEL description="Alpine Linux with NodJS using Yarn"
 
-### Configure system ###########################################################
+### Install dependency of Elm exes #############################################
+USER root
 
+# gmp required by elm
+# libc-compat required by elm-test
 RUN apk update \
     && apk add --no-cache \
-		bash \
-		yarn
+        gmp \
+        libc6-compat
 
 ### Configure user #############################################################
-RUN rmdir /home
 
 ARG USER_ALIAS
 ARG UID
 
-RUN adduser -u ${UID} \
-	-g "" \
-	-D \
-	-h /home \
-	${USER_ALIAS}
-
-RUN echo \
-	'export PS1="\w $ "'\
-	> /home/.profile
-
-RUN mkdir /home/bin
-ENV PATH "/home/bin:$PATH"
-
-### Configure workspace ########################################################
 USER ${USER_ALIAS}
-
-RUN mkdir /home/anvil
-VOLUME ["/home/anvil"]
-WORKDIR /home/anvil
 
 ENV PATH "/home/anvil/node_modules/.bin:$PATH"
 
@@ -41,10 +25,5 @@ ENV PATH "/home/anvil/node_modules/.bin:$PATH"
 COPY ./igor /home/bin/
 
 ENV YARNCMD=yarn
-RUN ["igor", "setup"]
-
-COPY  /home/anvil
-
-#ENTRYPOINT ["igor", "setup"]
 
 CMD ["igor", "run"]
