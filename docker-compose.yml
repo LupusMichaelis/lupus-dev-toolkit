@@ -12,6 +12,7 @@ volumes:
 services:
     web:
         container_name: test-web
+        image: mickael/test-web
         restart: "no"
         build: ./build/web
         depends_on:
@@ -23,6 +24,7 @@ services:
 
     db:
         container_name: test-db
+        image: mickael/test-db
         restart: "no"
         environment:
             MYSQL_USER_NAME: dummy
@@ -44,12 +46,29 @@ services:
 
     elm-sandbox:
         container_name: elm-sandbox
+
+    node:
+        image: mickael/debian-buster-node
+        build:
+            context: ./build/debian-buster-node
+            args:
+                UID: ${UID?Please export}
+                USER: ${USER_ALIAS:-elm}
+                HOME: /home/
+                ANVIL: /home/anvil
+
+    elm-sandbox:
+        image: mickael/alpine-elm-0.18
+        depends_on:
+            - node
+
         restart: "no"
         environment:
             - UID=${UID?Please export UID}
             - GID=${GID?Please export GID}
             - USER_ALIAS=${USER_ALIAS:-elm}
             - WORKSHOP_DIR=${WORKSHOP_DIR?Please export WORKSHOP_DIR}
+
         build:
             context: ./build/elm-0.19
             args:
@@ -62,6 +81,7 @@ services:
 
     elm-rpg:
         container_name: elm-rpg
+        image: mickael/alpine-elm-0.18
         restart: "no"
         build:
             context: ./build/elm-0.19
@@ -75,23 +95,19 @@ services:
 
     elm-conway:
         container_name: elm-conway
+        image: mickael/debian-elm-0.19
         restart: "no"
         environment:
             - UID=${UID?Please export UID}
             - GID=${GID?Please export GID}
             - USER_ALIAS=${USER_ALIAS:-elm}
             - WORKSHOP_DIR=${WORKSHOP_DIR?Please export WORKSHOP_DIR}
-        build:
-            context: ./build/elm-0.19
-            args:
-                - UID=${UID?Please export UID}
-                - GID=${GID?Please export GID}
-                - USER_ALIAS=elm
         volumes:
             - ${WORKSHOP_DIR?Please export WORKSHOP_DIR}/elm-conway:/home/anvil:rw
 
     bulma-sandbox:
         container_name: bulma-sandbox
+        image: mickael/bulma-sandbox
         restart: "no"
         build:
             context: ./build/lighttpd
@@ -101,7 +117,7 @@ services:
             - ${WORKSHOP_DIR}/bulma-sandbox/public_html:/var/www/localhost/htdocs:rw
 
     alpine-elm-0.19:
-        image: alpine-elm-0.19
+        image: mickael/alpine-elm-0.19
         build:
             context: ./build/alpine-elm-0.19
             args:
