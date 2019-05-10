@@ -16,6 +16,8 @@ ARG UID
 
 USER ${USER_ALIAS}
 
+RUN npm config set package-lock false
+
 ENV PATH "/home/anvil/node_modules/.bin:$PATH"
 
 ### Configure workspace ########################################################
