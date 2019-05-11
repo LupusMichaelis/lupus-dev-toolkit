@@ -21,9 +21,4 @@ USER ${USER_ALIAS}
 
 ENV PATH "/home/anvil/node_modules/.bin:$PATH"
 
-### Ensure consistency of workspace ############################################
-COPY ./igor /home/bin/
-
-ENV YARNCMD=yarn
-
-CMD ["igor", "run"]
+CMD ["npm", "start"]

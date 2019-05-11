@@ -27,17 +27,15 @@ main()
 
 setup()
 {
-    $YARNCMD init -yp
+    npm init -yp
 
     # Install language base
-    $YARNCMD add \
+    npm i \
         elm@0.19
 
     # Install fake API provider
-    $YARNCMD add \
+    npm i \
         json-server@0.9.5
-
-    $YARNCMD install
 
     # XXX make it write infile or find a better tool
     # jq '."source-directories"'='["src"]'  elm-package.json
@@ -50,7 +48,7 @@ setup()
         elm-lang/json \
         elm-lang/random \
         elm-lang/time
-        do $YARNCMD exec elm package install -y $package
+        do elm package install -y $package
     done
     mkdir -p src
 
