@@ -28,24 +28,26 @@ main()
 
 setup-bin()
 {
-    ln -s ../anvil/node_modules/yarn/bin/yarn ~/bin
 }
 
 setup()
 {
-    npm init -q
-    npm install yarn
+    # XXX Add package.json
+    # XXX Add elm-package.json
+    # XXX Add .gitignore
+    # XXX init Git repo
+    #npm init -q
 
     # Install language base
-    yarn add \
+    npm i --save \
         elm@0.18
 
     # Install fake API provider
-    yarn add \
+    npm i --save \
         json-server@0.9.5
 
     # Install web app bundler
-    yarn add \
+    npm i --save \
         webpack@2.2\
         elm-webpack-loader@4.2\
         webpack-dev-server@2.5.0\
@@ -76,7 +78,7 @@ setup-web()
         elm-lang/json \
         elm-lang/random \
         elm-lang/time
-        do yarn exec elm-package install -y $package
+        do elm-package install -y $package
     done
     mkdir -p src
 }

@@ -18,10 +18,7 @@ RUN npm install -g \
 ARG USER_ALIAS
 ARG UID
 
-USER ${USER_ALIAS}
-
-
 ### Configure workspace ########################################################
 USER ${USER_ALIAS}
 
-CMD ["yarn", "start"]
+CMD ["npm", "start"]

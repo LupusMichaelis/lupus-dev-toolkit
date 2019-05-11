@@ -9,8 +9,7 @@ USER root
 RUN apk update \
     && apk add --no-cache \
         nodejs \
-        npm \
-        yarn
+        npm
 
 ARG USER_ALIAS
 ARG UID
@@ -24,4 +23,4 @@ ENV PATH "/home/anvil/node_modules/.bin:$PATH"
 ### Configure workspace ########################################################
 USER ${USER_ALIAS}
 
-CMD ["yarn", "start"]
+CMD ["npm", "start"]
