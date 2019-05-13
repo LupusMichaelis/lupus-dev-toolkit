@@ -21,4 +21,4 @@ ARG UID
 ### Configure workspace ########################################################
 USER ${USER_ALIAS}
 
-CMD ["npm", "start"]
+CMD ["npm", "run"]
