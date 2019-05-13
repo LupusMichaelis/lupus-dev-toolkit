@@ -16,3 +16,10 @@ for build in alpine \
 do
     docker build --build-arg UID --build-arg USER_ALIAS -t $realm/$build build/$build
 done
+
+build=alpine-mariadb
+docker build \
+    --build-arg UID \
+    --build-arg USER_ALIAS \
+    -t $realm/$build \
+    build/$build
