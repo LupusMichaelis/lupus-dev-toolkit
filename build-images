@@ -6,6 +6,7 @@ realm=$USER
 
 for build in alpine \
     alpine-nodejs \
+    alpine-php7 \
     alpine-ts \
     alpine-react \
     alpine-react-ts \
