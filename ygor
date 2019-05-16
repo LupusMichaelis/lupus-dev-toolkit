@@ -113,7 +113,7 @@ ygor-main()
                     ;;
                 *)
                     ygor-x-clipboard-usage
-                    exit 3
+                    exit 6
                     ;;
             esac
             ;;
