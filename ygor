@@ -83,6 +83,19 @@ ygor-main()
             esac
             ;;
 
+        g|git)
+            local action=$1; shift
+            case $action in
+                bc|broadcast|push-origin-upstream)
+                    ygor-git-push-origin-upstream "$@"
+                    ;;
+                *)
+                    ygor-git-usage
+                    exit 5
+                    ;;
+            esac
+            ;;
+
         x)
             local action=$1; shift
             case $action in
@@ -117,6 +130,7 @@ ygor-usage()
     ygor-byobu-usage $program
     ygor-docker-usage $program
     ygor-files-usage $program
+    ygor-git-usage $program
     ygor-x-clipboard-usage $program
     exit 1
 }
@@ -290,6 +304,18 @@ ygor-files-open-unmerged()
 ygor-files-clean-up()
 {
     find ~ -name .\*.sw\? -delete -print
+}
+
+################################################################################
+ygor-git-usage()
+{
+    printf "\t$1 [g|git] [bc|broadcast|push-origin-upstream] <git-push-options>\n"
+}
+
+ygor-git-push-origin-upstream()
+{
+    git push "$@" \
+        && git push upstream "$@"
 }
 
 # Ygor, LIGHT IT UP!!! #########################################################
