@@ -1,6 +1,6 @@
 FROM mickael/alpine-nodejs:latest
 
-LABEL description="Alpine Linux with NodJS using Yarn"
+LABEL description="Alpine Linux with NodJS"
 
 ### Install dependency of Elm exes #############################################
 USER root
