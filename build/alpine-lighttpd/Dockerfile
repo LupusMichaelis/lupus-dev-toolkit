@@ -1,5 +1,5 @@
 FROM mickael/alpine
-LABEL description="Alpine Linux providing Bulma through Lighttpd"
+LABEL description="Alpine Linux with Lighttpd"
 
 RUN apk add --no-cache lighttpd ca-certificates
 

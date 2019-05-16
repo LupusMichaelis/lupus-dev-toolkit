@@ -5,6 +5,7 @@
 realm=$USER
 
 for build in alpine \
+    alpine-lighttpd \
     alpine-nodejs \
     alpine-php7 \
     alpine-ts \
