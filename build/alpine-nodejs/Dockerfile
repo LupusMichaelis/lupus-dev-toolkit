@@ -23,4 +23,4 @@ ENV PATH "/home/anvil/node_modules/.bin:$PATH"
 ### Configure workspace ########################################################
 USER ${USER_ALIAS}
 
-CMD ["npm", "run"]
+CMD ["npm", "start"]
