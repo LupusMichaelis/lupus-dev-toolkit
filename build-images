@@ -12,7 +12,6 @@ for build in alpine \
     alpine-ts \
     alpine-react \
     alpine-react-ts \
-    alpine-elm-0.18 \
     alpine-elm-0.19 \
     debian-elm-0.18 \
     debian-elm-0.19
