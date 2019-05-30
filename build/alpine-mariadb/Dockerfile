@@ -30,8 +30,6 @@ RUN mysql_install_db \
 
 ENTRYPOINT ["docker-entrypoint.sh"]
 
-COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
-
 ARG MYSQL_USER_NAME
 ARG MYSQL_USER_PASSWORD
 ARG MYSQL_USER_DATABASE
@@ -39,6 +37,8 @@ ARG MYSQL_USER_DATABASE
 ENV MYSQL_USER_NAME=${MYSQL_USER_NAME}
 ENV MYSQL_USER_PASSWORD=${MYSQL_USER_PASSWORD}
 ENV MYSQL_USER_DATABASE=${MYSQL_USER_DATABASE}
+
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 
 USER ${MYSQL_SYSUSER}
 CMD [ "mysqld_safe" ]
