@@ -37,7 +37,6 @@ setup()
     npm i --save \
         json-server@0.9.5
 
-    npm install
 
     # XXX make it write infile or find a better tool
     # jq '."source-directories"'='["src"]'  elm-package.json
