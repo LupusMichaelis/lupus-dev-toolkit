@@ -1,9 +1,11 @@
 [server]
 
+skip-networking = 0
 bind-address = 0.0.0.0
 log_error = /var/log/mariadb-error.log
 
 [mysqld]
 
+skip-networking = 0
 bind-address = 0.0.0.0
 log_error = /var/log/mariadb-error.log
