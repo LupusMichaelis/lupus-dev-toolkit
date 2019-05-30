@@ -15,6 +15,8 @@ RUN sed -i \
         '/^# server\.bind          = 81/s/^.*$/server.bind = 0.0.0.0/' \
         /etc/lighttpd/lighttpd.conf
 
+USER ${USER_ALIAS}
+
 VOLUME ["/var/www/localhost/htdocs"]
 WORKDIR "/var/www/localhost/htdocs"
 
