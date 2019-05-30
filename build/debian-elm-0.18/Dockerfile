@@ -1,4 +1,4 @@
-FROM debian:buster
+FROM mickael/debian-buster-node
 
 LABEL description="Debian Buster GNU/Linux with Elm"
 
@@ -41,5 +41,4 @@ WORKDIR /home/anvil
 
 ENV PATH "/home/anvil/node_modules/.bin:$PATH"
 
-
-CMD ["npm", "run"]
+CMD ["npm", "run", "elm-reactor", "-a", "0.0.0.0"]
