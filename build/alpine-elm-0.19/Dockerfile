@@ -21,4 +21,4 @@ USER ${USER_ALIAS}
 
 ENV PATH "/home/anvil/node_modules/.bin:$PATH"
 
-CMD ["npm", "start"]
+CMD ["npm", "dev"]
