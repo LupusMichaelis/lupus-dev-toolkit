@@ -4,6 +4,7 @@ LABEL description="Debian Buster GNU/Linux with Elm"
 
 ### Configure system ###########################################################
 
+USER 0
 RUN sed -i 's/main/main non-free contrib/g' /etc/apt/sources.list
 # libtinfo5 : elm dependency
 # cmdtest provides a command yarn that is not the yarn we know in the NodeJS realm
