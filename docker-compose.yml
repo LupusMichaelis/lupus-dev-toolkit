@@ -10,123 +10,88 @@ volumes:
         driver: local
 
 services:
-    web:
-        container_name: test-web
-        image: mickael/test-web
+    alpine-elm-0.19:
+        environment:
+            - UID=${UID?Please export UID}
+            - GID=${GID?Please export GID}
+            - USER_ALIAS=${USER_ALIAS:-elm}
+            - WORKSHOP_DIR=${WORKSHOP_DIR?Please export WORKSHOP_DIR}
+        image: mickael/alpine-elm-0.19
         restart: "no"
-        build: ./build/web
-        depends_on:
-            - db
+
+    bulma-sandbox:
+        build:
+            context: ./build/lighttpd
+        container_name: bulma-sandbox
+        image: mickael/bulma-sandbox
         ports:
-            - 80:80
+            - 80
+        restart: "no"
         volumes:
-            - ./conf/apache2/vhosts.conf:/etc/apache2/conf.d/vhosts.conf:ro
+            - ${WORKSHOP_DIR}/bulma-sandbox/public_html:/var/www/localhost/htdocs:rw
 
     db:
+        build: ./build/db
         container_name: test-db
-        image: mickael/test-db
-        restart: "no"
         environment:
             MYSQL_USER_NAME: dummy
             MYSQL_USER_HOST: '%'
             MYSQL_USER_PASSWORD: test
             MYSQL_USER_DATABASE: sandbox
-        build:
-            context: ./build/db
-            args:
-                MYSQL_SYSUSER: mysql
-                MYSQL_SYSGROUP: mysql
-                MYSQL_DATA_PATH: /var/lib/mysql
-                MYSQL_SECRET:
-
+        image: mickael/db
         ports:
             - 3306
+        restart: "no"
         volumes:
             - ./conf/mysql/mariadb.cnf:/etc/mysql/mariadb.cnf:ro
 
     elm-sandbox:
-        container_name: elm-sandbox
-
-    node:
-        image: mickael/debian-buster-node
         build:
-            context: ./build/debian-buster-node
+            context: ./build/elm-0.19
             args:
                 UID: ${UID?Please export}
                 USER: ${USER_ALIAS:-elm}
                 HOME: /home/
                 ANVIL: /home/anvil
-
-    elm-sandbox:
-        image: mickael/alpine-elm-0.18
+        container_name: elm-sandbox
         depends_on:
             - node
-
-        restart: "no"
         environment:
             - UID=${UID?Please export UID}
             - GID=${GID?Please export GID}
             - USER_ALIAS=${USER_ALIAS:-elm}
             - WORKSHOP_DIR=${WORKSHOP_DIR?Please export WORKSHOP_DIR}
-
-        build:
-            context: ./build/elm-0.19
-            args:
-                UID: ${UID?Please export}
-                USER: ${USER_ALIAS:-elm}
-                HOME: /home/
-                ANVIL: /home/anvil
-        volumes:
-            - ${WORKSHOP_DIR?Please export WORKSHOP_DIR}/elm-sandbox:/home/anvil:rw
-
-    elm-rpg:
-        container_name: elm-rpg
         image: mickael/alpine-elm-0.18
         restart: "no"
-        build:
-            context: ./build/elm-0.19
-            args:
-                UID: ${UID}
-                USER: ${USER_ALIAS:-elm}
-                HOME: /home
-                ANVIL: /home/anvil
         volumes:
-            - ${WORKSHOP_DIR}/elm-rpg:/home/anvil:rw
+            - ${WORKSHOP_DIR?Please export WORKSHOP_DIR}/elm-sandbox:/home/anvil:rw
 
     elm-conway:
         container_name: elm-conway
         image: mickael/debian-elm-0.19
         restart: "no"
-        environment:
-            - UID=${UID?Please export UID}
-            - GID=${GID?Please export GID}
-            - USER_ALIAS=${USER_ALIAS:-elm}
-            - WORKSHOP_DIR=${WORKSHOP_DIR?Please export WORKSHOP_DIR}
         volumes:
             - ${WORKSHOP_DIR?Please export WORKSHOP_DIR}/elm-conway:/home/anvil:rw
+        command: [ elm-live, src/Conway.elm]
 
-    bulma-sandbox:
-        container_name: bulma-sandbox
-        image: mickael/bulma-sandbox
+    elm-rpg:
+        container_name: elm-rpg
+        image: mickael/alpine-elm-0.18
         restart: "no"
-        build:
-            context: ./build/lighttpd
-        ports:
-            - 80
         volumes:
-            - ${WORKSHOP_DIR}/bulma-sandbox/public_html:/var/www/localhost/htdocs:rw
+            - ${WORKSHOP_DIR}/elm-rpg:/home/anvil:rw
 
-    alpine-elm-0.19:
-        image: mickael/alpine-elm-0.19
-        build:
-            context: ./build/alpine-elm-0.19
-            args:
-                - UID=${UID?Please export UID}
-                - GID=${GID?Please export GID}
-                - USER_ALIAS=elm
+    node:
+        image: mickael/debian-buster-node
+
+    web:
+        build: ./build/web
+        container_name: test-web
+        depends_on:
+            - db
+        image: mickael/web
+        ports:
+            - 80:80
         restart: "no"
-        environment:
-            - UID=${UID?Please export UID}
-            - GID=${GID?Please export GID}
-            - USER_ALIAS=${USER_ALIAS:-elm}
-            - WORKSHOP_DIR=${WORKSHOP_DIR?Please export WORKSHOP_DIR}
+        volumes:
+            - ./conf/apache2/vhosts.conf:/etc/apache2/conf.d/vhosts.conf:ro
