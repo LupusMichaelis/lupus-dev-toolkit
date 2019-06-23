@@ -21,7 +21,8 @@ done
 
 build=alpine-mariadb
 docker build \
-    --build-arg UID \
-    --build-arg USER_ALIAS \
+    --build-arg MYSQL_USER_NAME=my_user \
+    --build-arg MYSQL_USER_PASSWORD='' \
+    --build-arg MYSQL_USER_DATABASE=my_space \
     -t $realm/$build \
     build/$build
