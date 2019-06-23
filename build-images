@@ -7,6 +7,7 @@ realm=$USER
 for build in \
 	alpine \
 	\
+    alpine-proxy \
     alpine-postfix \
     alpine-lighttpd \
 	\
