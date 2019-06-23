@@ -4,15 +4,22 @@
 
 realm=$USER
 
-for build in alpine \
+for build in \
+	alpine \
+	\
     alpine-postfix \
     alpine-lighttpd \
-    alpine-nodejs \
+	\
     alpine-php7 \
-    alpine-ts \
+	\
+    alpine-nodejs \
     alpine-react \
+    alpine-ts \
     alpine-react-ts \
+	\
     alpine-elm-0.19 \
+	\
+    debian-buster-node \
     debian-elm-0.18 \
     debian-elm-0.19
 do
