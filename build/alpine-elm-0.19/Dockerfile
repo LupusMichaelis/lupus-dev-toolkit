@@ -1,6 +1,6 @@
 FROM mickael/alpine-nodejs:latest
 
-LABEL description="Alpine Linux with NodJS"
+LABEL description="Alpine Linux with NodeJS"
 
 ### Install dependency of Elm exes #############################################
 USER root
