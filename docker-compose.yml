@@ -21,7 +21,7 @@ services:
 
     bulma-sandbox:
         build:
-            context: ./build/lighttpd
+            context: ./build/alpine-lighttpd
         container_name: bulma-sandbox
         image: mickael/bulma-sandbox
         ports:
@@ -46,14 +46,25 @@ services:
             - ./conf/mysql/mariadb.cnf:/etc/mysql/mariadb.cnf:ro
 
     elm-sandbox:
+        image: mickael/alpine-elm-0.19
         build:
-            context: ./build/elm-0.19
+            context: ./build/alpine-elm-0.19
+            args:
+                - UID=${UID?Please export UID}
+                - GID=${GID?Please export GID}
+                - USER_ALIAS=elm
+        container_name: elm-sandbox
+
+    node:
+        image: mickael/debian-buster-node
+        build:
+            context: ./build/alpine-nodejs
             args:
                 UID: ${UID?Please export}
                 USER: ${USER_ALIAS:-elm}
                 HOME: /home/
                 ANVIL: /home/anvil
-        container_name: elm-sandbox
+
         depends_on:
             - node
         environment:
@@ -81,11 +92,8 @@ services:
         volumes:
             - ${WORKSHOP_DIR}/elm-rpg:/home/anvil:rw
 
-    node:
-        image: mickael/debian-buster-node
-
     web:
-        build: ./build/web
+        build: ./build/debian-jessie-apache2-php56
         container_name: test-web
         depends_on:
             - db
