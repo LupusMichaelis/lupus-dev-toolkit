@@ -31,7 +31,7 @@ services:
             - ${WORKSHOP_DIR}/bulma-sandbox/public_html:/var/www/localhost/htdocs:rw
 
     db:
-        build: ./build/db
+        build: ./build/alpine-mariadb
         container_name: test-db
         environment:
             MYSQL_USER_NAME: dummy
