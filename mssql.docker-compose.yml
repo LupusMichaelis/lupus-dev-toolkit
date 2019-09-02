@@ -5,7 +5,36 @@ volumes:
         driver: local
 
 services:
-    server:
+    client:
+        command:
+            - /opt/mssql-tools/bin/sqlcmd
+            - -?
+        environment:
+            ACCEPT_EULA: Y
+            MSSQL_PID: Developer
+        image: mcr.microsoft.com/mssql-tools
+
+    client-2017:
+        command:
+            - /opt/mssql-tools/bin/sqlcmd
+            - -d
+            - master
+            - -S
+            - mssql-server-2017
+            - -U
+            - sa
+            - -P
+            - 'This is not so secret! 42'
+        environment:
+            ACCEPT_EULA: Y
+            MSSQL_PID: Developer
+        image: mcr.microsoft.com/mssql-tools
+        depends_on:
+            - server-2017
+        networks:
+            - mssql
+
+    server-2017:
         environment:
             ACCEPT_EULA: Y
             MSSQL_PID: Developer
@@ -17,27 +46,7 @@ services:
         networks:
             mssql:
                 aliases:
-                    - server
-
-    client:
-        command:
-            - /opt/mssql-tools/bin/sqlcmd
-            - -d
-            - master
-            - -S
-            - server
-            - -U
-            - sa
-            - -P
-            - 'This is not so secret! 42'
-        environment:
-            ACCEPT_EULA: Y
-            MSSQL_PID: Developer
-        image: mcr.microsoft.com/mssql-tools
-        depends_on:
-            - server
-        networks:
-            - mssql
+                    - mssql-server-2017
 
 networks:
     mssql:
