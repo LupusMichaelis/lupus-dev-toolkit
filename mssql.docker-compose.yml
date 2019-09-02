@@ -1,0 +1,43 @@
+version: '3'
+
+volumes:
+    db:
+        driver: local
+
+services:
+    server:
+        environment:
+            ACCEPT_EULA: Y
+            MSSQL_PID: Developer
+            SA_PASSWORD: 'This is not so secret! 42'
+            MSSQL_IP_ADDRESS: 0.0.0.0
+        image: mcr.microsoft.com/mssql/server:2017-CU8-ubuntu
+        ports:
+            - 1433
+        networks:
+            mssql:
+                aliases:
+                    - server
+
+    client:
+        command:
+            - /opt/mssql-tools/bin/sqlcmd
+            - -d
+            - master
+            - -S
+            - server
+            - -U
+            - sa
+            - -P
+            - 'This is not so secret! 42'
+        environment:
+            ACCEPT_EULA: Y
+            MSSQL_PID: Developer
+        image: mcr.microsoft.com/mssql-tools
+        depends_on:
+            - server
+        networks:
+            - mssql
+
+networks:
+    mssql:
