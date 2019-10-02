@@ -45,6 +45,21 @@ services:
         volumes:
             - ./conf/mysql/mariadb.cnf:/etc/mysql/mariadb.cnf:ro
 
+    maria-db:
+        image: mysql:5.7
+        restart: always
+        command: mysqld --sql_mode='STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION'
+        environment:
+            - 'MYSQL_ROOT_PASSWORD=yolo'
+        volumes:
+            - /data/maria-db:/var/lib/mysql
+
+        healthcheck:
+            test: ['CMD', 'mysqladmin' ,'ping', '-uroot', '-pxxx', '-hlocalhost']
+            interval: 10s
+            timeout: 20s
+            retries: 10
+
     elm-sandbox:
         image: mickael/alpine-elm-0.19
         build:
