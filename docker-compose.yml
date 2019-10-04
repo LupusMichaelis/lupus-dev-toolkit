@@ -45,6 +45,13 @@ services:
         volumes:
             - ./conf/mysql/mariadb.cnf:/etc/mysql/mariadb.cnf:ro
 
+    # XXX To audit
+    ftp:
+        image: panubo/vsftpd:v1.0.0
+        environment:
+            - 'FTP_USER=ftp'
+            - 'FTP_PASSWORD=ftp'
+
     go-lang:
         build:
             context: ./build/alpine-go-lang
