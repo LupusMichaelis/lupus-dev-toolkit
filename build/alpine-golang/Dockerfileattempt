@@ -1,0 +1,29 @@
+FROM golang:1.12.4-alpine3.9
+FROM mickael/alpine
+LABEL description="Alpine Linux with Go environment"
+
+USER 0
+
+RUN apk add \
+    --update \
+    --no-cache \
+    alpine-sdk \
+    git \
+    go \
+    musl-dev
+
+ENV GOARCH amd64
+ENV GOBIN /home/.local/go-path/bin
+ENV GOPATH /home/.local/go-path
+#ENV GOROOT /home/.local/go-lang-root
+
+ARG USER_ALIAS
+USER ${USER_ALIAS}
+
+RUN mkdir -p \
+    ${GOBIN} \
+    ${GOPATH}
+
+#${GOROOT}
+
+CMD ["bash"]

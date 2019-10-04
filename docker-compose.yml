@@ -45,6 +45,9 @@ services:
         volumes:
             - ./conf/mysql/mariadb.cnf:/etc/mysql/mariadb.cnf:ro
 
+    go-lang:
+        build:
+            context: ./build/alpine-go-lang
     maria-db:
         image: mysql:5.7
         restart: always
