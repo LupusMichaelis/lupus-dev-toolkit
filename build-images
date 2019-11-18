@@ -9,6 +9,7 @@ for build in \
 	\
     alpine-proxy \
     alpine-postfix \
+    alpine-postfix-mutt \
     alpine-lighttpd \
     alpine-lighttpd-secure \
 	\
