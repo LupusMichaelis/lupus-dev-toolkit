@@ -36,7 +36,7 @@ services:
         networks:
             - mssql
         volumes:
-            - /var/opt/mssql-2017:/var/opt/mssql:rw
+            - /data/mssql-2017/backup:/var/opt/mssql/backup:rw
 
     client-2019:
         command:
@@ -57,6 +57,8 @@ services:
             - server-2019
         networks:
             - mssql
+        volumes:
+            - /data/mssql-2019/backup:/var/opt/mssql/backup:rw
 
     server-2017:
         environment:
@@ -71,6 +73,8 @@ services:
             mssql:
                 aliases:
                     - mssql-server-2017
+        volumes:
+            - /data/mssql-2017/data:/var/opt/mssql:rw
 
     server-2019:
         environment:
@@ -85,6 +89,8 @@ services:
             mssql:
                 aliases:
                     - mssql-server-2019
+        volumes:
+            - /data/mssql-2019/data:/var/opt/mssql:rw
 
 networks:
     mssql:
