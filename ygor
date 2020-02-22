@@ -21,7 +21,7 @@ ygor-main()
         d|docker)
             local action=$1; shift
             case $action in
-                c|clean)
+                d|dracarys|c|clean)
                     ygor-docker-clean
                     ;;
                 last-ip)
@@ -203,8 +203,12 @@ ygor-docker-usage()
 
 ygor-docker-clean()
 {
-	ids=$(docker ps -qf status=exited)
-	docker rm $ids
+    ids=$(docker ps -qf status=exited)
+    if [[ ! -z $did ]]; then
+        docker rm $ids
+    else
+        ygor-die "No container to burn down"
+    fi
 }
 
 ygor-docker-last-id()
