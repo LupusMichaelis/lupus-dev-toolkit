@@ -242,6 +242,20 @@ ygor-elm-format()
     $YARN elm-format --yes "$@"
 }
 
+ygor-elm-format-all()
+{
+    ygor-elm-format $(git ls-files | grep '\.elm$')
+}
+
+ygor-elm-format-git-head()
+{
+    files=$(git diff --name-only HEAD HEAD~ | grep '\.elm$')
+    if [[ ! -z "$files" ]]
+    then
+        ygor-elm-format $files
+    fi
+}
+
 ygor-elm-format-git-head()
 {
     files=$(git diff --name-only HEAD HEAD~ | grep \.elm)
@@ -253,7 +267,7 @@ ygor-elm-format-git-head()
 
 ygor-elm-format-git-cache()
 {
-    files=$(git diff --name-only --cached | grep \.elm)
+    files=$(git diff --name-only --cached | grep '\.elm$')
     if [[ ! -z "$files" ]]
     then
         ygor-elm-format $files
