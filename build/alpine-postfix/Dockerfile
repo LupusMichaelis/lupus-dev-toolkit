@@ -1,4 +1,4 @@
-FROM mickael/alpine
+FROM lupusmichaelis/alpine
 
 LABEL description="Alpine Linux with Postfix MTA and Mutt MUA"
 

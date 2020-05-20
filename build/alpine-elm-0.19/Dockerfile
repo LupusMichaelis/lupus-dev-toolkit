@@ -1,4 +1,4 @@
-FROM mickael/alpine-nodejs:latest
+FROM lupusmichaelis/alpine-nodejs:latest
 
 LABEL description="Alpine Linux with NodeJS"
 

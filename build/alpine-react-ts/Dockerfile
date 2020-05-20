@@ -1,4 +1,4 @@
-FROM mickael/alpine-react
+FROM lupusmichaelis/alpine-react
 
 LABEL description="Alpine Linux with user and React on NodeJS using TypeScript"
 

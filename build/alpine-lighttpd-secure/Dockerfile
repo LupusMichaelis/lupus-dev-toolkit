@@ -1,4 +1,4 @@
-FROM mickael/alpine-lighttpd
+FROM lupusmichaelis/alpine-lighttpd
 LABEL description="Alpine Linux with Lighttpd over SSL"
 
 USER 0

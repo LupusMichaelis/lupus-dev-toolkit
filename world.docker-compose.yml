@@ -1,6 +1,7 @@
 #
 #
 # You need environment variables set on how to find repository and workshop directories
+# ./gen-env
 #
 
 version: '3'
@@ -10,20 +11,30 @@ volumes:
         driver: local
 
 services:
+    alpine:
+        image: lupusmichaelis/alpine
+        build:
+            context: ./build/alpine
+            args:
+                - UID=${UID?Please export UID}
+                - GID=${GID?Please export GID}
+                - USER_ALIAS=elm
+
     alpine-elm-0.19:
+        image: lupsumichaelis/alpine-elm-0.19
+        build:
+            context: ./build/alpine-elm-0.19
         environment:
             - UID=${UID?Please export UID}
             - GID=${GID?Please export GID}
             - USER_ALIAS=${USER_ALIAS:-elm}
             - WORKSHOP_DIR=${WORKSHOP_DIR?Please export WORKSHOP_DIR}
-        image: mickael/alpine-elm-0.19
         restart: "no"
 
     bulma-sandbox:
         build:
             context: ./build/alpine-lighttpd
-        container_name: bulma-sandbox
-        image: mickael/bulma-sandbox
+        image: lupusmichaelis/bulma-sandbox
         ports:
             - 80
         restart: "no"
@@ -32,7 +43,6 @@ services:
 
     db:
         build: ./build/alpine-mariadb
-        container_name: test-db
         environment:
             MYSQL_USER_NAME: dummy
             MYSQL_USER_HOST: '%'
@@ -70,18 +80,8 @@ services:
             timeout: 20s
             retries: 10
 
-    elm-sandbox:
-        image: mickael/alpine-elm-0.19
-        build:
-            context: ./build/alpine-elm-0.19
-            args:
-                - UID=${UID?Please export UID}
-                - GID=${GID?Please export GID}
-                - USER_ALIAS=elm
-        container_name: elm-sandbox
-
     node:
-        image: mickael/debian-buster-node
+        image: lupusmichaelis/alpine-nodejs
         build:
             context: ./build/alpine-nodejs
             args:
@@ -92,7 +92,7 @@ services:
 
     elm-sandbox:
         container_name: elm-sandbox
-        image: mickael/alpine-elm-0.19
+        image: lupusmichaelis/alpine-elm-0.19
         build:
             context: ./build/alpine-elm-0.19
             args:
@@ -113,40 +113,34 @@ services:
             - ${WORKSHOP_DIR?Please export WORKSHOP_DIR}/elm-sandbox:/home/anvil:rw
 
     elm-rpg:
-        container_name: elm-rpg
-        image: mickael/alpine-elm-0.19
+        image: lupusmichaelis/alpine-elm-0.19
         restart: "no"
-        build:
-            context: ./build/alpine-elm-0.19
-            args:
-                UID: ${UID}
-                USER: ${USER_ALIAS:-elm}
-                HOME: /home
-                ANVIL: /home/anvil
+#        build:
+#            context: ./build/alpine-elm-0.19
+#            args:
+#                UID: ${UID}
+#                USER: ${USER_ALIAS:-elm}
+#                HOME: /home
+#                ANVIL: /home/anvil
         volumes:
             - ${WORKSHOP_DIR?Please export WORKSHOP_DIR}/elm-sandbox:/home/anvil:rw
 
     elm-conway:
-        container_name: elm-conway
-        image: mickael/debian-elm-0.19
+        image: lupusmichaelis/debian-elm-0.19
         restart: "no"
         volumes:
             - ${WORKSHOP_DIR?Please export WORKSHOP_DIR}/elm-conway:/home/anvil:rw
         command: [ elm-live, src/Conway.elm]
 
     elm-rpg:
-        container_name: elm-rpg
-        image: mickael/alpine-elm-0.18
+        image: lupusmichaelis/alpine-elm-0.18
         restart: "no"
         volumes:
             - ${WORKSHOP_DIR}/elm-rpg:/home/anvil:rw
 
     web:
         build: ./build/debian-jessie-apache2-php56
-        container_name: test-web
-        depends_on:
-            - db
-        image: mickael/web
+        image: lupusmichaelis/web
         ports:
             - 80:80
         restart: "no"
