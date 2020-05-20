@@ -41,19 +41,14 @@ services:
         volumes:
             - ${WORKSHOP_DIR}/bulma-sandbox/public_html:/var/www/localhost/htdocs:rw
 
-    db:
+    maria-db:
         build: ./build/alpine-mariadb
         environment:
-            MYSQL_USER_NAME: dummy
-            MYSQL_USER_HOST: '%'
-            MYSQL_USER_PASSWORD: test
-            MYSQL_USER_DATABASE: sandbox
-        image: mickael/db
+            - MYSQL_ROOT_PASSWORD yolo
+        image: lupusmichaelis/db
         ports:
             - 3306
         restart: "no"
-        volumes:
-            - ./conf/mysql/mariadb.cnf:/etc/mysql/mariadb.cnf:ro
 
     # XXX To audit
     ftp:
@@ -64,18 +59,19 @@ services:
 
     go-lang:
         build:
-            context: ./build/alpine-go-lang
-    maria-db:
+            context: ./build/alpine-golang
+    my-db:
         image: mysql:5.7
         restart: always
         command: mysqld --sql_mode='STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION'
         environment:
             - 'MYSQL_ROOT_PASSWORD=yolo'
         volumes:
-            - /data/maria-db:/var/lib/mysql
+            - /data/maria-db:/var/lib/mysql:rw
+            - /var/run/mysqld/docker-mysqld.sock:/var/run/mysqld/mysqld.sock:rw
 
         healthcheck:
-            test: ['CMD', 'mysqladmin' ,'ping', '-uroot', '-pxxx', '-hlocalhost']
+            test: ['CMD', 'mysqladmin' ,'ping', '-uroot', '-pyolo', '-hlocalhost']
             interval: 10s
             timeout: 20s
             retries: 10

@@ -1,4 +1,4 @@
-FROM mickael/alpine
+FROM lupusmichaelis/alpine
 
 USER root
 RUN apk update \
@@ -7,9 +7,11 @@ RUN apk update \
         mariadb-client \
         mariadb-server-utils
 
-ENV MYSQL_SYSUSER=mysql
-ENV MYSQL_SYSGROUP=mysql
-ENV MYSQL_DATA_PATH "/var/lib/mysql"
+ENV MYSQL_SYSUSER mysql
+ENV MYSQL_SYSGROUP mysql
+ENV MYSQL_DATA_PATH /var/lib/mysql
+ENV MYSQL_ROOT_PASSWORD ''
+ENV INIT_DIR /home/initialize
 
 # Prepare directories
 RUN mkdir -p /run/mysqld
@@ -17,6 +19,7 @@ RUN chown -R ${MYSQL_SYSUSER}:${MYSQL_SYSGROUP} /run/mysqld
 
 RUN mkdir -p $MYSQL_DATA_PATH
 RUN chown -R ${MYSQL_SYSUSER}:${MYSQL_SYSGROUP} ${MYSQL_DATA_PATH}
+VOLUME MYSQL_DATA_PATH
 
 # MariaDB will look of my.cnf
 RUN mv /etc/my.cnf.d/mariadb-server.cnf /etc/my.cnf.d/00-mariadb-server.cnf
@@ -30,15 +33,9 @@ RUN mysql_install_db \
 
 ENTRYPOINT ["docker-entrypoint.sh"]
 
-ARG MYSQL_USER_NAME
-ARG MYSQL_USER_PASSWORD
-ARG MYSQL_USER_DATABASE
-
-ENV MYSQL_USER_NAME=${MYSQL_USER_NAME}
-ENV MYSQL_USER_PASSWORD=${MYSQL_USER_PASSWORD}
-ENV MYSQL_USER_DATABASE=${MYSQL_USER_DATABASE}
-
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 
 USER ${MYSQL_SYSUSER}
 CMD [ "mysqld_safe" ]
+
+COPY ./initialize/ ${INIT_DIR}
