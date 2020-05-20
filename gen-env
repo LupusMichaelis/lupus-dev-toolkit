@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# Set those variables to your liking, they'll be used by Docker Compose to know where to
+# look and how set set up your machines
+
+{
+    echo GID=$(id -g)
+    echo REPOSITORY_DIR=$HOME/repositories
+    echo UID=$UID
+    echo USER_ALIAS=dev
+    echo WORKSHOP_DIR=$HOME/workshop
+} > .env
