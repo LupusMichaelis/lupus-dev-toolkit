@@ -12,12 +12,12 @@ RUN apk update \
         && echo Apk done
 
 ### Configure user #############################################################
-RUN rmdir /home
-
 ARG USER_ALIAS
 ARG UID
+ARG GID
 
-RUN adduser -u ${UID} \
+RUN adduser \
+    -u ${UID} \
 	-g "" \
 	-D \
 	-h /home \
@@ -27,14 +27,15 @@ RUN echo \
 	'export PS1="\w $ "'\
 	> /home/.profile
 
-RUN mkdir /home/bin
+RUN mkdir -p /home/bin
 ENV PATH "/home/bin:$PATH"
 
 ### Configure workspace ########################################################
 USER ${USER_ALIAS}
 
-RUN mkdir /home/anvil
-VOLUME ["/home/anvil"]
-WORKDIR /home/anvil
+ENV ANVIL /home/anvil
+RUN mkdir -p ${ANVIL}
+VOLUME [${ANVIL}]
+WORKDIR ${ANVIL}
 
 CMD ["bash"]

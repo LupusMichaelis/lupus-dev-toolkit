@@ -1,8 +1,9 @@
+##############################################################################
 #
+# Image builder, requires a populated .env file in this very file's directory,
+# generated through ./gen-env.
 #
-# You need environment variables set on how to find repository and workshop directories
-# ./gen-env
-#
+##############################################################################
 
 version: '3'
 
@@ -11,6 +12,9 @@ volumes:
         driver: local
 
 services:
+    ############################################################################
+    # OSes
+    #
     alpine:
         image: lupusmichaelis/alpine
         build:
@@ -18,19 +22,23 @@ services:
             args:
                 - UID=${UID?Please export UID}
                 - GID=${GID?Please export GID}
-                - USER_ALIAS=elm
+                - USER_ALIAS=${USER_ALIAS?Please export}
 
-    alpine-elm-0.19:
-        image: lupsumichaelis/alpine-elm-0.19
-        build:
-            context: ./build/alpine-elm-0.19
-        environment:
-            - UID=${UID?Please export UID}
-            - GID=${GID?Please export GID}
-            - USER_ALIAS=${USER_ALIAS:-elm}
-            - WORKSHOP_DIR=${WORKSHOP_DIR?Please export WORKSHOP_DIR}
+    ############################################################################
+    # Web server
+    #
+    web-deb-jessie-ap2-php56:
+        build: ./build/debian-jessie-apache2-php56
+        image: lupusmichaelis/web-jessie-php56
+        ports:
+            - 80:80
         restart: "no"
+        volumes:
+            - ./conf/apache2/vhosts.conf:/etc/apache2/conf.d/vhosts.conf:ro
 
+    ############################################################################
+    # Web design
+    #
     bulma-sandbox:
         build:
             context: ./build/alpine-lighttpd
@@ -41,6 +49,24 @@ services:
         volumes:
             - ${WORKSHOP_DIR}/bulma-sandbox/public_html:/var/www/localhost/htdocs:rw
 
+    ############################################################################
+    # FTP server
+    # XXX To audit
+    #
+    ftp:
+        image: panubo/vsftpd:v1.0.0
+        environment:
+            - 'FTP_USER=ftp'
+            - 'FTP_PASSWORD=ftp'
+
+    ############################################################################
+    # Skeleton for Go app
+    go-lang:
+        build:
+            context: ./build/alpine-golang
+
+    ############################################################################
+    # Databases
     maria-db:
         build: ./build/alpine-mariadb
         environment:
@@ -50,16 +76,6 @@ services:
             - 3306
         restart: "no"
 
-    # XXX To audit
-    ftp:
-        image: panubo/vsftpd:v1.0.0
-        environment:
-            - 'FTP_USER=ftp'
-            - 'FTP_PASSWORD=ftp'
-
-    go-lang:
-        build:
-            context: ./build/alpine-golang
     my-db:
         image: mysql:5.7
         restart: always
@@ -67,7 +83,7 @@ services:
         environment:
             - 'MYSQL_ROOT_PASSWORD=yolo'
         volumes:
-            - /data/maria-db:/var/lib/mysql:rw
+            - /data/maria-db:/var/lib/mysql:rw # XXX
             - /var/run/mysqld/docker-mysqld.sock:/var/run/mysqld/mysqld.sock:rw
 
         healthcheck:
@@ -76,69 +92,42 @@ services:
             timeout: 20s
             retries: 10
 
+    ############################################################################
+    # Node's wonderland
     node:
         image: lupusmichaelis/alpine-nodejs
         build:
             context: ./build/alpine-nodejs
             args:
                 UID: ${UID?Please export}
-                USER: ${USER_ALIAS:-elm}
-                HOME: /home/
-                ANVIL: /home/anvil
+                USER_ALIAS: ${USER_ALIAS?Please export}
 
-    elm-sandbox:
-        container_name: elm-sandbox
+    elm:
         image: lupusmichaelis/alpine-elm-0.19
         build:
             context: ./build/alpine-elm-0.19
-            args:
-                UID: ${UID?Please export}
-                USER: ${USER_ALIAS:-elm}
-                HOME: /home/
-                ANVIL: /home/anvil
-        depends_on:
-            - node
-        environment:
-            - UID=${UID?Please export UID}
-            - GID=${GID?Please export GID}
-            - USER_ALIAS=${USER_ALIAS:-elm}
-            - WORKSHOP_DIR=${WORKSHOP_DIR?Please export WORKSHOP_DIR}
-        restart: "no"
 
-        volumes:
-            - ${WORKSHOP_DIR?Please export WORKSHOP_DIR}/elm-sandbox:/home/anvil:rw
-
-    elm-rpg:
+    elm-sandbox:
         image: lupusmichaelis/alpine-elm-0.19
         restart: "no"
-#        build:
-#            context: ./build/alpine-elm-0.19
-#            args:
-#                UID: ${UID}
-#                USER: ${USER_ALIAS:-elm}
-#                HOME: /home
-#                ANVIL: /home/anvil
+
         volumes:
             - ${WORKSHOP_DIR?Please export WORKSHOP_DIR}/elm-sandbox:/home/anvil:rw
 
     elm-conway:
-        image: lupusmichaelis/debian-elm-0.19
+        image: lupusmichaelis/conway-game-of-life
+        build:
+            context: ${WORKSHOP_DIR?Please export WORKSHOP_DIR}/elm-conway
+            args:
+                UID: ${UID?Please export}
+                GID: ${GID?Please export}
+                USER: ${USER_ALIAS:-elm}
+                HOME: /home/
+                ANVIL: /home/anvil
         restart: "no"
-        volumes:
-            - ${WORKSHOP_DIR?Please export WORKSHOP_DIR}/elm-conway:/home/anvil:rw
-        command: [ elm-live, src/Conway.elm]
 
     elm-rpg:
         image: lupusmichaelis/alpine-elm-0.18
         restart: "no"
         volumes:
             - ${WORKSHOP_DIR}/elm-rpg:/home/anvil:rw
-
-    web:
-        build: ./build/debian-jessie-apache2-php56
-        image: lupusmichaelis/web
-        ports:
-            - 80:80
-        restart: "no"
-        volumes:
-            - ./conf/apache2/vhosts.conf:/etc/apache2/conf.d/vhosts.conf:ro

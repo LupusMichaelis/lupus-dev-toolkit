@@ -1,6 +1,6 @@
 FROM lupusmichaelis/alpine-nodejs:latest
 
-LABEL description="Alpine Linux with NodeJS"
+LABEL description="Alpine Linux with Elm 0.19"
 
 ### Install dependency of Elm exes #############################################
 USER root
@@ -20,5 +20,3 @@ ARG UID
 USER ${USER_ALIAS}
 
 ENV PATH "/home/anvil/node_modules/.bin:$PATH"
-
-CMD ["npm", "dev"]
