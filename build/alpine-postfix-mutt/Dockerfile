@@ -17,6 +17,6 @@ USER ${USER_ALIAS}
 
 COPY muttrc /home/.muttrc
 COPY mailcap /home/.mailcap
-RUN mkdir -p /home/maildir
+RUN mkdir /home/Maildir
 
-CMD ["mutt", "-f", "~kevin/Maildir"]
+CMD ["mutt", "-f", "~/Maildir"]

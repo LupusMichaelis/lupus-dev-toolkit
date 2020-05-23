@@ -95,6 +95,23 @@ services:
                 USER_ALIAS: ${USER_ALIAS?Please export}
 
     ############################################################################
+    # MX
+    #
+    alpine-postfix: # XXX
+        image: lupusmichaelis/alpine-postfix
+        build:
+            context: ./build/alpine-postfix
+            args:
+                USER_ALIAS: ${USER_ALIAS?Please export}
+
+    alpine-postfix-mutt: # XXX
+        image: lupusmichaelis/alpine-postfix-mutt
+        build:
+            context: ./build/alpine-postfix-mutt
+            args:
+                USER_ALIAS: ${USER_ALIAS?Please export}
+
+    ############################################################################
     # FTP server
     # XXX To audit
     #
