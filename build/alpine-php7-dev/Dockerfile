@@ -1,24 +1,14 @@
-FROM lupusmichaelis/alpine
+FROM lupusmichaelis/alpine-php7
 
 LABEL description="Alpine Linux with PHP7 and debug"
 
-### Add Node JS packages #######################################################
+### Add PHP packages ###########################################################
 
 USER root
 
 RUN apk add --no-cache \
     composer \
     git \
-    php7 \
-    php7-dom \
-    php7-iconv \
-    php7-json \
-    php7-mbstring \
-    php7-openssl \
-    php7-tokenizer \
-    php7-phar \
-    php7-xml \
-    php7-xmlwriter \
     php7-pecl-xdebug
 
 RUN sed -i \

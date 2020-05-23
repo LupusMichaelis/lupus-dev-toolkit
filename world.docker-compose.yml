@@ -50,6 +50,25 @@ services:
             - ${WORKSHOP_DIR}/bulma-sandbox/public_html:/var/www/localhost/htdocs:rw
 
     ############################################################################
+    # PHP
+    #
+    alpine-php7:
+        image: lupusmichaelis/alpine-php7
+        build:
+            context: ./build/alpine-php7
+            args:
+                UID: ${UID?Please export}
+                USER_ALIAS: ${USER_ALIAS?Please export}
+
+    alpine-php7-composer-dev:
+        image: lupusmichaelis/alpine-php7-composer-dev
+        build:
+            context: ./build/alpine-php7-dev
+            args:
+                UID: ${UID?Please export}
+                USER_ALIAS: ${USER_ALIAS?Please export}
+
+    ############################################################################
     # FTP server
     # XXX To audit
     #
