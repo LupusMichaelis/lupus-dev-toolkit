@@ -18,7 +18,6 @@ RUN sed -i \
 ARG USER_ALIAS
 USER ${USER_ALIAS}
 
-VOLUME ["/var/www/localhost/htdocs"]
 WORKDIR "/var/www/localhost/htdocs"
 
 CMD ["lighttpd", "-D", "-f", "/etc/lighttpd/lighttpd.conf"]
