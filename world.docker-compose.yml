@@ -60,6 +60,14 @@ services:
                 UID: ${UID?Please export}
                 USER_ALIAS: ${USER_ALIAS?Please export}
 
+    alpine-php7-fpm:
+        image: lupusmichaelis/alpine-php7-fpm
+        build:
+            context: ./build/alpine-php7-fpm
+            args:
+                UID: ${UID?Please export}
+                USER_ALIAS: ${USER_ALIAS?Please export}
+
     alpine-php7-composer-dev:
         image: lupusmichaelis/alpine-php7-composer-dev
         build:
