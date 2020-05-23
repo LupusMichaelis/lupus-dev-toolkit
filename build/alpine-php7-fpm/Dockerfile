@@ -13,7 +13,7 @@ RUN apk add --no-cache \
     php7-fpm
 
 RUN sed \
-    -e '/^;chdir = /s/.*/chdir = \/home\/anvil/' \
+    -e '/^;chdir = /s/.*/chdir = \/home\/anvil\/public/' \
     -e 's/127.0.0.1:9000/9000/' \
     -e '/allowed_clients/d' \
     -e '/error_log/d' \
@@ -28,4 +28,6 @@ RUN chown $UID /var/log/php7/
 ### Configure workspace ########################################################
 
 USER ${USER_ALIAS}
+RUN mkdir -p /home/anvil/public
+
 ENTRYPOINT /usr/sbin/php-fpm7 --nodaemonize

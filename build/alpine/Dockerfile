@@ -35,7 +35,6 @@ USER ${USER_ALIAS}
 
 ENV ANVIL /home/anvil
 RUN mkdir -p ${ANVIL}
-VOLUME [${ANVIL}]
 WORKDIR ${ANVIL}
 
 CMD ["bash"]
