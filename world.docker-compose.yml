@@ -160,6 +160,14 @@ services:
                 UID: ${UID?Please export}
                 USER_ALIAS: ${USER_ALIAS?Please export}
 
+    debian-buster-node:
+        image: lupusmichaelis/debian-buster-node
+        build:
+            context: ./build/debian-buster-node
+            args:
+                UID: ${UID?Please export}
+                USER_ALIAS: ${USER_ALIAS?Please export}
+
     elm:
         image: lupusmichaelis/alpine-elm-0.19
         build:
