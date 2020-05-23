@@ -69,11 +69,7 @@ services:
     # Databases
     maria-db:
         build: ./build/alpine-mariadb
-        environment:
-            - MYSQL_ROOT_PASSWORD yolo
-        image: lupusmichaelis/db
-        ports:
-            - 3306
+        image: lupusmichaelis/alpine-mariadb
         restart: "no"
 
     my-db:

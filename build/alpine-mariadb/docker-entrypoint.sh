@@ -26,7 +26,7 @@ function init()
 			for schema in $(ls $INIT_DIR/schema/*.sql)
 			do
 				space=$(basename $schema .sql) # XXX Test not busybox
-				echo "create database \`$space\`;"
+				echo "create database if not exists \`$space\`;"
 				echo "use \`$space\`;"
 				cat $schema
 			done
@@ -43,14 +43,14 @@ function init()
 
 				# TABS must lead!!!
 				cat <<- SQL
-				create user '${user}'@'${host}' identified by '${password}';
+				create user if not exists '${user}'@'${host}' identified by '${password}';
 				grant all privileges on \`${space}\`.${table} to '${user}'@'$host';
 				SQL
 			done < $INIT_DIR/credentials
 
 			echo 'flush privileges;'
 		fi
-	} | tee $sql_tmp | mysql
+	} | tee $sql_tmp | mysql -uroot
 
 	test $? -ne 0 && echo "Error on data populating"
 
