@@ -169,12 +169,12 @@ services:
                 USER_ALIAS: ${USER_ALIAS?Please export}
 
     elm:
-        image: lupusmichaelis/alpine-elm-0.19
+        image: lupusmichaelis/alpine-elm
         build:
-            context: ./build/alpine-elm-0.19
+            context: ./build/alpine-elm
 
     elm-sandbox:
-        image: lupusmichaelis/alpine-elm-0.19
+        image: lupusmichaelis/alpine-elm
         restart: "no"
 
         volumes:
@@ -193,7 +193,7 @@ services:
         restart: "no"
 
     elm-rpg:
-        image: lupusmichaelis/alpine-elm-0.18
+        image: lupusmichaelis/alpine-elm
         restart: "no"
         volumes:
             - ${WORKSHOP_DIR}/elm-rpg:/home/anvil:rw
