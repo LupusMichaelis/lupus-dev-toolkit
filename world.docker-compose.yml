@@ -48,6 +48,12 @@ services:
 
         image: lupusmichaelis/alpine-lighttpd-secure
 
+    alpine-lighttpd-proxy:
+        build:
+            context: ./build/alpine-lighttpd-proxy
+
+        image: lupusmichaelis/alpine-lighttpd-proxy
+
     ############################################################################
     # Web design
     #
