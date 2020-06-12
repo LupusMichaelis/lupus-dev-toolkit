@@ -4,8 +4,11 @@ function init()
 {
 	sql_tmp=$(mktemp)
 
+    mysql_install_db \
+		--datadir "${MYSQL_DATA_PATH}"
+
 	echo "$@" \
-		--datadir "${MYSQL_DATA_PATH}" \
+		--datadir "${MYSQL_DATA_PATH}"
 
 	"$@" \
 		--datadir "${MYSQL_DATA_PATH}" \
@@ -21,19 +24,12 @@ function init()
 			echo "alter user 'root'@'%' identified by '$MYSQL_ROOT_PASSWORD';"
 		fi
 
-		if [ -d $INIT_DIR/schema ]
-		then
-			for schema in $(ls $INIT_DIR/schema/*.sql)
-			do
-				space=$(basename $schema .sql) # XXX Test not busybox
-				echo "create database if not exists \`$space\`;"
-				echo "use \`$space\`;"
-				cat $schema
-			done
-		fi
-
 		if [ -f $INIT_DIR/credentials ]
 		then
+			echo "-- credentials --"
+			echo "use \`mysql\`;"
+			echo
+
 			while IFS=';' read -r user host space table password
 			do
 				if [ "$table" != '*' ]
@@ -49,6 +45,20 @@ function init()
 			done < $INIT_DIR/credentials
 
 			echo 'flush privileges;'
+            echo
+		fi
+
+		if [ -d $INIT_DIR/schema ]
+		then
+			for schema in $(ls $INIT_DIR/schema/*.sql)
+			do
+				space=$(basename $schema .sql) # XXX Test not busybox
+				echo "-- $schema --"
+				echo "create database if not exists \`$space\`;"
+				echo "use \`$space\`;"
+				cat $schema
+			done
+            echo
 		fi
 	} | tee $sql_tmp | mysql -uroot
 
