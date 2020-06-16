@@ -1,0 +1,23 @@
+#!/bin/bash
+
+if [[ "deborphan:" == $(whereis -b deborphan) ]]; then
+        apt -y install deborphan
+fi
+
+apt update
+apt -y dist-upgrade
+apt -y autoremove --purge
+
+while [ true ]
+do
+    pkg=$(deborphan)
+
+    if [[ -z $pkg ]]
+    then
+        break
+    fi
+
+    dpkg --purge $pkg
+done
+
+apt-get clean
