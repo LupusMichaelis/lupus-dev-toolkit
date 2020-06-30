@@ -1,7 +1,6 @@
 ##############################################################################
 #
-# Image builder, requires a populated .env file in this very file's directory,
-# generated through ./gen-env.
+# Building images
 #
 ##############################################################################
 
@@ -19,10 +18,10 @@ services:
         image: lupusmichaelis/alpine
         build:
             context: ./build/alpine
-            args:
-                - UID=${UID?Please export UID}
-                - GID=${GID?Please export GID}
-                - USER_ALIAS=${USER_ALIAS?Please export}
+        environment:
+            - UID=${UID?Please export UID}
+            - GID=${GID?Please export GID}
+            - USER_ALIAS=${USER_ALIAS?Please export}
 
     ############################################################################
     # Web server
