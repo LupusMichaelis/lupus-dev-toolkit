@@ -46,9 +46,9 @@ lp-ep-get-next-in-sequence()
 
 lp-is-non-zero-power-of()
 {
-	local readonly power=$1
-	local readonly next=$2
-	local readonly size=${#next}
+	local -r power=$1
+	local -r next=$2
+	local -r size=${#next}
 
 	if [[ 1 -eq "$size" ]]
 	then
@@ -77,20 +77,20 @@ lp-is-non-zero-power-of()
 
 main()
 {
-	local readonly source=$1
+	local -r source=$1
 	shift
 
 	[[ -x "$source" ]] \
 		|| lp-die "Target should be an executable file"
 
-	local readonly next=$(lp-ep-get-next-in-sequence)
+	local -r next=$(lp-ep-get-next-in-sequence)
 
 	# Ensure that the entry files are well aligned, to have chronology through a natural
 	# sort
 	lp-is-non-zero-power-of 10 "$next" \
 		&& lp-ep-shift-files
 
-	local readonly target="$LUPUSMICHAELIS_DOCKER_ENTRIES_DIR/$next"_"$(basename "$source")"
+	local -r target="$LUPUSMICHAELIS_DOCKER_ENTRIES_DIR/$next"_"$(basename "$source")"
 	mv "$source" "$target"
 }
 
