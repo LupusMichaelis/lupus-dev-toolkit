@@ -1,5 +1,18 @@
 #!/usr/bin/env bash
 
+lp-assert-environement-is-set()
+{
+	local -r name="$1"
+
+	[ -z "${name}" ] \
+		&& lp-die "Anonymous environment variable"
+
+	[ -z "${!name}" ] \
+		&& lp-die "Environment '$name' is not set"
+
+	echo -n
+}
+
 lp-die()
 {
 	local -r msg="Die: '$1'"
