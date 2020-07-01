@@ -11,14 +11,15 @@ lp-init()
 {
 	# XXX Check UID USER_ALIAS
 
-	adduser \
-		-u ${UID} \
-		-g "" \
-		-D \
-		-h /home \
-		${USER_ALIAS}
+	id "${USER_ALIAS}" 2>&1 1>&/dev/null \
+		|| adduser \
+			-u "$UID" \
+			-g "" \
+			-D \
+			-h /home \
+			"${USER_ALIAS}"
 
-	mkdir -p ${ANVIL}
+	mkdir -p "${ANVIL}"
 
 	echo \
 		'export PS1="\w $ "'\
