@@ -9,9 +9,9 @@ set -e
 
 lp-init()
 {
-	lp-assert-environement-is-set 'ANVIL'
-	lp-assert-environement-is-set 'UID'
-	lp-assert-environement-is-set 'USER_ALIAS'
+	lp-assert-environement-is-set ANVIL
+	lp-assert-environement-is-set UID
+	lp-assert-environement-is-set USER_ALIAS
 
 	id "${USER_ALIAS}" 2>&1 1>&/dev/null \
 		|| adduser \
