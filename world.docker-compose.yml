@@ -4,24 +4,27 @@
 #
 ##############################################################################
 
-version: '3'
+version: '3.4'
 
 volumes:
     db:
         driver: local
+
+x-dev-env: &dev-env
+    environment:
+        - UID=${UID?Please export UID}
+        - GID=${GID?Please export GID}
+        - USER_ALIAS=${USER_ALIAS?Please export}
 
 services:
     ############################################################################
     # OSes
     #
     alpine:
+        <<: *dev-env
         image: lupusmichaelis/alpine
         build:
             context: ./build/alpine
-        environment:
-            - UID=${UID?Please export UID}
-            - GID=${GID?Please export GID}
-            - USER_ALIAS=${USER_ALIAS?Please export}
 
     ############################################################################
     # Web server
@@ -36,6 +39,7 @@ services:
             - ./conf/apache2/vhosts.conf:/etc/apache2/conf.d/vhosts.conf:ro
 
     alpine-lighttpd:
+        <<: *dev-env
         build:
             context: ./build/alpine-lighttpd
         depends_on:
@@ -45,6 +49,7 @@ services:
         image: lupusmichaelis/alpine-lighttpd
 
     alpine-lighttpd-secure:
+        <<: *dev-env
         build:
             context: ./build/alpine-lighttpd-secure
         depends_on:
@@ -54,6 +59,7 @@ services:
         image: lupusmichaelis/alpine-lighttpd-secure
 
     alpine-lighttpd-proxy:
+        <<: *dev-env
         build:
             context: ./build/alpine-lighttpd-proxy
         depends_on:
@@ -79,28 +85,26 @@ services:
     # PHP
     #
     alpine-php7:
+        <<: *dev-env
         image: lupusmichaelis/alpine-php7
         build:
             context: ./build/alpine-php7
-            args:
-                UID: ${UID?Please export}
-                USER_ALIAS: ${USER_ALIAS?Please export}
 
     alpine-php7-fpm:
-        image: lupusmichaelis/alpine-php7-fpm
+        <<: *dev-env
         build:
             context: ./build/alpine-php7-fpm
-            args:
-                UID: ${UID?Please export}
-                USER_ALIAS: ${USER_ALIAS?Please export}
+        depends_on:
+            - alpine-php7
+        image: lupusmichaelis/alpine-php7-fpm
 
     alpine-php7-composer-dev:
-        image: lupusmichaelis/alpine-php7-composer-dev
+        <<: *dev-env
         build:
             context: ./build/alpine-php7-dev
-            args:
-                UID: ${UID?Please export}
-                USER_ALIAS: ${USER_ALIAS?Please export}
+        depends_on:
+            - alpine-php7
+        image: lupusmichaelis/alpine-php7-composer-dev
 
     ############################################################################
     # MX
