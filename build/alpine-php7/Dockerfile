@@ -20,10 +20,4 @@ RUN apk add --no-cache \
     php7-xml \
     php7-xmlwriter
 
-ARG USER_ALIAS
-ARG UID
-
-### Configure workspace ########################################################
-USER ${USER_ALIAS}
-
 CMD ["php"]

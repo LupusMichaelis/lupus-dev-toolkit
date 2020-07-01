@@ -88,9 +88,9 @@ services:
     #
     alpine-php7:
         <<: *dev-env
-        image: lupusmichaelis/alpine-php7
         build:
             context: ./build/alpine-php7
+        image: lupusmichaelis/alpine-php7
 
     alpine-php7-fpm:
         <<: *dev-env
