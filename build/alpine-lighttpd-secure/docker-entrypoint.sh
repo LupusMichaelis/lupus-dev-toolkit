@@ -19,5 +19,3 @@ chmod 400 \
     /etc/lighttpd/server.key \
     /etc/lighttpd/server.crt \
     /etc/lighttpd/server.pem
-
-exec "$@"

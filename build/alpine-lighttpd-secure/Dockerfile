@@ -14,7 +14,7 @@ RUN sed -i \
     -e '/server\.modules = (/a     "mod_openssl",' \
     /etc/lighttpd/lighttpd.conf
 
-COPY docker-entrypoint.sh /usr/local/bin/
-ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
+COPY docker-entrypoint.sh /tmp/alpine-lighttpd-secure.sh
+RUN lupusmichaelis-install-entrypoint.sh /tmp/alpine-lighttpd-secure.sh
 
 CMD ["lighttpd", "-D", "-f", "/etc/lighttpd/lighttpd.conf"]
