@@ -64,8 +64,10 @@ services:
             context: ./build/alpine-lighttpd-proxy
         depends_on:
             - alpine-lighttpd
+            - alpine-php7-fpm
         environment:
             - USER_ALIAS=root
+            - BACKEND=alpine-php7-fpm
         image: lupusmichaelis/alpine-lighttpd-proxy
 
     ############################################################################
