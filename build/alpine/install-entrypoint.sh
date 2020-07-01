@@ -13,7 +13,6 @@
 lp-ep-get-all()
 {
 	find "$LUPUSMICHAELIS_DOCKER_ENTRIES_DIR" \
-		-regextype sed \
 		-regex '.*/[0-9]\+_.*' \
 		-exec basename '{}' \; \
 		"$@"
