@@ -2,9 +2,6 @@ FROM lupusmichaelis/alpine-php7
 
 LABEL description="Alpine Linux with PHP7 FPM"
 
-ARG UID
-ARG USER_ALIAS
-
 ### Add PHP packages ###########################################################
 
 USER root
@@ -21,15 +18,12 @@ RUN sed \
     -e '/;access\.log = /c access.log = \/var\/log\/php7\/www.access.log'\
     -i /etc/php7/php-fpm.d/www.conf
 RUN sed \
-    -e '/include_path =/s/"\(.*\)"/"\1:\/home\/anvil"/' \
+    -e '#include_path =#s#"\(.*\)"#"\1:'"$ANVIL"'"#' \
     -e 's/;log_level = notice/log_level = debug/' \
     -e '/cgi\.fix_pathinfo/s/^;//' \
     -i /etc/php7/php.ini
-RUN chown $UID /var/log/php7/
 
-### Configure workspace ########################################################
+COPY docker-entrypoint.sh /tmp/alpine-php7-fpm.sh
+RUN lupusmichaelis-install-entrypoint.sh /tmp/alpine-php7-fpm.sh
 
-USER ${USER_ALIAS}
-RUN mkdir -p /home/anvil/public
-
-ENTRYPOINT /usr/sbin/php-fpm7 --nodaemonize
+CMD ["/usr/sbin/php-fpm7", "--nodaemonize"]
