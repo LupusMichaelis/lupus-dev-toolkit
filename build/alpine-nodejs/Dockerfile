@@ -11,16 +11,11 @@ RUN apk update \
         nodejs \
         npm
 
-ARG USER_ALIAS
-ARG UID
+RUN npm config -g set package-lock false
+RUN npm config -g set optional false
 
-USER ${USER_ALIAS}
+ENV PATH "$ANVIL/node_modules/.bin:$PATH"
 
-RUN npm config set package-lock false
-
-ENV PATH "/home/anvil/node_modules/.bin:$PATH"
-
-### Configure workspace ########################################################
-USER ${USER_ALIAS}
-
-CMD ["npm", "start"]
+COPY docker-entrypoint.sh /tmp/alpine-nodejs.sh
+RUN lupusmichaelis-install-entrypoint.sh /tmp/alpine-nodejs.sh
+CMD ["npm", "run"]

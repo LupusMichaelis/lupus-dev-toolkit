@@ -166,10 +166,14 @@ services:
 
     ############################################################################
     # Node's wonderland
-    node:
+    alpine-nodejs:
+        <<: *dev-env
         image: lupusmichaelis/alpine-nodejs
         build:
             context: ./build/alpine-nodejs
+        depends_on:
+            - alpine
+
             args:
                 UID: ${UID?Please export}
                 USER_ALIAS: ${USER_ALIAS?Please export}
