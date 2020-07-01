@@ -38,7 +38,8 @@ services:
     alpine-lighttpd:
         build:
             context: ./build/alpine-lighttpd
-        image: lupusmichaelis/alpine-lighttpd
+        depends_on:
+            - alpine
         environment:
             - USER_ALIAS=root
         image: lupusmichaelis/alpine-lighttpd
@@ -46,6 +47,8 @@ services:
     alpine-lighttpd-secure:
         build:
             context: ./build/alpine-lighttpd-secure
+        depends_on:
+            - alpine-lighttpd
         environment:
             - USER_ALIAS=root
         image: lupusmichaelis/alpine-lighttpd-secure
@@ -53,6 +56,8 @@ services:
     alpine-lighttpd-proxy:
         build:
             context: ./build/alpine-lighttpd-proxy
+        depends_on:
+            - alpine-lighttpd
         environment:
             - USER_ALIAS=root
         image: lupusmichaelis/alpine-lighttpd-proxy
