@@ -1,15 +1,7 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-create-react-app . --use-npm
+create-react-app . \
+	--use-npm
 
-npm install \
-    @types/react \
-    @types/react-dom \
-    --save-dev
-
-npm install \
+npm i -g \
     react-router-dom
-
-npm install \
-    @types/react-router-dom \
-    --save-dev

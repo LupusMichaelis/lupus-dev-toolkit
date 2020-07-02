@@ -174,9 +174,13 @@ services:
         depends_on:
             - alpine
 
-            args:
-                UID: ${UID?Please export}
-                USER_ALIAS: ${USER_ALIAS?Please export}
+    alpine-react:
+        <<: *dev-env
+        build:
+            context: ./build/alpine-react
+        depends_on:
+            - alpine-nodejs
+        image: lupusmichaelis/alpine-react
 
     debian-buster-node:
         image: lupusmichaelis/debian-buster-node

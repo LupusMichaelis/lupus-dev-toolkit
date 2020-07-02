@@ -6,13 +6,9 @@ LABEL description="Alpine Linux with user and React on NodeJS"
 
 USER root
 
+COPY setup "${LUPUSMICHAELIS_DIR}/setup-react"
+
 RUN npm install -g \
     create-react-app
 
-ARG USER_ALIAS
-ARG UID
-
-### Configure workspace ########################################################
-USER ${USER_ALIAS}
-
-CMD ["npm", "run"]
+CMD ["npm", "start"]
