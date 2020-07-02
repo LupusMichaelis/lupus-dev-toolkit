@@ -182,6 +182,14 @@ services:
             - alpine-nodejs
         image: lupusmichaelis/alpine-react
 
+    alpine-react-ts:
+        <<: *dev-env
+        build:
+            context: ./build/alpine-react-ts
+        depends_on:
+            - alpine-react
+        image: lupusmichaelis/alpine-react-ts
+
     debian-buster-node:
         image: lupusmichaelis/debian-buster-node
         build:

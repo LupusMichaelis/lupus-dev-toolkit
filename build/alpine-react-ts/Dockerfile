@@ -7,18 +7,17 @@ LABEL description="Alpine Linux with user and React on NodeJS using TypeScript"
 USER root
 
 RUN npm install -g \
-    ts-loader \
     eslint \
     eslint-config-prettier \
     eslint-plugin-react \
-    @typescript-eslint/parser \
+    ts-loader \
+    typescript \
     @typescript-eslint/eslint-plugin \
-    typescript
+    @typescript-eslint/parser \
+    @types/react \
+    @types/react-dom \
+    @types/react-router-dom
 
-ARG USER_ALIAS
-ARG UID
+COPY setup "${LUPUSMICHAELIS_DIR}/setup-react-ts"
 
-### Configure workspace ########################################################
-USER ${USER_ALIAS}
-
-CMD ["npm", "run"]
+CMD ["npm", "start"]

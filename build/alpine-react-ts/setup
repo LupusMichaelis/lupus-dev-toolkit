@@ -1,9 +1,5 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-create-react-app . --use-npm --typescript
-
-npm install -g \
-    ts-loader \
-    eslint \
-    eslint-plugin-react \
-    typescript
+create-react-app . \
+	--use-npm \
+	--template typescript
