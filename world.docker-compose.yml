@@ -190,13 +190,17 @@ services:
             - alpine-react
         image: lupusmichaelis/alpine-react-ts
 
+    debian-buster:
+        <<: *dev-env
+        build:
+            context: ./build/debian-buster
+        image: lupusmichaelis/debian-buster
+
     debian-buster-node:
-        image: lupusmichaelis/debian-buster-node
+        <<: *dev-env
         build:
             context: ./build/debian-buster-node
-            args:
-                UID: ${UID?Please export}
-                USER_ALIAS: ${USER_ALIAS?Please export}
+        image: lupusmichaelis/debian-buster-node
 
     elm:
         image: lupusmichaelis/alpine-elm
