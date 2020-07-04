@@ -15,6 +15,7 @@ x-dev-env: &dev-env
         - UID=${UID?Please export UID}
         - GID=${GID?Please export GID}
         - USER_ALIAS=${USER_ALIAS?Please export}
+    restart: "no"
 
 services:
     ############################################################################
@@ -30,9 +31,9 @@ services:
     #
     alpine:
         <<: *dev-env
-        image: lupusmichaelis/alpine
         build:
             context: ./build/alpine
+        image: lupusmichaelis/alpine
 
     ############################################################################
     # Web server
