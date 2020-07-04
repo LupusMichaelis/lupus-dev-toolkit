@@ -17,7 +17,8 @@ RUN apt install \
 
 ENV PATH "${ANVIL}/node_modules/.bin:$PATH"
 
-COPY docker-entrypoint.sh /usr/local/bin/
+COPY docker-entrypoint.sh /tmp/debian-buster-node.sh
+RUN lupusmichaelis-install-entrypoint.sh /tmp/debian-buster-node.sh
 COPY ./package.json-dist ${ANVIL}
 
 RUN npm config -g set package-lock false
