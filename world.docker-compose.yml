@@ -18,6 +18,14 @@ x-dev-env: &dev-env
 
 services:
     ############################################################################
+    # Scripts to manage docker images
+    #
+    igor:
+        image: lupusmichaelis/igor
+        build:
+            context: ./build/igor
+
+    ############################################################################
     # OSes
     #
     alpine:

@@ -1,3 +1,5 @@
+FROM lupusmichaelis/igor AS igor
+
 FROM alpine:3.12.0 AS gosu-builder
 RUN apk update \
         && apk upgrade --no-cache \
@@ -34,7 +36,7 @@ RUN mkdir -p ${LUPUSMICHAELIS_DIR}
 ENV LUPUSMICHAELIS_DOCKER_ENTRIES_DIR ${LUPUSMICHAELIS_DIR}/docker-entries
 RUN mkdir -p ${LUPUSMICHAELIS_DOCKER_ENTRIES_DIR}
 
-COPY library.sh \
+COPY --from=igor library.sh \
     install-entrypoint.sh \
     docker-entrypoint.sh \
     ${LUPUSMICHAELIS_DIR}/

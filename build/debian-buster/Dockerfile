@@ -1,3 +1,5 @@
+FROM lupusmichaelis/igor AS igor
+
 FROM debian:buster AS debian-buster
 
 RUN sed -i 's/main/main non-free contrib/g' /etc/apt/sources.list
@@ -54,7 +56,7 @@ RUN mkdir -p ${LUPUSMICHAELIS_DIR}
 ENV LUPUSMICHAELIS_DOCKER_ENTRIES_DIR ${LUPUSMICHAELIS_DIR}/docker-entries
 RUN mkdir -p ${LUPUSMICHAELIS_DOCKER_ENTRIES_DIR}
 
-COPY library.sh \
+COPY --from=igor library.sh \
     install-entrypoint.sh \
     docker-entrypoint.sh \
     ${LUPUSMICHAELIS_DIR}/
