@@ -13,10 +13,4 @@ RUN apk update \
         libc6-compat
 
 ### Configure user #############################################################
-
-ARG USER_ALIAS
-ARG UID
-
-USER ${USER_ALIAS}
-
 ENV PATH "/home/anvil/node_modules/.bin:$PATH"
