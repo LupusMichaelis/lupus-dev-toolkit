@@ -6,8 +6,7 @@ USER 0
 
 # libtinfo5 : elm dependency
 # cmdtest provides a command yarn that is not the yarn we know in the NodeJS realm
-RUN apt update \
-    && apt install \
+RUN apt install \
         -y \
 		bash \
 		libtinfo5 \
@@ -20,6 +19,11 @@ ENV PATH "${ANVIL}/node_modules/.bin:$PATH"
 
 COPY docker-entrypoint.sh /usr/local/bin/
 COPY ./package.json-dist ${ANVIL}
+
+RUN npm config -g set package-lock false
+RUN npm config -g set optional false
+RUN npm config -g set ssl-strict=false
+RUN npm config -g set registry http://registry.npmjs.org/
 
 ### Configure user #############################################################
 CMD ["npm", "start"]

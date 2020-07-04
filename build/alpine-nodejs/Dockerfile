@@ -13,6 +13,8 @@ RUN apk update \
 
 RUN npm config -g set package-lock false
 RUN npm config -g set optional false
+RUN npm config -g set ssl-strict=false
+RUN npm config -g set registry http://registry.npmjs.org/
 
 ENV PATH "$ANVIL/node_modules/.bin:$PATH"
 
