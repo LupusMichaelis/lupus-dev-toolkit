@@ -208,6 +208,8 @@ services:
         <<: *dev-env
         build:
             context: ./build/debian-buster-node
+        depends_on:
+            - debian-buster
         image: lupusmichaelis/debian-buster-node
 
     elm:
