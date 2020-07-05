@@ -174,8 +174,7 @@ services:
         environment:
             - 'MYSQL_ROOT_PASSWORD=yolo'
         volumes:
-            - /data/maria-db:/var/lib/mysql:rw # XXX
-            - /var/run/mysqld/docker-mysqld.sock:/var/run/mysqld/mysqld.sock:rw
+            - /data/maria-db:/var/lib/mysql:rw
 
         healthcheck:
             test: ['CMD', 'mysqladmin' ,'ping', '-uroot', '-pyolo', '-hlocalhost']
