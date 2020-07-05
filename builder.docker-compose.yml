@@ -120,6 +120,12 @@ services:
         image: lupusmichaelis/alpine-postfix-mutt
 
     ############################################################################
+    # Skeleton for Go app
+    go-lang:
+       build:
+           context: ./build/alpine-golang
+
+    ############################################################################
     # Databases
     alpine-mariadb:
         build: ./build/alpine-mariadb
