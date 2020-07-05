@@ -120,19 +120,21 @@ services:
     ############################################################################
     # MX
     #
-    alpine-postfix: # XXX
-        image: lupusmichaelis/alpine-postfix
+    alpine-postfix:
         build:
             context: ./build/alpine-postfix
-            args:
-                USER_ALIAS: ${USER_ALIAS?Please export}
+        environment:
+            - USER_ALIAS=kevin
+            - UID=${UID?Please export UID}
+        image: lupusmichaelis/alpine-postfix
 
-    alpine-postfix-mutt: # XXX
-        image: lupusmichaelis/alpine-postfix-mutt
+    alpine-postfix-mutt:
         build:
             context: ./build/alpine-postfix-mutt
-            args:
-                USER_ALIAS: ${USER_ALIAS?Please export}
+        environment:
+            - USER_ALIAS=kevin
+            - UID=${UID?Please export UID}
+        image: lupusmichaelis/alpine-postfix-mutt
 
     ############################################################################
     # FTP server

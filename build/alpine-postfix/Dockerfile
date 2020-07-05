@@ -5,13 +5,11 @@ LABEL description="Alpine Linux with Postfix MTA and Mutt MUA"
 ### Configure system ###########################################################
 
 USER root
-RUN apk update \
-        && apk upgrade --no-cache \
-        && apk add --no-cache \
-            postfix \
-            postfix-pcre \
-            rsyslog \
-        && echo Apk done
+RUN apk add --no-cache \
+        postfix \
+        postfix-pcre \
+        rsyslog \
+    && echo Apk done
 
 RUN sed -i \
     -e 's/#\(inet_interfaces = all\)/\1/' \
@@ -25,23 +23,11 @@ RUN sed -i \
 RUN echo "virtual_maps = hash:/etc/postfix/virtual, regexp:/etc/postfix/virtual-regexp" \
     >> /etc/postfix/main.cf
 
-ENTRYPOINT ["docker-entrypoint.sh"]
-COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
-
-ARG USER_ALIAS
+COPY docker-entrypoint.sh /tmp/alpine-postfix.sh
+RUN lupusmichaelis-install-entrypoint.sh /tmp/alpine-postfix.sh
 
 COPY ./aliases /etc/aliases
-RUN echo '/.+@.+/ '${USER_ALIAS} \
-    > /etc/postfix/virtual-regexp
-RUN touch /etc/postfix/virtual
 COPY ./postfix-aliases /etc/postfix/aliases
-
-RUN postmap \
-    /etc/postfix/aliases \
-    /etc/postfix/virtual \
-    /etc/postfix/virtual-regexp
-
-COPY ./aliases /etc/aliases
 
 COPY ./rsyslog.conf /etc/rsyslog.conf
 
