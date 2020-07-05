@@ -109,13 +109,13 @@ services:
             - alpine-php7
         image: lupusmichaelis/alpine-php7-fpm
 
-    alpine-php7-composer-dev:
+    alpine-php7-composer:
         <<: *dev-env
         build:
-            context: ./build/alpine-php7-dev
+            context: ./build/alpine-php7-composer
         depends_on:
             - alpine-php7
-        image: lupusmichaelis/alpine-php7-composer-dev
+        image: lupusmichaelis/alpine-php7-composer
 
     ############################################################################
     # MX
