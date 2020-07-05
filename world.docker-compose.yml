@@ -6,10 +6,6 @@
 
 version: '3.4'
 
-volumes:
-    db:
-        driver: local
-
 x-dev-env: &dev-env
     environment:
         - UID=${UID?Please export UID}
@@ -19,41 +15,7 @@ x-dev-env: &dev-env
 
 services:
     ############################################################################
-    # Web design
-    #
-    bulma-sandbox:
-        <<: *dev-env
-        build:
-            context: ./build/alpine-lighttpd
-        image: lupusmichaelis/bulma-sandbox
-        ports:
-            - 80
-        volumes:
-            - ${WORKSHOP_DIR}/bulma-sandbox/public_html:/var/www/localhost/htdocs:rw
-
-    ############################################################################
     # Skeleton for Go app
-    #go-lang:
-    #   build:
-    #       context: ./build/alpine-golang
-
-    ############################################################################
-    # Node's wonderland
-    elm-sandbox:
-        image: lupusmichaelis/alpine-elm
-
-        volumes:
-            - ${WORKSHOP_DIR?Please export WORKSHOP_DIR}/elm-sandbox:/home/anvil:rw
-
-    elm-conway:
-        <<: *dev-env
-        build:
-            context: ${WORKSHOP_DIR?Please export WORKSHOP_DIR}/elm-conway
-        depends_on:
-            - alpine-elm
-        image: lupusmichaelis/conway-game-of-life
-
-    elm-rpg:
-        image: lupusmichaelis/alpine-elm
-        volumes:
-            - ${WORKSHOP_DIR}/elm-rpg:/home/anvil:rw
+    go-lang:
+       build:
+           context: ./build/alpine-golang
