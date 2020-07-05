@@ -19,12 +19,12 @@ ENV PATH "${ANVIL}/node_modules/.bin:$PATH"
 
 COPY docker-entrypoint.sh /tmp/debian-buster-node.sh
 RUN lupusmichaelis-install-entrypoint.sh /tmp/debian-buster-node.sh
-COPY ./package.json-dist ${ANVIL}
+COPY ./package.json-dist "${LUPUSMICHAELIS_DIR}/node.package.json-dist"
 
-RUN npm config -g set package-lock false
-RUN npm config -g set optional false
-RUN npm config -g set ssl-strict=false
-RUN npm config -g set registry http://registry.npmjs.org/
+RUN npm c -g set package-lock false \
+    && npm c -g set optional false \
+    && npm c -g set ssl-strict=false \
+    && npm c -g set registry http://registry.npmjs.org/
 
 ### Configure user #############################################################
 CMD ["npm", "start"]

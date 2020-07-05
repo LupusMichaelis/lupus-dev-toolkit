@@ -1,5 +1,7 @@
+### Reference igor script container ############################################
 FROM lupusmichaelis/igor AS igor
 
+### Comman base to actual image and gosu builder environment ###################
 FROM debian:buster AS debian-buster
 
 RUN sed -i 's/main/main non-free contrib/g' /etc/apt/sources.list
@@ -26,6 +28,7 @@ RUN apt install \
 
 RUN go get github.com/tianon/gosu
 
+### Actual image ###############################################################
 FROM debian-buster
 
 USER 0
@@ -38,8 +41,6 @@ COPY --from=gosu-builder /root/go/bin/gosu /go/bin/
 RUN sed -i 's/main/main non-free contrib/g' /etc/apt/sources.list
 COPY ./etc/apt/apt.conf.d/ /etc/apt/apt.conf.d/
 RUN apt update \
-    && apt dist-upgrade \
-        -y \
     && apt install \
         -y \
         bash \
@@ -51,15 +52,15 @@ RUN rmdir /home
 ENV ANVIL /home/anvil
 
 ENV LUPUSMICHAELIS_DIR /usr/local/lib/lupusmichaelis
-RUN mkdir -p ${LUPUSMICHAELIS_DIR}
+RUN mkdir -p "${LUPUSMICHAELIS_DIR}"
 
 ENV LUPUSMICHAELIS_DOCKER_ENTRIES_DIR ${LUPUSMICHAELIS_DIR}/docker-entries
-RUN mkdir -p ${LUPUSMICHAELIS_DOCKER_ENTRIES_DIR}
+RUN mkdir -p "${LUPUSMICHAELIS_DOCKER_ENTRIES_DIR}"
 
 COPY --from=igor library.sh \
     install-entrypoint.sh \
     docker-entrypoint.sh \
-    ${LUPUSMICHAELIS_DIR}/
+    "${LUPUSMICHAELIS_DIR}/"
 
 RUN ln -s \
     ${LUPUSMICHAELIS_DIR}/install-entrypoint.sh \
