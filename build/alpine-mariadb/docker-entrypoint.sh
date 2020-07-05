@@ -5,7 +5,9 @@ function init()
 	sql_tmp=$(mktemp)
 
     mysql_install_db \
-		--datadir "${MYSQL_DATA_PATH}"
+		--skip-test-db \
+		--user="${MYSQL_SYSUSER}" \
+		--datadir="${MYSQL_DATA_PATH}"
 
 	echo "$@" \
 		--datadir "${MYSQL_DATA_PATH}"

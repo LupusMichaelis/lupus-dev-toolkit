@@ -154,10 +154,18 @@ services:
 
     ############################################################################
     # Databases
-    maria-db:
+    alpine-mariadb:
         build: ./build/alpine-mariadb
+        environment:
+            - 'MYSQL_ROOT_PASSWORD=yolo'
         image: lupusmichaelis/alpine-mariadb
         restart: "no"
+
+        healthcheck:
+            test: ['CMD', 'mysqladmin' ,'ping', '-uroot', '-pyolo', '-hlocalhost']
+            interval: 10s
+            timeout: 20s
+            retries: 10
 
     my-db:
         image: mysql:5.7
