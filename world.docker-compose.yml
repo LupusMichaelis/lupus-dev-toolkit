@@ -38,9 +38,9 @@ services:
     ############################################################################
     # Web server
     #
-    web-deb-jessie-ap2-php56:
+    debian-jessie-apache2-php56:
         build: ./build/debian-jessie-apache2-php56
-        image: lupusmichaelis/web-jessie-php56
+        image: lupusmichaelis/debian-jessie-apache2-php56
         ports:
             - 80:80
         restart: "no"
