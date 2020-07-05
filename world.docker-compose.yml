@@ -19,210 +19,41 @@ x-dev-env: &dev-env
 
 services:
     ############################################################################
-    # Scripts to manage docker images
-    #
-    igor:
-        image: lupusmichaelis/igor
-        build:
-            context: ./build/igor
-
-    ############################################################################
-    # OSes
-    #
-    alpine:
-        <<: *dev-env
-        build:
-            context: ./build/alpine
-        image: lupusmichaelis/alpine
-
-    ############################################################################
-    # Web server
-    #
-    debian-jessie-apache2-php56:
-        build: ./build/debian-jessie-apache2-php56
-        image: lupusmichaelis/debian-jessie-apache2-php56
-        ports:
-            - 80:80
-        restart: "no"
-        volumes:
-            - ./conf/apache2/vhosts.conf:/etc/apache2/conf.d/vhosts.conf:ro
-
-    alpine-lighttpd:
-        <<: *dev-env
-        build:
-            context: ./build/alpine-lighttpd
-        depends_on:
-            - alpine
-        environment:
-            - USER_ALIAS=root
-        image: lupusmichaelis/alpine-lighttpd
-
-    alpine-lighttpd-secure:
-        <<: *dev-env
-        build:
-            context: ./build/alpine-lighttpd-secure
-        depends_on:
-            - alpine-lighttpd
-        environment:
-            - USER_ALIAS=root
-        image: lupusmichaelis/alpine-lighttpd-secure
-
-    alpine-lighttpd-proxy:
-        <<: *dev-env
-        build:
-            context: ./build/alpine-lighttpd-proxy
-        depends_on:
-            - alpine-lighttpd
-            - alpine-php7-fpm
-        environment:
-            - USER_ALIAS=root
-            - BACKEND=alpine-php7-fpm
-        image: lupusmichaelis/alpine-lighttpd-proxy
-
-    ############################################################################
     # Web design
     #
     bulma-sandbox:
+        <<: *dev-env
         build:
             context: ./build/alpine-lighttpd
         image: lupusmichaelis/bulma-sandbox
         ports:
             - 80
-        restart: "no"
         volumes:
             - ${WORKSHOP_DIR}/bulma-sandbox/public_html:/var/www/localhost/htdocs:rw
 
     ############################################################################
-    # PHP
-    #
-    alpine-php7:
-        <<: *dev-env
-        build:
-            context: ./build/alpine-php7
-        image: lupusmichaelis/alpine-php7
-
-    alpine-php7-fpm:
-        <<: *dev-env
-        build:
-            context: ./build/alpine-php7-fpm
-        depends_on:
-            - alpine-php7
-        image: lupusmichaelis/alpine-php7-fpm
-
-    alpine-php7-composer:
-        <<: *dev-env
-        build:
-            context: ./build/alpine-php7-composer
-        depends_on:
-            - alpine-php7
-        image: lupusmichaelis/alpine-php7-composer
-
-    ############################################################################
-    # MX
-    #
-    alpine-postfix:
-        build:
-            context: ./build/alpine-postfix
-        environment:
-            - USER_ALIAS=kevin
-            - UID=${UID?Please export UID}
-        image: lupusmichaelis/alpine-postfix
-
-    alpine-postfix-mutt:
-        build:
-            context: ./build/alpine-postfix-mutt
-        environment:
-            - USER_ALIAS=kevin
-            - UID=${UID?Please export UID}
-        image: lupusmichaelis/alpine-postfix-mutt
-
-    ############################################################################
     # Skeleton for Go app
-    go-lang:
-        build:
-            context: ./build/alpine-golang
-
-    ############################################################################
-    # Databases
-    alpine-mariadb:
-        build: ./build/alpine-mariadb
-        environment:
-            - 'MYSQL_ROOT_PASSWORD=yolo'
-        image: lupusmichaelis/alpine-mariadb
-        restart: "no"
-
-        healthcheck:
-            test: ['CMD', 'mysqladmin' ,'ping', '-uroot', '-pyolo', '-hlocalhost']
-            interval: 10s
-            timeout: 20s
-            retries: 10
+    #go-lang:
+    #   build:
+    #       context: ./build/alpine-golang
 
     ############################################################################
     # Node's wonderland
-    alpine-nodejs:
-        <<: *dev-env
-        image: lupusmichaelis/alpine-nodejs
-        build:
-            context: ./build/alpine-nodejs
-        depends_on:
-            - alpine
-
-    alpine-react:
-        <<: *dev-env
-        build:
-            context: ./build/alpine-react
-        depends_on:
-            - alpine-nodejs
-        image: lupusmichaelis/alpine-react
-
-    alpine-react-ts:
-        <<: *dev-env
-        build:
-            context: ./build/alpine-react-ts
-        depends_on:
-            - alpine-react
-        image: lupusmichaelis/alpine-react-ts
-
-    debian-buster:
-        <<: *dev-env
-        build:
-            context: ./build/debian-buster
-        image: lupusmichaelis/debian-buster
-
-    debian-buster-node:
-        <<: *dev-env
-        build:
-            context: ./build/debian-buster-node
-        depends_on:
-            - debian-buster
-        image: lupusmichaelis/debian-buster-node
-
-    elm:
-        image: lupusmichaelis/alpine-elm
-        build:
-            context: ./build/alpine-elm
-
     elm-sandbox:
         image: lupusmichaelis/alpine-elm
-        restart: "no"
 
         volumes:
             - ${WORKSHOP_DIR?Please export WORKSHOP_DIR}/elm-sandbox:/home/anvil:rw
 
     elm-conway:
-        image: lupusmichaelis/conway-game-of-life
+        <<: *dev-env
         build:
             context: ${WORKSHOP_DIR?Please export WORKSHOP_DIR}/elm-conway
-            args:
-                UID: ${UID?Please export}
-                GID: ${GID?Please export}
-                USER: ${USER_ALIAS:-elm}
-                HOME: /home/
-                ANVIL: /home/anvil
-        restart: "no"
+        depends_on:
+            - alpine-elm
+        image: lupusmichaelis/conway-game-of-life
 
     elm-rpg:
         image: lupusmichaelis/alpine-elm
-        restart: "no"
         volumes:
             - ${WORKSHOP_DIR}/elm-rpg:/home/anvil:rw
