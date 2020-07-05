@@ -51,7 +51,7 @@ lp-init()
 		> /home/.profile
 
 	mkdir -p /home/bin
-	chown -R dev /home
+	chown -R "${USER_ALIAS}" /home
 	export PATH="/home/bin:$PATH"
 
 	# Initialize child docker containers
