@@ -146,7 +146,7 @@ services:
         <<: *dev-env
         build:
             context: ./build/alpine-nodejs
-        image: lupusmichaelis/alpine-nodejs:1.0.0
+        image: lupusmichaelis/alpine-nodejs:1.0.1
         depends_on:
             - alpine
 
@@ -156,7 +156,7 @@ services:
             context: ./build/alpine-react
         depends_on:
             - alpine-nodejs
-        image: lupusmichaelis/alpine-react:1.0.0
+        image: lupusmichaelis/alpine-react:1.0.1
 
     alpine-react-ts:
         <<: *dev-env
@@ -164,7 +164,7 @@ services:
             context: ./build/alpine-react-ts
         depends_on:
             - alpine-react
-        image: lupusmichaelis/alpine-react-ts:1.0.0
+        image: lupusmichaelis/alpine-react-ts:1.0.1
 
     debian-buster:
         <<: *dev-env
@@ -178,10 +178,10 @@ services:
             context: ./build/debian-buster-node
         depends_on:
             - debian-buster
-        image: lupusmichaelis/debian-buster-node:1.0.0
+        image: lupusmichaelis/debian-buster-node:1.0.1
 
     alpine-elm:
         <<: *dev-env
         build:
             context: ./build/alpine-elm
-        image: lupusmichaelis/alpine-elm:1.0.0
+        image: lupusmichaelis/alpine-elm:1.0.1
