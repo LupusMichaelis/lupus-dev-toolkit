@@ -1,0 +1,22 @@
+##############################################################################
+#
+# Building images for publishing
+#
+##############################################################################
+
+version: '3.4'
+
+
+x-dev-env: &dev-env
+    environment:
+        - UID=${UID?Please export UID}
+        - GID=${GID?Please export GID}
+        - USER_ALIAS=${USER_ALIAS?Please export}
+    restart: "no"
+
+services:
+    elm-conway:
+        <<: *dev-env
+        build:
+            context: ${WORKSHOP_DIR?Please export WORKSHOP_DIR}/elm-conway
+        image: lupusmichaelis/conway-game-of-life:1.0.0
