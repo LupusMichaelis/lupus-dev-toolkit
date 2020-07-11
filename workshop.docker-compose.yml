@@ -39,9 +39,9 @@ services:
         <<: *dev-env
         build:
             context: ${WORKSHOP_DIR?Please export WORKSHOP_DIR}/elm-conway
-        depends_on:
-            - alpine-elm
         image: lupusmichaelis/conway-game-of-life
+        volumes:
+            - ${WORKSHOP_DIR?Please export WORKSHOP_DIR}/elm-conway:/home/anvil:rw
 
     elm-rpg:
         image: lupusmichaelis/alpine-elm
