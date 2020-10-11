@@ -2,9 +2,6 @@
 
 set -x
 
-docker-compose -f builder.docker-compose.yml build
-docker-compose -f builder.docker-compose.yml push
-
 docker-sign()
 {
 	local -r name="$1"
@@ -12,3 +9,14 @@ docker-sign()
 
 	docker trust sign "lupusmichaelis/$name:$version"
 }
+
+yq()
+{
+	docker run --rm -i -v "${PWD}":/workdir mikefarah/yq yq "$@"
+}
+
+docker-compose -f builder.docker-compose.yml build \
+    && cat builder.docker-compose.yml \
+        | yq r - services.*.image \
+        | xargs -n 1 docker trust sign \
+    && docker-compose -f builder.docker-compose.yml push
