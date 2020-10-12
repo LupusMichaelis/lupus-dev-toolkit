@@ -36,6 +36,11 @@ services:
         image: lupusmichaelis/debian-jessie:1.0.0
         restart: "no"
 
+    debian-jessie-php56:
+        build: ./build/debian-jessie-php56
+        image: lupusmichaelis/debian-jessie-php56:1.0.0
+        restart: "no"
+
     ############################################################################
     # Web server
     #
