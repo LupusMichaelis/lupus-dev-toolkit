@@ -65,7 +65,7 @@ main()
 {
 	lp-init
 
-	exec gosu $USER_ALIAS "$@"
+	exec gosu "$USER_ALIAS" "$@"
 }
 
 main "$@"
