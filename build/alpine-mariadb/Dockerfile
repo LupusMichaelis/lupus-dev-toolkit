@@ -1,4 +1,4 @@
-FROM lupusmichaelis/alpine
+FROM lupusmichaelis/alpine:1.0.0
 
 USER root
 RUN apk update \

@@ -1,4 +1,4 @@
-FROM lupusmichaelis/alpine-lighttpd
+FROM lupusmichaelis/alpine-lighttpd:1.0.0
 LABEL description="Alpine Linux with Lighttpd proxying FPM"
 
 COPY docker-entrypoint.sh /tmp/alpine-lighttpd-proxy.sh

@@ -1,5 +1,7 @@
-FROM lupusmichaelis/igor AS igor
+### Subsystem  igor ############################################################
+FROM lupusmichaelis/igor:1.0.0 AS igor
 
+### Subsystem to build gosu ####################################################
 FROM alpine:3.12.0 AS gosu-builder
 RUN apk update \
         && apk upgrade --no-cache \
@@ -11,14 +13,13 @@ RUN apk update \
         && echo Apk done
 RUN go get github.com/tianon/gosu
 
+### Actual System ##############################################################
 FROM alpine:3.12.0
-
 LABEL description="Alpine Linux with user"
 ENV PATH "${PATH}":/home/go/bin/
 COPY --from=gosu-builder /root/go/bin/gosu /home/go/bin/
 
 ### Configure system ###########################################################
-
 USER 0
 RUN apk update \
         && apk upgrade --no-cache \

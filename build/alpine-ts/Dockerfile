@@ -1,4 +1,4 @@
-FROM lupusmichaelis/alpine-nodejs
+FROM lupusmichaelis/alpine-nodejs:1.0.0
 
 LABEL description="Alpine Linux with user and TypeScript on NodeJS"
 

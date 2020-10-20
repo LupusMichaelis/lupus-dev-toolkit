@@ -1,4 +1,4 @@
-FROM lupusmichaelis/alpine-nodejs:latest
+FROM lupusmichaelis/alpine-nodejs:1.0.0
 
 LABEL description="Alpine Linux with Elm 0.19"
 

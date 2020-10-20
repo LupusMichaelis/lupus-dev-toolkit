@@ -1,5 +1,5 @@
 ### Reference igor script container ############################################
-FROM lupusmichaelis/igor AS igor
+FROM lupusmichaelis/igor:1.0.0 AS igor
 
 ### Comman base to actual image and gosu builder environment ###################
 FROM debian:buster AS debian-buster
