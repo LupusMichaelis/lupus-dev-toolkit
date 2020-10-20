@@ -44,7 +44,7 @@ services:
     #
     debian-jessie-apache2-php56:
         build: ./build/debian-jessie-apache2-php56
-        image: lupusmichaelis/debian-jessie-apache2-php56:1.0.0
+        image: lupusmichaelis/debian-jessie-apache2-php56:1.0.1
         ports:
             - 80:80
         restart: "no"
@@ -113,7 +113,7 @@ services:
         build: ./build/debian-jessie-php56
         depends_on:
             - debian-jessie
-        image: lupusmichaelis/debian-jessie-php56:1.0.0
+        image: lupusmichaelis/debian-jessie-php56:1.0.1
         restart: "no"
 
     ############################################################################

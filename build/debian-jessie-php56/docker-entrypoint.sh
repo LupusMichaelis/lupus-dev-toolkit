@@ -7,7 +7,7 @@ set -e
 
 init()
 {
-	composer-install.sh
+	/usr/local/bin/composer-install.sh
 }
 
 main()

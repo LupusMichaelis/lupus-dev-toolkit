@@ -11,13 +11,16 @@ RUN apt update \
         php5-imagick \
         php5-mcrypt \
         php5-mysql \
+        php5-xdebug \
         xmlstarlet \
         wget \
-    && apt-get autoclean
+    && apt-get autoclean \
+    && echo Apt done
 
 RUN php5enmod \
     mysqli \
-    pdo_mysql
+    pdo_mysql \
+    xdebug
 
 RUN sed -i \
     -e 's/\s*\(max_execution_time\)\s*=\s*.\+/\1 = 90/' \
@@ -32,14 +35,17 @@ RUN xmlstarlet ed -L \
     -i '$prev/..' -t attr -n pattern -v PDF \
     /etc/ImageMagick-6/policy.xml
 
-RUN mkdir /var/app/
+CMD [ "php" ]
+
+RUN mkdir -p /var/app/
 WORKDIR /var/app/
 VOLUME /var/app
 
-CMD [ "php" ]
+RUN mkdir -p /var/www/
+VOLUME /var/www
 
 COPY docker-entrypoint.sh /tmp/debian-jessie-php56.sh
 RUN lupusmichaelis-install-entrypoint.sh /tmp/debian-jessie-php56.sh
 
-COPY composer-install.sh /usr/bin/
-RUN composer-install.sh
+COPY composer-install.sh /usr/local/bin/
+#RUN /usr/local/bin/composer-install.sh
