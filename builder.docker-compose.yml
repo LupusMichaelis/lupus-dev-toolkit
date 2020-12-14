@@ -147,7 +147,7 @@ services:
         build: ./build/alpine-mariadb
         environment:
             - 'MYSQL_ROOT_PASSWORD=yolo'
-        image: lupusmichaelis/alpine-mariadb:1.0.0
+        image: lupusmichaelis/alpine-mariadb:1.0.1
         restart: "no"
 
         healthcheck:

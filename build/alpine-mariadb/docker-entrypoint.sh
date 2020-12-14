@@ -7,7 +7,8 @@ function init()
     mysql_install_db \
 		--skip-test-db \
 		--user="${MYSQL_SYSUSER}" \
-		--datadir="${MYSQL_DATA_PATH}"
+		--datadir="${MYSQL_DATA_PATH}" \
+		--auth-root-socket-user="${MYSQL_SYSUSER}"
 
 	echo "$@" \
 		--datadir "${MYSQL_DATA_PATH}"
@@ -23,7 +24,9 @@ function init()
 	{
 		if [ -n "$MYSQL_ROOT_PASSWORD" ]
 		then
-			echo "alter user 'root'@'%' identified by '$MYSQL_ROOT_PASSWORD';"
+			echo "alter user 'root'@'%' identified by '{$MYSQL_ROOT_PASSWORD}';"
+			echo "alter user '${MYSQL_SYSUSER}'@'%' identified by '${MYSQL_ROOT_PASSWORD}';"
+			echo "alter user '${USER_ALIAS}'@'%' identified by '${MYSQL_ROOT_PASSWORD}';"
 		fi
 
 		if [ -f $INIT_DIR/credentials ]
@@ -62,7 +65,7 @@ function init()
 			done
             echo
 		fi
-	} | tee $sql_tmp | mysql -uroot
+	} | tee $sql_tmp | mysql
 
 	test $? -ne 0 && echo "Error on data populating"
 
