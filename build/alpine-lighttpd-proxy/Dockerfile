@@ -1,4 +1,4 @@
-FROM lupusmichaelis/alpine-lighttpd:1.0.0
+FROM lupusmichaelis/alpine-lighttpd:1.0.1
 LABEL description="Alpine Linux with Lighttpd proxying FPM"
 
 COPY docker-entrypoint.sh /tmp/alpine-lighttpd-proxy.sh
@@ -10,5 +10,7 @@ RUN sed -i \
     /etc/lighttpd/lighttpd.conf
 
 COPY mod_fastcgi.conf /etc/lighttpd/
+
+ENV USER_ALIAS "lighttpd"
 
 CMD ["lighttpd", "-D", "-f", "/etc/lighttpd/lighttpd.conf"]

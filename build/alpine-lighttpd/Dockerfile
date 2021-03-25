@@ -11,11 +11,17 @@ RUN apk update \
             ca-certificates \
         && echo Apk done
 
+RUN mkdir -p /var/run/lighttpd
+RUN chown lighttpd:lighttpd /var/run/lighttpd
+
 RUN sed -i \
     -e '/^# server\.port          = 81/s/^.*$/server.port = 80/' \
     -e '/^# server\.bind          = 81/s/^.*$/server.bind = 0.0.0.0/' \
+    -e 's@/run/lighttpd.pid@/run/lighttpd/lighttpd.pid@' \
     /etc/lighttpd/lighttpd.conf
 
 WORKDIR "/var/www/localhost/htdocs"
+
+ENV USER_ALIAS "lighttpd"
 
 CMD ["lighttpd", "-D", "-f", "/etc/lighttpd/lighttpd.conf"]

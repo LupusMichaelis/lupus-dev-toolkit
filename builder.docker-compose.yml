@@ -59,7 +59,7 @@ services:
             - alpine
         environment:
             - USER_ALIAS=root
-        image: lupusmichaelis/alpine-lighttpd:1.0.0
+        image: lupusmichaelis/alpine-lighttpd:1.0.1
 
     alpine-lighttpd-secure:
         <<: *dev-env
@@ -79,9 +79,9 @@ services:
             - alpine-lighttpd
             - alpine-php7-fpm
         environment:
-            - USER_ALIAS=root
+            - USER_ALIAS=lighttpd
             - BACKEND=alpine-php7-fpm
-        image: lupusmichaelis/alpine-lighttpd-proxy:1.0.0
+        image: lupusmichaelis/alpine-lighttpd-proxy:1.0.1
 
     alpine-lighttpd-proxy-single:
         <<: *dev-env
@@ -91,9 +91,9 @@ services:
             - alpine-lighttpd-proxy
             - alpine-php7-fpm
         environment:
-            - USER_ALIAS=root
+            - USER_ALIAS=lighttpd
             - BACKEND=alpine-php7-fpm
-        image: lupusmichaelis/alpine-lighttpd-proxy-single:1.0.0
+        image: lupusmichaelis/alpine-lighttpd-proxy-single:1.0.1
 
     ############################################################################
     # PHP
