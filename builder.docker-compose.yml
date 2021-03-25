@@ -83,6 +83,18 @@ services:
             - BACKEND=alpine-php7-fpm
         image: lupusmichaelis/alpine-lighttpd-proxy:1.0.0
 
+    alpine-lighttpd-proxy-single:
+        <<: *dev-env
+        build:
+            context: ./build/alpine-lighttpd-proxy-single
+        depends_on:
+            - alpine-lighttpd-proxy
+            - alpine-php7-fpm
+        environment:
+            - USER_ALIAS=root
+            - BACKEND=alpine-php7-fpm
+        image: lupusmichaelis/alpine-lighttpd-proxy-single:1.0.0
+
     ############################################################################
     # PHP
     #
