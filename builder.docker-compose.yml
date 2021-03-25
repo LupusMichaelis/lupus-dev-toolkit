@@ -98,7 +98,7 @@ services:
             context: ./build/alpine-php7-fpm
         depends_on:
             - alpine-php7
-        image: lupusmichaelis/alpine-php7-fpm:1.0.0
+        image: lupusmichaelis/alpine-php7-fpm:1.0.1
 
     alpine-php7-composer:
         <<: *dev-env
