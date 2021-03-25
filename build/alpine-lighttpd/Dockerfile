@@ -3,9 +3,13 @@ LABEL description="Alpine Linux with Lighttpd"
 
 USER 0
 
-RUN apk add --no-cache \
-    lighttpd \
-    ca-certificates
+RUN apk update \
+        && apk upgrade --no-cache \
+        && apk add --no-cache \
+            bash \
+            lighttpd \
+            ca-certificates \
+        && echo Apk done
 
 RUN sed -i \
     -e '/^# server\.port          = 81/s/^.*$/server.port = 80/' \
