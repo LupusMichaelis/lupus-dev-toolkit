@@ -11,6 +11,10 @@ RUN sed -i \
 
 COPY mod_fastcgi.conf /etc/lighttpd/
 
+# Lighttpd needs this file to exist to consider it as an actual candidate for directory
+# index
+RUN touch "index.php"
+
 ENV USER_ALIAS "lighttpd"
 
 CMD ["lighttpd", "-D", "-f", "/etc/lighttpd/lighttpd.conf"]
