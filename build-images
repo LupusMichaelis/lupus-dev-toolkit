@@ -12,11 +12,11 @@ docker-sign()
 
 yq()
 {
-	docker run --rm -i -v "${PWD}":/workdir mikefarah/yq yq "$@"
+	docker run --rm -i -v "${PWD}":/workdir mikefarah/yq "$@"
 }
 
 docker-compose -f builder.docker-compose.yml build \
     && cat builder.docker-compose.yml \
-        | yq r - services.*.image \
+        | yq e '.services.*.image' - \
         | xargs -n 1 docker trust sign \
     && docker-compose -f builder.docker-compose.yml push
