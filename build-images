@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-set -x
+[[ -z "$DEBUG" ]] \
+	|| set -x
 
 docker-sign()
 {
