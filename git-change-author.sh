@@ -1,11 +1,15 @@
 #!/bin/sh
 # https://help.github.com/en/articles/changing-author-info
 
+authorname="$1":
+fromemail="$2";
+toemail="$3";
+
 git filter-branch --env-filter '
 
-OLD_EMAIL="mickael@example.com"
-CORRECT_NAME="Mickaël Wolff"
-CORRECT_EMAIL="m@lupusmic.org"
+OLD_EMAIL="'"$fromemail"'"
+CORRECT_NAME="'"$authorname"'"
+CORRECT_EMAIL="'"$toemail"'"
 
 if [ "$GIT_COMMITTER_EMAIL" = "$OLD_EMAIL" ]
 then
