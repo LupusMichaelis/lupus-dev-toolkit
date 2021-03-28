@@ -49,3 +49,15 @@ services:
         image: lupusmichaelis/alpine-elm
         volumes:
             - ${WORKSHOP_DIR}/elm-rpg:/home/anvil:rw
+
+    web-rtc:
+        <<: *dev-env
+        image: lupusmichaelis/alpine-nodejs:1.0.1
+        ports:
+            - "3000:3000"
+        command:
+            - npm
+            - run
+            - dev
+        volumes:
+            - ${WORKSHOP_DIR}/web-rtc:/home/anvil:rw
