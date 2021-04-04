@@ -1,5 +1,11 @@
 #!/bin/bash
 
+if [ -f ./.env ]
+then
+	echo File .env already exists.
+	exit 1
+fi
+
 # Set those variables to your liking, they'll be used by Docker Compose to know where to
 # look and how set set up your machines
 
