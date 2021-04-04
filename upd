@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [[ "deborphan:" == $(whereis -b deborphan) ]]; then
-        apt -y install deborphan
+	apt -y install deborphan
 fi
 
 apt update
@@ -12,12 +12,12 @@ while [ true ]
 do
     pkg=$(deborphan)
 
-    if [[ -z $pkg ]]
+    if [ -z "$pkg" ]
     then
         break
     fi
 
-    dpkg --purge $pkg
+    dpkg --purge "$pkg"
 done
 
-apt-get clean
+apt-get -y clean
