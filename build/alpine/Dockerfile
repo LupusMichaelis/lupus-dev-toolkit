@@ -15,7 +15,7 @@ RUN go get github.com/tianon/gosu
 
 ### Actual System ##############################################################
 FROM alpine:3.12.0
-LABEL description="Alpine Linux with user"
+LABEL description="Alpine Linux with gosu and igor helpers"
 ENV PATH "${PATH}":/home/go/bin/
 COPY --from=gosu-builder /root/go/bin/gosu /home/go/bin/
 
@@ -37,7 +37,8 @@ RUN mkdir -p ${LUPUSMICHAELIS_DIR}
 ENV LUPUSMICHAELIS_DOCKER_ENTRIES_DIR ${LUPUSMICHAELIS_DIR}/docker-entries
 RUN mkdir -p ${LUPUSMICHAELIS_DOCKER_ENTRIES_DIR}
 
-COPY --from=igor library.sh \
+COPY --from=igor \
+    library.sh \
     install-entrypoint.sh \
     docker-entrypoint.sh \
     ${LUPUSMICHAELIS_DIR}/

@@ -4,7 +4,7 @@ set -e
 
 . "$LUPUSMICHAELIS_DIR/library.sh"
 
-[[ ! -z "$DEBUG" ]] \
+[ -v DEBUG ] \
 	&& set -x
 
 lp-distribution-get()
@@ -16,6 +16,24 @@ lp-distribution-get()
 lp-init()
 {
 	lp-assert-environement-is-set ANVIL
+
+	[ -v USER_ALIAS ] && lp-set-dev-user
+
+	mkdir -p "${ANVIL}"
+	cd "${ANVIL}"
+
+	mkdir -p /home/bin
+	export PATH="/home/bin:$PATH"
+
+	# Initialize child docker containers
+	for init in $(find "$LUPUSMICHAELIS_DOCKER_ENTRIES_DIR" -mindepth 1 -executable)
+	do
+		$init
+	done
+}
+
+lp-set-dev-user()
+{
 	lp-assert-environement-is-set UID
 	lp-assert-environement-is-set USER_ALIAS
 
@@ -43,29 +61,23 @@ lp-init()
 		;;
 	esac
 
-	mkdir -p "${ANVIL}"
-	cd "${ANVIL}"
-
 	echo \
 		'export PS1="\w $ "'\
 		> /home/.profile
 
-	mkdir -p /home/bin
 	chown -R "${USER_ALIAS}" /home
-	export PATH="/home/bin:$PATH"
-
-	# Initialize child docker containers
-	for init in $(find "$LUPUSMICHAELIS_DOCKER_ENTRIES_DIR" -mindepth 1 -executable)
-	do
-		$init
-	done
 }
 
 main()
 {
 	lp-init
 
-	exec gosu "$USER_ALIAS" "$@"
+	if [ -v USER_ALIAS ]
+	then
+		exec gosu "$USER_ALIAS" "$@"
+	else
+		exec "$@"
+	fi
 }
 
 main "$@"

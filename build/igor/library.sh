@@ -7,7 +7,7 @@ lp-assert-environement-is-set()
 	[ -z "${name}" ] \
 		&& lp-die "Anonymous environment variable"
 
-	[ -z "${!name}" ] \
+	[ ! -v $name ] \
 		&& lp-die "Environment '$name' is not set"
 
 	echo -n

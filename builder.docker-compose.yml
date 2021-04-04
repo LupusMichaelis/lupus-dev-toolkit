@@ -28,15 +28,20 @@ services:
     # OSes
     #
     alpine:
-        <<: *dev-env
         build:
             context: ./build/alpine
-        image: lupusmichaelis/alpine:1.0.0
+        image: lupusmichaelis/alpine:1.0.1
+
+    alpine-dev:
+        <<: *dev-env
+        build:
+            context: ./build/alpine-dev
+        image: lupusmichaelis/alpine-dev:1.0.0
 
     debian-jessie:
         <<: *dev-env
         build: ./build/debian-jessie
-        image: lupusmichaelis/debian-jessie:1.0.0
+        image: lupusmichaelis/debian-jessie:1.0.1
         restart: "no"
 
     ############################################################################
