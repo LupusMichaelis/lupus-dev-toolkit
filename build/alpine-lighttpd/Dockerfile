@@ -1,4 +1,4 @@
-FROM lupusmichaelis/alpine:1.0.0
+FROM lupusmichaelis/alpine:1.0.1
 LABEL description="Alpine Linux with Lighttpd"
 
 USER 0
@@ -20,8 +20,8 @@ RUN sed -i \
     -e 's@/run/lighttpd.pid@/run/lighttpd/lighttpd.pid@' \
     /etc/lighttpd/lighttpd.conf
 
-WORKDIR "/var/www/localhost/htdocs"
+COPY library.sh ${LUPUSMICHAELIS_DIR}/lp-lighttpd.sh
 
-ENV USER_ALIAS "lighttpd"
+WORKDIR "/var/www/localhost/htdocs"
 
 CMD ["lighttpd", "-D", "-f", "/etc/lighttpd/lighttpd.conf"]

@@ -1,11 +1,12 @@
-FROM lupusmichaelis/alpine-lighttpd:1.0.0
+FROM lupusmichaelis/alpine-lighttpd:1.0.2
 LABEL description="Alpine Linux with Lighttpd over SSL"
 
 USER 0
 
 RUN apk add \
     --no-cache \
-    openssl
+    openssl \
+    && echo Apk done
 
 RUN sed -i \
     -e '/^server\.port = 80/s/^.*$/server.port = 443/' \
@@ -16,5 +17,3 @@ RUN sed -i \
 
 COPY docker-entrypoint.sh /tmp/alpine-lighttpd-secure.sh
 RUN lupusmichaelis-install-entrypoint.sh /tmp/alpine-lighttpd-secure.sh
-
-CMD ["lighttpd", "-D", "-f", "/etc/lighttpd/lighttpd.conf"]
