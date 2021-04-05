@@ -29,6 +29,10 @@ lp-init()
 	for init in $(find "$LUPUSMICHAELIS_DOCKER_ENTRIES_DIR" -mindepth 1 -executable)
 	do
 		$init
+		if [ ! "$?" ]
+		then
+			lp-die "Docker entrypoint '$ini' failed"
+		fi
 	done
 }
 
