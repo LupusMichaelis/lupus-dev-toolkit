@@ -89,6 +89,16 @@ services:
             - alpine
         image: lupusmichaelis/alpine-lighttpd-front:1.0.2
 
+    alpine-lighttpd-proxy-single:
+        build:
+            context: ./build/alpine-lighttpd
+            args:
+                LIGHTTPD_PROXY: enable
+                LIGHTTPD_REWRITE: all
+        depends_on:
+            - alpine
+        image: lupusmichaelis/alpine-lighttpd-proxy-single:1.0.2
+
     ############################################################################
     # PHP
     #
