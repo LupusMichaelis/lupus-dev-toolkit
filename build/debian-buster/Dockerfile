@@ -18,7 +18,10 @@ RUN apt update \
 ### Build gosu #################################################################
 FROM debian-buster AS gosu-builder
 
-RUN apt install \
+RUN apt update \
+    && apt dist-upgrade \
+        -y \
+    && apt install \
         -y \
         gcc \
         git \
