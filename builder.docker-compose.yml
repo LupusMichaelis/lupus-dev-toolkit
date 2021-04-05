@@ -79,15 +79,15 @@ services:
             - alpine
         image: lupusmichaelis/alpine-lighttpd-proxy:1.0.2
 
-    alpine-lighttpd-proxy-single:
+    alpine-lighttpd-front:
         build:
-            context: ./build/alpine-lighttpd-proxy-single
+            context: ./build/alpine-lighttpd
+            args:
+                LIGHTTPD_PROXY: enable
+                LIGHTTPD_REWRITE: not-found
         depends_on:
-            - alpine-lighttpd
-        environment:
-            - USER_ALIAS=lighttpd
-            - BACKEND=alpine-php7-fpm
-        image: lupusmichaelis/alpine-lighttpd-proxy-single:1.0.1
+            - alpine
+        image: lupusmichaelis/alpine-lighttpd-front:1.0.2
 
     ############################################################################
     # PHP
