@@ -60,10 +60,10 @@ ENV LIGHTTPD_REWRITE=${LIGHTTPD_REWRITE}
 ARG LIGHTTPD_TARGET=/index.php
 ENV LIGHTTPD_TARGET=${LIGHTTPD_TARGET}
 RUN case "${LIGHTTPD_REWRITE}" in \
-        all) \
+        always) \
             echo 'url.rewrite-once = ( "^.*$" => "'"$LIGHTTPD_TARGET"'" )' \
             ;; \
-        not-found) \
+        when-not-found) \
             echo 'url.rewrite-if-not-file = ( "^/.*$" => "'"$LIGHTTPD_TARGET"'" )' \
             ;; \
         esac > /etc/lighttpd/mod_rewrite.conf; \
