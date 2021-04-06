@@ -117,23 +117,29 @@ services:
         <<: *dev-env
         build:
             context: ./build/alpine-php7
-        image: lupusmichaelis/alpine-php7:1.0.0
+        depends_on:
+            - alpine-dev
+        image: lupusmichaelis/alpine-php7:1.0.2
 
     alpine-php7-fpm:
         <<: *dev-env
         build:
-            context: ./build/alpine-php7-fpm
+            context: ./build/alpine-php7
+            args:
+                PHP_FPM: enable
         depends_on:
-            - alpine-php7
-        image: lupusmichaelis/alpine-php7-fpm:1.0.1
+            - alpine-dev
+        image: lupusmichaelis/alpine-php7-fpm:1.0.2
 
     alpine-php7-composer:
         <<: *dev-env
         build:
-            context: ./build/alpine-php7-composer
+            context: ./build/alpine-php7
+            args:
+                PHP_COMPOSER: enable
         depends_on:
-            - alpine-php7
-        image: lupusmichaelis/alpine-php7-composer:1.0.0
+            - alpine-dev
+        image: lupusmichaelis/alpine-php7-composer:1.0.2
 
     debian-jessie-php56:
         <<: *dev-env
