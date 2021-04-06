@@ -23,7 +23,7 @@ RUN sed -i \
 COPY docker-entrypoint.sh /tmp/alpine-lighttpd-proxy.sh
 RUN lupusmichaelis-install-entrypoint.sh /tmp/alpine-lighttpd-proxy.sh
 
-COPY mod_fastcgi.conf /etc/lighttpd/
+COPY mod_fastcgi.conf debug.conf /etc/lighttpd/
 
 WORKDIR "/var/www/localhost/htdocs"
 

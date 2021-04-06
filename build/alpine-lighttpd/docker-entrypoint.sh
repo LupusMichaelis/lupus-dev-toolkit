@@ -31,6 +31,11 @@ main()
             ;;
         esac > /etc/lighttpd/mod_rewrite.conf
 	fi
+
+	if [ -v DEBUG ]
+	then
+		echo 'include "debug.conf"' >> /etc/lighttpd/lighttpd.conf
+	fi
 }
 
 main "$@"
