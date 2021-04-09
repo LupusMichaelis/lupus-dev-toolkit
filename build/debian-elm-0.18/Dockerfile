@@ -1,4 +1,4 @@
-FROM lupusmichaelis/debian-buster-node:1.0.0
+FROM lupusmichaelis/debian-buster-node:1.0.1
 
 LABEL description="Debian Buster GNU/Linux with Elm"
 
@@ -16,15 +16,15 @@ RUN apt update \
 	&& apt-get clean
 
 ### Configure user #############################################################
-ARG USER_ALIAS
-ARG UID
+ARG LP_DEV_USER_ALIAS
+ARG LP_DEV_UID
 
 RUN rmdir /home
-RUN adduser --uid ${UID} \
+RUN adduser --uid ${LP_DEV_UID} \
 	--gecos "" \
 	--disabled-password \
 	--home /home \
-	${USER_ALIAS}
+	${LP_DEV_USER_ALIAS}
 
 RUN echo \
 	'export PS1="\w $ "'\
@@ -34,7 +34,7 @@ RUN mkdir /home/bin
 ENV PATH "/home/bin:$PATH"
 
 ### Configure workspace ########################################################
-USER ${USER_ALIAS}
+USER ${LP_DEV_USER_ALIAS}
 
 RUN mkdir /home/anvil
 VOLUME ["/home/anvil"]

@@ -10,12 +10,12 @@ set -e
 main()
 {
 	lp-assert-environement-is-set ANVIL
-	lp-assert-environement-is-set UID
-	lp-assert-environement-is-set USER_ALIAS
+	lp-assert-environement-is-set LP_DEV_UID
+	lp-assert-environement-is-set LP_DEV_USER_ALIAS
 
 	mkdir -p "$ANVIL/public"
 	mkdir -p /var/log/php7
-	chown "$UID" \
+	chown "$LP_DEV_UID" \
 		/var/log/php7 \
 		"$ANVIL/public"
 

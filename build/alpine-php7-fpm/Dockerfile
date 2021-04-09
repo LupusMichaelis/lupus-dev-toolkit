@@ -1,4 +1,4 @@
-FROM lupusmichaelis/alpine-php7:1.0.0
+FROM lupusmichaelis/alpine-php7:1.0.3
 
 LABEL description="Alpine Linux with PHP7 FPM"
 

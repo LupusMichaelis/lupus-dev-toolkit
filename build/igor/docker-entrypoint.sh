@@ -17,7 +17,7 @@ lp-init()
 {
 	lp-assert-environement-is-set ANVIL
 
-	[ -v USER_ALIAS ] && lp-set-dev-user
+	[ -v LP_DEV_USER_ALIAS ] && lp-set-dev-user
 
 	mkdir -p "${ANVIL}"
 	cd "${ANVIL}"
@@ -38,27 +38,27 @@ lp-init()
 
 lp-set-dev-user()
 {
-	lp-assert-environement-is-set UID
-	lp-assert-environement-is-set USER_ALIAS
+	lp-assert-environement-is-set LP_DEV_UID
+	lp-assert-environement-is-set LP_DEV_USER_ALIAS
 
 	case "$(lp-distribution-get)" in
 		debian)
-			id "${USER_ALIAS}" 2>&1 1>&/dev/null \
+			id "${LP_DEV_USER_ALIAS}" 2>&1 1>&/dev/null \
 				|| adduser \
-					--uid "${UID}" \
+					--uid "${LP_DEV_UID}" \
 					--gecos '""' \
 					--disabled-password \
 					--home /home \
-					"${USER_ALIAS}"
+					"${LP_DEV_USER_ALIAS}"
 		;;
 		alpine)
-			id "${USER_ALIAS}" 2>&1 1>&/dev/null \
+			id "${LP_DEV_USER_ALIAS}" 2>&1 1>&/dev/null \
 				|| adduser \
-					-u "$UID" \
+					-u "$LP_DEV_UID" \
 					-g "" \
 					-D \
 					-h /home \
-					"${USER_ALIAS}"
+					"${LP_DEV_USER_ALIAS}"
 		;;
 		*)
 			lp-die "Unsupported distribution '$OS'"
@@ -69,16 +69,16 @@ lp-set-dev-user()
 		'export PS1="\w $ "'\
 		> /home/.profile
 
-	chown -R "${USER_ALIAS}" /home
+	chown -R "${LP_DEV_USER_ALIAS}" /home
 }
 
 main()
 {
 	lp-init
 
-	if [ -v USER_ALIAS ]
+	if [ -v LP_DEV_USER_ALIAS ]
 	then
-		exec gosu "$USER_ALIAS" "$@"
+		exec gosu "$LP_DEV_USER_ALIAS" "$@"
 	else
 		exec "$@"
 	fi

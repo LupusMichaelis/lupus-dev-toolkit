@@ -9,9 +9,9 @@ version: '3.4'
 
 x-dev-env: &dev-env
     environment:
-        - UID=${UID?Please export UID}
-        - GID=${GID?Please export GID}
-        - USER_ALIAS=${USER_ALIAS?Please export}
+        - LP_DEV_UID=${LP_DEV_UID?Please export LP_DEV_UID}
+        - LP_DEV_GID=${LP_DEV_GID?Please export LP_DEV_GID}
+        - LP_DEV_USER_ALIAS=${LP_DEV_USER_ALIAS?Please export}
     restart: "no"
 
 services:

@@ -10,9 +10,9 @@ fi
 # look and how set set up your machines
 
 {
-    echo GID=$(id -g)
+    echo LP_DEV_GID=$(id -g)
+    echo LP_DEV_UID=$UID
+    echo LP_DEV_USER_ALIAS=dev
     echo REPOSITORY_DIR=$HOME/repositories
-    echo UID=$UID
-    echo USER_ALIAS=dev
     echo WORKSHOP_DIR=$HOME/workshop
 } > .env

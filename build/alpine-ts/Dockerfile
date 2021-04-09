@@ -1,4 +1,4 @@
-FROM lupusmichaelis/alpine-nodejs:1.0.0
+FROM lupusmichaelis/alpine-nodejs:1.0.1
 
 LABEL description="Alpine Linux with user and TypeScript on NodeJS"
 
@@ -10,10 +10,10 @@ RUN npm install -g \
     tslint \
     typescript
 
-ARG USER_ALIAS
-ARG UID
+ARG LP_DEV_USER_ALIAS
+ARG LP_DEV_UID
 
 ### Configure workspace ########################################################
-USER ${USER_ALIAS}
+USER ${LP_DEV_USER_ALIAS}
 
 CMD ["npm", "start"]
