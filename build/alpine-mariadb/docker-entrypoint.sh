@@ -1,5 +1,8 @@
 #!/bin/bash
 
+[ -v DEBUG ] \
+	&& set -x
+
 function init()
 {
 	sql_tmp=$(mktemp)
@@ -24,9 +27,9 @@ function init()
 	{
 		if [ -n "$MYSQL_ROOT_PASSWORD" ]
 		then
-			echo "alter user 'root'@'%' identified by '{$MYSQL_ROOT_PASSWORD}';"
-			echo "alter user '${MYSQL_SYSUSER}'@'%' identified by '${MYSQL_ROOT_PASSWORD}';"
-			echo "alter user '${USER_ALIAS}'@'%' identified by '${MYSQL_ROOT_PASSWORD}';"
+			echo "create user 'root'@'%' identified by '{$MYSQL_ROOT_PASSWORD}';"
+			echo "create user '${MYSQL_SYSUSER}'@'%' identified by '${MYSQL_ROOT_PASSWORD}';"
+			echo "create user '${USER_ALIAS}'@'%' identified by '${MYSQL_ROOT_PASSWORD}';"
 		fi
 
 		if [ -f $INIT_DIR/credentials ]
