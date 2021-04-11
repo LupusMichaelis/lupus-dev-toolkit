@@ -61,14 +61,14 @@ services:
             context: ./build/alpine-lighttpd
         depends_on:
             - alpine
-        image: lupusmichaelis/alpine-lighttpd:1.0.2
+        image: lupusmichaelis/alpine-lighttpd:1.0.3
 
     alpine-lighttpd-secure:
         build:
             context: ./build/alpine-lighttpd
             args:
                 LIGHTTPD_SECURE: enable
-        image: lupusmichaelis/alpine-lighttpd-secure:1.0.1
+        image: lupusmichaelis/alpine-lighttpd-secure:1.0.2
 
     alpine-lighttpd-proxy:
         build:
@@ -77,7 +77,7 @@ services:
                 LIGHTTPD_PROXY: enable
         depends_on:
             - alpine
-        image: lupusmichaelis/alpine-lighttpd-proxy:1.0.2
+        image: lupusmichaelis/alpine-lighttpd-proxy:1.0.3
 
     alpine-lighttpd-secure-front:
         build:
@@ -88,7 +88,7 @@ services:
                 LIGHTTPD_REWRITE: when-not-found
         depends_on:
             - alpine
-        image: lupusmichaelis/alpine-lighttpd-secure-front:1.0.2
+        image: lupusmichaelis/alpine-lighttpd-secure-front:1.0.3
 
     alpine-lighttpd-front:
         build:
@@ -98,7 +98,7 @@ services:
                 LIGHTTPD_REWRITE: when-not-found
         depends_on:
             - alpine
-        image: lupusmichaelis/alpine-lighttpd-front:1.0.2
+        image: lupusmichaelis/alpine-lighttpd-front:1.0.3
 
     alpine-lighttpd-proxy-single:
         build:
@@ -108,7 +108,7 @@ services:
                 LIGHTTPD_REWRITE: always
         depends_on:
             - alpine
-        image: lupusmichaelis/alpine-lighttpd-proxy-single:1.0.2
+        image: lupusmichaelis/alpine-lighttpd-proxy-single:1.0.3
 
     ############################################################################
     # PHP

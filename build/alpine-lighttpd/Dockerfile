@@ -72,4 +72,7 @@ RUN case "${LIGHTTPD_REWRITE}" in \
         /etc/lighttpd/lighttpd.conf; \
     echo 'include "mod_rewrite.conf"' >> /etc/lighttpd/lighttpd.conf;
 
+COPY security-header.conf /etc/lighttpd/security-header.conf
+RUN echo 'include "security-header.conf"' >> /etc/lighttpd/lighttpd.conf;
+
 CMD ["lighttpd", "-D", "-f", "/etc/lighttpd/lighttpd.conf"]
