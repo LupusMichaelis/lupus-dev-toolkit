@@ -14,3 +14,4 @@ RUN apk update \
 
 ### Configure user #############################################################
 ENV PATH "/home/anvil/node_modules/.bin:$PATH"
+CMD ["npm", "run", "start"]
