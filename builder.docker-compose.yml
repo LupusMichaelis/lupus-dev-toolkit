@@ -52,6 +52,11 @@ services:
     ############################################################################
     # Web server
     #
+    alpine-proxy:
+        build:
+            context: ./build/alpine-proxy
+        image: lupusmichaelis/alpine-proxy:1.0.0
+
     debian-jessie-apache2-php56:
         build: ./build/debian-jessie-apache2-php56
         image: lupusmichaelis/debian-jessie-apache2-php56:1.0.1
