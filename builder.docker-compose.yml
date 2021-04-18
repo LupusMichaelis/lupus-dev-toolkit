@@ -42,7 +42,12 @@ services:
         <<: *dev-env
         build: ./build/debian-jessie
         image: lupusmichaelis/debian-jessie:1.0.1
-        restart: "no"
+
+    debian-buster:
+        <<: *dev-env
+        build:
+            context: ./build/debian-buster
+        image: lupusmichaelis/debian-buster:1.0.1
 
     ############################################################################
     # Web server
@@ -52,7 +57,6 @@ services:
         image: lupusmichaelis/debian-jessie-apache2-php56:1.0.1
         ports:
             - 80:80
-        restart: "no"
         volumes:
             - ./conf/apache2/vhosts.conf:/etc/apache2/conf.d/vhosts.conf:ro
 
@@ -147,7 +151,6 @@ services:
         depends_on:
             - debian-jessie
         image: lupusmichaelis/debian-jessie-php56:1.0.2
-        restart: "no"
 
     ############################################################################
     # MX
@@ -208,12 +211,6 @@ services:
         depends_on:
             - alpine-react
         image: lupusmichaelis/alpine-react-ts:1.0.2
-
-    debian-buster:
-        <<: *dev-env
-        build:
-            context: ./build/debian-buster
-        image: lupusmichaelis/debian-buster:1.0.1
 
     debian-buster-node:
         <<: *dev-env
