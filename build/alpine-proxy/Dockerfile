@@ -1,4 +1,4 @@
-FROM lupusmichaelis/alpine:1.0.0
+FROM lupusmichaelis/alpine:1.0.1
 LABEL description="Alpine Linux with HTTP Proxy"
 
 USER 0
@@ -6,6 +6,4 @@ USER 0
 RUN apk add --no-cache \
     squid
 
-ARG USER_ALIAS
-USER ${USER_ALIAS}
 CMD ["squid"]

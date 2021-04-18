@@ -17,8 +17,8 @@ ENV GOBIN /home/.local/go-path/bin
 ENV GOPATH /home/.local/go-path
 #ENV GOROOT /home/.local/go-lang-root
 
-ARG USER_ALIAS
-USER ${USER_ALIAS}
+ARG LP_DEV_USER_ALIAS
+USER ${LP_DEV_USER_ALIAS}
 
 RUN mkdir -p \
     ${GOBIN} \

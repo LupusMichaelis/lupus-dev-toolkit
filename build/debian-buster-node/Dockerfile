@@ -1,4 +1,4 @@
-FROM lupusmichaelis/debian-buster:1.0.0
+FROM lupusmichaelis/debian-buster:1.0.1
 
 LABEL description="Debian Buster Linux with Node"
 

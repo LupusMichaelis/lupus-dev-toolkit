@@ -7,4 +7,4 @@ cp \
 
 mkdir -p /home/Mail{,dir/{cur,new,tmp}}
 
-chown -R "${USER_ALIAS}" /home
+chown -R "${LP_DEV_USER_ALIAS}" /home

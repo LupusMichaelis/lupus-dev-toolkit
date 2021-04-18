@@ -1,6 +1,6 @@
 #!/bin/sh
 
-echo '/.+@.+/ '${USER_ALIAS} \
+echo '/.+@.+/ '${LP_DEV_USER_ALIAS} \
 	> /etc/postfix/virtual-regexp
 touch /etc/postfix/virtual
 postmap \

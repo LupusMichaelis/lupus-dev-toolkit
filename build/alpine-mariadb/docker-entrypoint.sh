@@ -29,7 +29,7 @@ function init()
 		then
 			echo "create user 'root'@'%' identified by '{$MYSQL_ROOT_PASSWORD}';"
 			echo "create user '${MYSQL_SYSUSER}'@'%' identified by '${MYSQL_ROOT_PASSWORD}';"
-			echo "create user '${USER_ALIAS}'@'%' identified by '${MYSQL_ROOT_PASSWORD}';"
+			echo "create user '${LP_DEV_USER_ALIAS}'@'%' identified by '${MYSQL_ROOT_PASSWORD}';"
 		fi
 
 		if [ -f $INIT_DIR/credentials ]

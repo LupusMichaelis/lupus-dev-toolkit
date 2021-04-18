@@ -1,4 +1,4 @@
-FROM lupusmichaelis/alpine-dev:1.0.1
+FROM lupusmichaelis/alpine-dev:1.0.2
 
 LABEL description="Alpine Linux with PHP7"
 
