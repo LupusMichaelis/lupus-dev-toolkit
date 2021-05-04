@@ -17,12 +17,11 @@ main()
 	mkdir -p /var/log/php7
 	chown "$LP_DEV_UID" \
 		/var/log/php7 \
-		"$ANVIL/public"
 
 	if [ 'enable' = "$PHP_FPM" ]
 	then
 		exec /usr/sbin/php-fpm7 --nodaemonize
-	elif [ 'enable' = "$PHP_COMPOSER" ]
+	elif [[ 'enable' = "$PHP_COMPOSER" && 'composer' -ne "$1" ]]
 	then
 		exec composer "$@"
 	else
