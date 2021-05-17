@@ -27,9 +27,6 @@ COPY mod_fastcgi.conf debug.conf /etc/lighttpd/
 
 WORKDIR "/var/www/localhost/htdocs"
 
-# Lighttpd needs this file to exist to consider it as an actual candidate for directory
-# index
-RUN touch "index.php"
 
 COPY library.sh ${LUPUSMICHAELIS_DIR}/lp-lighttpd.sh
 
@@ -41,7 +38,9 @@ RUN if [ "${LIGHTTPD_PROXY}" = 'enable' ]; \
             -e '/include "mod_fastcgi.conf"/s/#//' \
             -e 's#\#.*mod_alias.*,.*#    "mod_alias",#g' \
             /etc/lighttpd/lighttpd.conf; \
-    fi
+        echo -n "<?php #Lighttpd needs this file to exist to consider it as an index candidate" \
+        > "index.php"; \
+    fi;
 
 ARG LIGHTTPD_SECURE=disable
 ENV LIGHTTPD_SECURE=${LIGHTTPD_SECURE}
