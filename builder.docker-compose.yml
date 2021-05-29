@@ -185,7 +185,7 @@ services:
         environment:
             - 'MYSQL_ROOT_PASSWORD=yolo'
             - 'MYSQL_DATA_PATH=/var/lib/mysql'
-        image: lupusmichaelis/alpine-mariadb:1.0.3
+        image: lupusmichaelis/alpine-mariadb:1.0.4
         restart: "no"
 
         healthcheck:
