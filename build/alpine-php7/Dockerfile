@@ -4,6 +4,7 @@ LABEL description="Alpine Linux with PHP7"
 
 ### Add PHP packages ##########################################################
 
+CMD ["php"]
 USER root
 
 ARG PHP_MODULES="dom iconv json mbstring openssl tokenizer phar session xml xmlwriter"
@@ -26,9 +27,8 @@ RUN if [ 'enable' = "$PHP_FPM" ]; \
             -e '/^;chdir =/s/.*/chdir = \/home\/anvil\/public/' \
             -e 's/127.0.0.1:9000/9000/' \
             -e '/allowed_clients/d' \
-            -e '/error_log/d' \
             -e '/;catch_workers_output = /s/^;//' \
-            -e '/;access\.log = /c access.log = \/var\/log\/php7\/www.access.log'\
+            -e '/;access\.log\s\+=/s/.*/access.log = \/proc\/1\/fd\/1/'\
             -i /etc/php7/php-fpm.d/www.conf; \
         sed \
             -e '#include_path =#s#"\(.*\)"#"\1:'"$ANVIL"'"#' \
@@ -56,9 +56,12 @@ RUN if [ 'enable' = "$PHP_XDEBUG" ]; \
             -e 's/\(max_input_vars\)\s*=\s*\d+/\1=10000/' \
             -e 's/\(memory_limit\)\s*=\s*.*\(;\?\)/\1=1G\2/' \
             -e 's/\(error_reporting\)\s=\s.*\(;\?\)/\1=E_ALL\2/' \
-            -e 's/\(log_errors\)\s*=\s*.*\(;\?\)/\1=On\2/' \
             -e 's/\(display_errors\)\s*=\s*.*\(;\?\)/\1=Off\2/' \
                 /etc/php7/php.ini; \
     fi
 
-CMD ["php"]
+RUN sed \
+    -e 's/\(log_errors\)\s*=\s*.*\(;\?\)/\1=On\2/' \
+    -e '/;error_log\s\+=/s/^.*$/error_log=\/proc\/1\/fd\/2/' \
+    -i /etc/php7/php-fpm.conf \
+    -i /etc/php7/php.ini
