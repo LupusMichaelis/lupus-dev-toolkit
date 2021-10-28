@@ -64,7 +64,7 @@ function init()
 
 				cat <<- SQL
 				create user if not exists '${user}'@'${host}' identified by '${password}';
-				grant all privileges on \`${space}\`.\`${table}\` to '${user}'@'${host}';
+				grant all privileges on \`${space}\`.${table} to '${user}'@'${host}';
 				SQL
 			done < $INIT_DIR/credentials
 
@@ -75,7 +75,7 @@ function init()
 
 	test $? -ne 0 && echo "Error on data populating"
 
-	kill -s TERM $pid
+	mysqladmin shutdown
 	wait $pid
 }
 
