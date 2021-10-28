@@ -13,6 +13,9 @@ ENV MYSQL_DATA_PATH /var/lib/mysql
 ENV MYSQL_ROOT_PASSWORD ''
 ENV INIT_DIR /home/initialize
 
+# This is a bit extreme, but so we can install as mysql user from the entrypoint
+RUN chmod +s /usr/bin/mariadb-install-db
+
 # Prepare directories
 RUN mkdir -p /run/mysqld
 RUN chown -R ${MYSQL_SYSUSER}:${MYSQL_SYSGROUP} /run/mysqld
