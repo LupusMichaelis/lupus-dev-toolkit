@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile-upstream:master-labs
 FROM lupusmichaelis/alpine:1.0.1
 LABEL description="Alpine Linux with Lighttpd"
 
@@ -26,7 +27,6 @@ RUN lupusmichaelis-install-entrypoint.sh /tmp/alpine-lighttpd-proxy.sh
 COPY mod_fastcgi.conf debug.conf /etc/lighttpd/
 
 WORKDIR "/var/www/localhost/htdocs"
-
 
 COPY library.sh ${LUPUSMICHAELIS_DIR}/lp-lighttpd.sh
 
@@ -58,18 +58,35 @@ ARG LIGHTTPD_REWRITE=disable
 ENV LIGHTTPD_REWRITE=${LIGHTTPD_REWRITE}
 ARG LIGHTTPD_TARGET=/index.php
 ENV LIGHTTPD_TARGET=${LIGHTTPD_TARGET}
-RUN case "${LIGHTTPD_REWRITE}" in \
-        always) \
-            echo 'url.rewrite-once = ( "^.*$" => "'"$LIGHTTPD_TARGET"'" )' \
-            ;; \
-        when-not-found) \
-            echo 'url.rewrite-if-not-file = ( "^/.*$" => "'"$LIGHTTPD_TARGET"'" )' \
-            ;; \
-        esac > /etc/lighttpd/mod_rewrite.conf; \
-    sed -i \
-        -e '/"mod_rewrite"/s/#//' \
-        /etc/lighttpd/lighttpd.conf; \
-    echo 'include "mod_rewrite.conf"' >> /etc/lighttpd/lighttpd.conf;
+RUN <<eos
+#!/bin/bash
+
+set -euo pipefail
+
+case "${LIGHTTPD_REWRITE}" in
+	always)
+		cat <<- eoc
+		url.rewrite-once = (
+			"^.*$" => "$LIGHTTPD_TARGET"
+			)
+		eoc
+		;;
+	when-not-found)
+		cat <<- eoc
+		url.rewrite-if-not-file = (
+			"^.*$" => "$LIGHTTPD_TARGET"
+		)
+		eoc
+		;;
+	esac > /etc/lighttpd/mod_rewrite.conf
+
+sed -i \
+	-e '/"mod_rewrite"/s/#//' \
+	/etc/lighttpd/lighttpd.conf
+
+echo 'include "mod_rewrite.conf"' >> /etc/lighttpd/lighttpd.conf
+
+eos
 
 COPY security-header.conf /etc/lighttpd/security-header.conf
 RUN echo 'include "security-header.conf"' >> /etc/lighttpd/lighttpd.conf;
