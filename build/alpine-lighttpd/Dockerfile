@@ -13,12 +13,14 @@ RUN apk update \
         && echo Apk done
 
 RUN mkdir -p /var/run/lighttpd
-RUN chown lighttpd:lighttpd /var/run/lighttpd
+RUN chown lighttpd:lighttpd /var/run/lighttpd /dev/fd/1 /dev/fd/2
 
 RUN sed -i \
     -e '/^# server\.port          = 81/s/^.*$/server.port = 80/' \
     -e '/^# server\.bind          = 81/s/^.*$/server.bind = 0.0.0.0/' \
     -e 's@/run/lighttpd.pid@/run/lighttpd/lighttpd.pid@' \
+	-e 's@^server\.errorlog.*$@server.errorlog = "/dev/fd/2"@' \
+	-e 's@^accesslog\.filename.*@accesslog.filename = "/dev/fd/1"@' \
     /etc/lighttpd/lighttpd.conf
 
 COPY docker-entrypoint.sh /tmp/alpine-lighttpd-proxy.sh

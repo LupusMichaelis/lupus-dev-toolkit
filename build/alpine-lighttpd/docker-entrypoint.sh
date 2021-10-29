@@ -20,6 +20,8 @@ main()
 		lp-assert-environement-is-set BACKEND_DOCROOT
 	fi
 
+	chown lighttpd:lighttpd /dev/pts/0 /dev/fd/1 /dev/fd/2
+
 	if [[ "disable" != "$LIGHTTPD_REWRITE" && "/index.php" != "$LIGHTTPD_TARGET" ]]
 	then
 		case "${LIGHTTPD_REWRITE}" in
