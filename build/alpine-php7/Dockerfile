@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile-upstream:master-labs
 FROM lupusmichaelis/alpine-dev:1.0.2
 
 LABEL description="Alpine Linux with PHP7"
@@ -19,23 +20,35 @@ RUN lupusmichaelis-install-entrypoint.sh /tmp/alpine-php7.sh
 
 ARG PHP_FPM
 ENV PHP_FPM=${PHP_FPM:-disable}
-RUN if [ 'enable' = "$PHP_FPM" ]; \
-    then \
-        apk add --no-cache \
-            php7-fpm; \
-        sed \
-            -e '/^;chdir =/s/.*/chdir = \/home\/anvil\/public/' \
-            -e 's/127.0.0.1:9000/9000/' \
-            -e '/allowed_clients/d' \
-            -e '/;catch_workers_output = /s/^;//' \
-            -e '/;access\.log\s\+=/s/.*/access.log = \/proc\/1\/fd\/1/'\
-            -i /etc/php7/php-fpm.d/www.conf; \
-        sed \
-            -e '#include_path =#s#"\(.*\)"#"\1:'"$ANVIL"'"#' \
-            -e 's/;log_level = notice/log_level = debug/' \
-            -e '/cgi\.fix_pathinfo/s/^;//' \
-            -i /etc/php7/php.ini; \
-    fi
+RUN <<eos
+#!/bin/bash
+
+set -euo pipefail
+
+if [ 'enable' = "$PHP_FPM" ]
+then
+	apk add --no-cache \
+		php7-fpm
+	sed \
+		-e '/^;chdir =/s/.*/chdir = \/home\/anvil\/public/' \
+		-e 's/127.0.0.1:9000/9000/' \
+		-e '/allowed_clients/d' \
+		-e '/;catch_workers_output = /s/^;//' \
+		-e '/;access\.log\s\+=/s/.*/access.log = \/proc\/1\/fd\/1/' \
+		-i /etc/php7/php-fpm.d/www.conf
+
+	sed \
+		-e '#include_path =#s#"\(.*\)"#"\1:'"$ANVIL"'"#' \
+		-e 's/;log_level = notice/log_level = debug/' \
+		-e '/cgi\.fix_pathinfo/s/^;//' \
+		-i /etc/php7/php.ini
+
+	sed \
+		-e 's/\(log_errors\)\s*=\s*.*\(;\?\)/\1=On\2/' \
+		-e '/;error_log\s\+=/s/^.*$/error_log=\/proc\/1\/fd\/2/' \
+		-i /etc/php7/php-fpm.conf
+fi
+eos
 
 ARG PHP_COMPOSER
 ENV PHP_COMPOSER=${PHP_COMPOSER:-disable}
@@ -63,5 +76,4 @@ RUN if [ 'enable' = "$PHP_XDEBUG" ]; \
 RUN sed \
     -e 's/\(log_errors\)\s*=\s*.*\(;\?\)/\1=On\2/' \
     -e '/;error_log\s\+=/s/^.*$/error_log=\/proc\/1\/fd\/2/' \
-    -i /etc/php7/php-fpm.conf \
     -i /etc/php7/php.ini
