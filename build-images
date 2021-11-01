@@ -20,7 +20,7 @@ export COMPOSE_DOCKER_CLI_BUILD=1
 export DOCKER_BUILDKIT=1
 
 docker-compose -f builder.docker-compose.yml build \
-    && cat builder.docker-compose.yml \
-        | yq e '.services.*.image' - \
-        | xargs -n 1 docker trust sign \
-    && docker-compose -f builder.docker-compose.yml push
+	&& cat builder.docker-compose.yml \
+		| yq e '.services.*.image' - \
+		| xargs -n 1 docker trust sign --local \
+	&& docker-compose -f builder.docker-compose.yml push
