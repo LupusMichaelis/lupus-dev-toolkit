@@ -7,333 +7,334 @@ YARN="npx yarn"
 # Ygor, RUN!!!!!! ##############################################################
 ygor-main()
 {
-    if [ "$#" -lt "1" ]
-    then
-        ygor-usage
-    fi
+	if [ "$#" -lt "1" ]
+	then
+		ygor-usage
+	fi
 
-    local component=$1; shift
-    case $component in
-        bs|byobu-session)
-            ygor-byobu-session "$@"
-            ;;
+	local component=$1; shift
+	case $component in
+		bs|byobu-session)
+			ygor-byobu-session "$@"
+			;;
 
-        d|docker)
-            local action=$1; shift
-            case $action in
-                d|dracarys|c|clean)
-                    ygor-docker-clean
-                    ;;
-                last-ip)
-                    ygor-docker-last-ip
-                    ;;
-                ip)
-                    ygor-docker-ip "$@"
-                    ;;
-                last-id)
-                    ygor-docker-last-id
-                    ;;
-                *)
-                    ygor-docker-usage
-                    exit 2
-            esac
-            ;;
+		d|docker)
+			local action=$1; shift
+			case $action in
+				d|dracarys|c|clean)
+					ygor-docker-clean
+					;;
+				last-ip)
+					ygor-docker-last-ip
+					;;
+				ip)
+					ygor-docker-ip "$@"
+					;;
+				last-id)
+					ygor-docker-last-id
+					;;
+				*)
+					ygor-docker-usage
+					exit 2
+			esac
+			;;
 
-        e|elm)
-            local action=$1; shift
-            case $action in
-                f|format)
-                    ygor-elm-format "$@"
-                    ;;
-                fgc|format-git-cache)
-                    ygor-elm-format-git-cache
-                    ;;
-                fgh|format-git-head)
-                    ygor-elm-format-git-head
-                    ;;
-                fgm|format-git-modified)
-                    ygor-elm-format-git-modified
-                    ;;
-                *)
-                    ygor-elm-usage
-                    exit 3
-                    ;;
-            esac
-            ;;
+		e|elm)
+			local action=$1; shift
+			case $action in
+				f|format)
+					ygor-elm-format "$@"
+					;;
+				fgc|format-git-cache)
+					ygor-elm-format-git-cache
+					;;
+				fgh|format-git-head)
+					ygor-elm-format-git-head
+					;;
+				fgm|format-git-modified)
+					ygor-elm-format-git-modified
+					;;
+				*)
+					ygor-elm-usage
+					exit 3
+					;;
+			esac
+			;;
 
-        f|files)
-            local action=$1; shift
-            case $action in
-                oc|open-cached)
-                    ygor-files-open-cached "$@"
-                    ;;
-                om|open-modified)
-                    ygor-files-open-modified "$@"
-                    ;;
-                ou|open-unmerged)
-                    ygor-files-open-unmerged "$@"
-                    ;;
-                clean-up)
-                    ygor-files-clean-up
-                    ;;
-                *)
-                    ygor-files-usage
-                    exit 4
-                    ;;
-            esac
-            ;;
+		f|files)
+			local action=$1; shift
+			case $action in
+				oc|open-cached)
+					ygor-files-open-cached "$@"
+					;;
+				om|open-modified)
+					ygor-files-open-modified "$@"
+					;;
+				ou|open-unmerged)
+					ygor-files-open-unmerged "$@"
+					;;
+				clean-up)
+					ygor-files-clean-up
+					;;
+				*)
+					ygor-files-usage
+					exit 4
+					;;
+			esac
+			;;
 
-        g|git)
-            local action=$1; shift
-            case $action in
-                bc|broadcast|push-origin-upstream)
-                    ygor-git-push-origin-upstream "$@"
-                    ;;
-                *)
-                    ygor-git-usage
-                    exit 5
-                    ;;
-            esac
-            ;;
+		g|git)
+			local action=$1; shift
+			case $action in
+				bc|broadcast|push-origin-upstream)
+					ygor-git-push-origin-upstream "$@"
+					;;
+				*)
+					ygor-git-usage
+					exit 5
+					;;
+			esac
+			;;
 
-        x)
-            local action=$1; shift
-            case $action in
-                cpush|clip-push)
-                    ygor-x-clipboard-push "$@"
-                    ;;
-                cpull|clip-pull)
-                    ygor-x-clipboard-pull "$@"
-                    ;;
-                spush|selection-push)
-                    ygor-x-selection-push "$@"
-                    ;;
-                spull|selection-pull)
-                    ygor-x-selection-pull "$@"
-                    ;;
-                *)
-                    ygor-x-clipboard-usage
-                    exit 6
-                    ;;
-            esac
-            ;;
-        *)
-            ygor-usage
-    esac
+		x)
+			local action=$1; shift
+			case $action in
+				cpush|clip-push)
+					ygor-x-clipboard-push "$@"
+					;;
+				cpull|clip-pull)
+					ygor-x-clipboard-pull "$@"
+					;;
+				spush|selection-push)
+					ygor-x-selection-push "$@"
+					;;
+				spull|selection-pull)
+					ygor-x-selection-pull "$@"
+					;;
+				*)
+					ygor-x-clipboard-usage
+					exit 6
+					;;
+			esac
+			;;
+		*)
+			ygor-usage
+	esac
 }
 
 ygor-usage()
 {
-    printf "Usage: \n"
-    program=$(basename "$0")
+	printf "Usage: \n"
+	program=$(basename "$0")
 
-    ygor-byobu-usage $program
-    ygor-docker-usage $program
-    ygor-files-usage $program
-    ygor-git-usage $program
-    ygor-x-clipboard-usage $program
-    exit 1
+	ygor-byobu-usage $program
+	ygor-docker-usage $program
+	ygor-files-usage $program
+	ygor-git-usage $program
+	ygor-x-clipboard-usage $program
+	exit 1
 }
 
 # Utils ########################################################################
 ygor-die()
 {
-    printf "Dying on: '$1'\n"
-    exit 255
+	printf "Dying on: '$1'\n"
+	exit 255
 }
 
 # Hexes ########################################################################
 ygor-x-clipboard-usage()
 {
-    printf "\t$1 x [cpush|clip-push]\n"
-    printf "\t$1 x [cpull|clip-pull]\n"
-    printf "\t$1 x [spush|selection-push]\n"
-    printf "\t$1 x [spull|selection-pull]\n"
+	printf "\t$1 x [cpush|clip-push]\n"
+	printf "\t$1 x [cpull|clip-pull]\n"
+	printf "\t$1 x [spush|selection-push]\n"
+	printf "\t$1 x [spull|selection-pull]\n"
 }
 
 ygor-x-clipboard-push()
 {
-    file=$1
-    if [ -f "$file" ]
-    then
-        xsel -b -a < $file
-    fi
+	file=$1
+	if [ -f "$file" ]
+	then
+		xsel -b -a < $file
+	fi
 }
 
 ygor-x-clipboard-pull()
 {
-    xsel -b -o
+	xsel -b -o
 }
 
 ygor-x-selection-push()
 {
-    file=$1
-    if [ -f "$file" ]
-    then
-        xsel -p -a < $file
-    fi
+	file=$1
+	if [ -f "$file" ]
+	then
+		xsel -p -a < $file
+	fi
 }
 
 ygor-x-selection-pull()
 {
-    xsel -p -o
+	xsel -p -o
 }
 
 # Byobu ########################################################################
 
 ygor-byobu-usage()
 {
-    printf "\t$1 [bs|byobu-session]\n"
+	printf "\t$1 [bs|byobu-session]\n"
 }
 
 # Byobu session named after current working directory
 ygor-byobu-session()
 {
-    byobu new -s $(basename $PWD) "$@" \
-        || byobu attach -t $(basename $PWD) "$@"
+	local -r session_name=$( systemd-escape "${PWD##$HOME}" )
+	byobu new -s $session_name "$@" \
+		|| byobu attach -t $session_name "$@"
 }
 
 # Docker #######################################################################
 ygor-docker-usage()
 {
-    printf "\t$1 [d|docker] [c|clean]\n"
-    printf "\t$1 [d|docker] [last-ip|last-id]\n"
-    printf "\t$1 [d|docker] ip <docker-id>\n"
+	printf "\t$1 [d|docker] [c|clean]\n"
+	printf "\t$1 [d|docker] [last-ip|last-id]\n"
+	printf "\t$1 [d|docker] ip <docker-id>\n"
 }
 
 ygor-docker-clean()
 {
-    ids=$(docker ps -qf status=exited)
-    if [[ ! -z $did ]]; then
-        docker rm $ids
-    else
-        ygor-die "No container to burn down"
-    fi
+	ids=$(docker ps -qf status=exited)
+	if [[ ! -z $did ]]; then
+		docker rm $ids
+	else
+		ygor-die "No container to burn down"
+	fi
 }
 
 ygor-docker-last-id()
 {
-    docker ps -ql
+	docker ps -ql
 }
 
 ygor-docker-last-ip()
 {
-    ygor-docker-ip $(ygor-docker-last-id)
+	ygor-docker-ip $(ygor-docker-last-id)
 }
 
 ygor-docker-ip()
 {
-    docker inspect \
-        --format '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' \
-        "$@"
+	docker inspect \
+		--format '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' \
+		"$@"
 }
 
 ################################################################################
 ygor-elm-usage()
 {
-    printf "\t$1 [e|elm] [f|format] <file>...\n"
-    printf "\t$1 [e|elm] [fgc|format-git-cache]\n"
-    printf "\t$1 [e|elm] [fgh|format-git-head]\n"
-    printf "\t$1 [e|elm] [fgm|format-git-modified]\n"
+	printf "\t$1 [e|elm] [f|format] <file>...\n"
+	printf "\t$1 [e|elm] [fgc|format-git-cache]\n"
+	printf "\t$1 [e|elm] [fgh|format-git-head]\n"
+	printf "\t$1 [e|elm] [fgm|format-git-modified]\n"
 }
 
 ygor-elm-format()
 {
-    $YARN elm-format --yes "$@"
+	$YARN elm-format --yes "$@"
 }
 
 ygor-elm-format-all()
 {
-    ygor-elm-format $(git ls-files | grep '\.elm$')
+	ygor-elm-format $(git ls-files | grep '\.elm$')
 }
 
 ygor-elm-format-git-head()
 {
-    files=$(git diff --name-only HEAD HEAD~ | grep '\.elm$')
-    if [[ ! -z "$files" ]]
-    then
-        ygor-elm-format $files
-    fi
+	files=$(git diff --name-only HEAD HEAD~ | grep '\.elm$')
+	if [[ ! -z "$files" ]]
+	then
+		ygor-elm-format $files
+	fi
 }
 
 ygor-elm-format-git-head()
 {
-    files=$(git diff --name-only HEAD HEAD~ | grep \.elm)
-    if [[ ! -z "$files" ]]
-    then
-        ygor-elm-format $files
-    fi
+	files=$(git diff --name-only HEAD HEAD~ | grep \.elm)
+	if [[ ! -z "$files" ]]
+	then
+		ygor-elm-format $files
+	fi
 }
 
 ygor-elm-format-git-cache()
 {
-    files=$(git diff --name-only --cached | grep '\.elm$')
-    if [[ ! -z "$files" ]]
-    then
-        ygor-elm-format $files
-    fi
+	files=$(git diff --name-only --cached | grep '\.elm$')
+	if [[ ! -z "$files" ]]
+	then
+		ygor-elm-format $files
+	fi
 }
 
 ygor-elm-format-git-modified()
 {
-    files=$(git ls-files -m | grep \.elm)
-    if [[ ! -z "$files" ]]
-    then
-        ygor-elm-format $files
-    fi
+	files=$(git ls-files -m | grep \.elm)
+	if [[ ! -z "$files" ]]
+	then
+		ygor-elm-format $files
+	fi
 }
 
 ################################################################################
 ygor-files-usage()
 {
-    printf "\t$1 [f|files] [clean-up]\n"
-    printf "\t$1 [f|files] [oc|open-cached] <vim-options>\n"
-    printf "\t$1 [f|files] [om|open-modified] <vim-options>\n"
-    printf "\t$1 [f|files] [ou|open-unmerged] <vim-options>\n"
+	printf "\t$1 [f|files] [clean-up]\n"
+	printf "\t$1 [f|files] [oc|open-cached] <vim-options>\n"
+	printf "\t$1 [f|files] [om|open-modified] <vim-options>\n"
+	printf "\t$1 [f|files] [ou|open-unmerged] <vim-options>\n"
 }
 
 ygor-files-open-cached()
 {
-    files=$(git ls-files -c)
-    if [[ ! -z "$files" ]]
-    then
-        gvim "$@" -- $files
-    fi
+	files=$(git ls-files -c)
+	if [[ ! -z "$files" ]]
+	then
+		gvim "$@" -- $files
+	fi
 }
 
 ygor-files-open-modified()
 {
-    files=$(git ls-files -m)
-    if [[ ! -z "$files" ]]
-    then
-        gvim "$@" -- $files
-    fi
+	files=$(git ls-files -m)
+	if [[ ! -z "$files" ]]
+	then
+		gvim "$@" -- $files
+	fi
 }
 
 ygor-files-open-unmerged()
 {
-    files=$(git ls-files -u)
-    if [[ ! -z "$files" ]]
-    then
-        gvim "$@" -- $files
-    fi
+	files=$(git ls-files -u)
+	if [[ ! -z "$files" ]]
+	then
+		gvim "$@" -- $files
+	fi
 }
 
 ygor-files-clean-up()
 {
-    find ~ -name .\*.sw\? -delete -print
+	find ~ -name .\*.sw\? -delete -print
 }
 
 ################################################################################
 ygor-git-usage()
 {
-    printf "\t$1 [g|git] [bc|broadcast|push-origin-upstream] <git-push-options>\n"
+	printf "\t$1 [g|git] [bc|broadcast|push-origin-upstream] <git-push-options>\n"
 }
 
 ygor-git-push-origin-upstream()
 {
-    git push "$@" \
-        && git push upstream "$@"
+	git push "$@" \
+		&& git push upstream "$@"
 }
 
 # Ygor, LIGHT IT UP!!! #########################################################
