@@ -52,26 +52,30 @@ eos
 
 ARG PHP_COMPOSER
 ENV PHP_COMPOSER=${PHP_COMPOSER:-disable}
-RUN if [ 'enable' = "$PHP_COMPOSER" ]; \
-    then \
-        apk add --no-cache \
-            composer \
-            git; \
-    fi
+RUN <<eot
+if [ 'enable' = "$PHP_COMPOSER" ]
+then
+    apk add --no-cache \
+        composer \
+        git
+fi
+eot
 
 ARG PHP_XDEBUG
 ENV PHP_XDEBUG=${PHP_XDEBUG:-disable}
-RUN if [ 'enable' = "$PHP_XDEBUG" ]; \
-    then \
-        apk add --no-cache \
-            php7-pecl-xdebug; \
-        sed -i \
-            -e 's/\(max_input_vars\)\s*=\s*\d+/\1=10000/' \
-            -e 's/\(memory_limit\)\s*=\s*.*\(;\?\)/\1=1G\2/' \
-            -e 's/\(error_reporting\)\s=\s.*\(;\?\)/\1=E_ALL\2/' \
-            -e 's/\(display_errors\)\s*=\s*.*\(;\?\)/\1=Off\2/' \
-                /etc/php7/php.ini; \
-    fi
+RUN <<eot
+if [ 'enable' = "$PHP_XDEBUG" ]
+then
+    apk add --no-cache \
+        php7-pecl-xdebug
+    sed -i \
+        -e 's/\(max_input_vars\)\s*=\s*\d+/\1=10000/' \
+        -e 's/\(memory_limit\)\s*=\s*.*\(;\?\)/\1=1G\2/' \
+        -e 's/\(error_reporting\)\s=\s.*\(;\?\)/\1=E_ALL\2/' \
+        -e 's/\(display_errors\)\s*=\s*.*\(;\?\)/\1=Off\2/' \
+            /etc/php7/php.ini
+fi
+eot
 
 RUN sed \
     -e 's/\(log_errors\)\s*=\s*.*\(;\?\)/\1=On\2/' \

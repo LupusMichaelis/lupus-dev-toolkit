@@ -163,6 +163,17 @@ services:
             - alpine-php7
         image: lupusmichaelis/alpine-php7-fpm-composer:1.0.7
 
+    alpine-php7-fpm-composer:
+        <<: *dev-env
+        build:
+            context: ./build/alpine-php7
+            args:
+                PHP_FPM: enable
+                PHP_COMPOSER: enable
+        depends_on:
+            - alpine-php7
+        image: lupusmichaelis/alpine-php7-fpm-composer:1.0.0
+
     debian-jessie-php56:
         <<: *dev-env
         build: ./build/debian-jessie-php56
