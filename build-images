@@ -19,7 +19,7 @@ yq()
 export COMPOSE_DOCKER_CLI_BUILD=1
 export DOCKER_BUILDKIT=1
 
-docker-compose -f builder.docker-compose.yml build \
+docker-compose -f builder.docker-compose.yml build --parallel --progress plain \
 	&& cat builder.docker-compose.yml \
 		| yq e '.services.*.image' - \
 		| xargs -n 1 docker trust sign --local \
