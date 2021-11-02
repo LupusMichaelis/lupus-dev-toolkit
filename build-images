@@ -1,7 +1,11 @@
 #!/usr/bin/env bash
 
-[[ -z "$DEBUG" ]] \
-	|| set -x
+set -euo pipefail
+
+if [[ -v DEBUG && ! -z "$DEBUG" ]]
+then
+	set -x
+fi
 
 docker-sign()
 {
