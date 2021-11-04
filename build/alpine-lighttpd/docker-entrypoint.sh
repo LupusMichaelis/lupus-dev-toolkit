@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -euo pipefail
+
 [ -v DEBUG ] \
 	&& set -x
 
@@ -20,19 +22,18 @@ main()
 		lp-assert-environement-is-set BACKEND_DOCROOT
 	fi
 
-	chown lighttpd:lighttpd /dev/pts/0 /dev/fd/1 /dev/fd/2
+	local -a outputs=(
+		/dev/fd/1
+		/dev/fd/2
+	)
 
-	if [[ "disable" != "$LIGHTTPD_REWRITE" && "/index.php" != "$LIGHTTPD_TARGET" ]]
+	# We don't necessarly allocate a tty
+	if [ -f /dev/pts/0 ]
 	then
-		case "${LIGHTTPD_REWRITE}" in
-        always)
-            echo 'url.rewrite-once = ( "^.*$" => "'"$LIGHTTPD_TARGET"'" )'
-            ;;
-        when-not-found)
-            echo 'url.rewrite-if-not-file = ( "^/.*$" => "'"$LIGHTTPD_TARGET"'" )'
-            ;;
-        esac > /etc/lighttpd/mod_rewrite.conf
+		outputs+=/dev/pts/0
 	fi
+
+	chown lighttpd:lighttpd ${outputs[@]}
 
 	if [ -v DEBUG ]
 	then

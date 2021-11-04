@@ -54,8 +54,8 @@ then
 		-e '/include "mod_fastcgi.conf"/s/#//' \
 		-e 's#\#.*mod_alias.*,.*#	 "mod_alias",#g' \
 		/etc/lighttpd/lighttpd.conf
-	printf "<?php #Lighttpd needs this file to exist to consider it as an index candidate" \
-		> "index.php"
+	#Lighttpd needs this file to exist to consider it as an index candidate"
+	touch index.php
 fi
 eot
 
@@ -68,12 +68,14 @@ set -euo pipefail
 
 if [ "${LIGHTTPD_SECURE}" = 'enable' ]
 then
-	sed -i \
-		-e '/^server\.port = 80/s/^.*$/server.port = 443/' \
-		-e '/^# ssl\.engine = "enable"/s/^.*$/ssl.engine = "enable"/' \
-		-e '/^# ssl\.pemfile = "server.pem"/s/^.*$/ssl.pemfile = "\/etc\/lighttpd\/server.pem"/' \
-		-e '/server\.modules = (/a	   "mod_openssl",' \
-		/etc/lighttpd/lighttpd.conf
+	cat <<- eoc > /etc/lighttpd/lupusmichaelis.conf
+		server.port = 443 \
+		ssl.engine = "enable"
+		ssl.pemfile = "/etc/lighttpd/server.pem"
+		server.modules += ("mod_openssl")
+	eoc
+
+	printf "include \"lupusmichaelis.conf\"\n" >> /etc/lighttpd/lighttpd.conf
 fi
 eot
 
@@ -97,17 +99,19 @@ case "${LIGHTTPD_REWRITE}" in
 	when-not-found)
 		cat <<- eoc
 		url.rewrite-if-not-file = (
+			"^.*/$" => "\$0/index.php",
 			"^.*$" => "$LIGHTTPD_TARGET"
 		)
 		eoc
 		;;
-	esac > /etc/lighttpd/mod_rewrite.conf
+esac > /etc/lighttpd/mod_rewrite.conf
+
+printf "include \"mod_rewrite.conf\"\n" >> /etc/lighttpd/lighttpd.conf
 
 sed -i \
 	-e '/"mod_rewrite"/s/#//' \
 	/etc/lighttpd/lighttpd.conf
 
-echo 'include "mod_rewrite.conf"' >> /etc/lighttpd/lighttpd.conf
 eos
 
 COPY security-header.conf /etc/lighttpd/security-header.conf
