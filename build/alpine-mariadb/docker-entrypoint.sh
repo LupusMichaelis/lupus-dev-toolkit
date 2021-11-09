@@ -42,7 +42,7 @@ function init()
 
 		if [[ -v MYSQL_ROOT_PASSWORD && -n "$MYSQL_ROOT_PASSWORD" ]]
 		then
-			echo "create user '${LP_DEV_USER_ALIAS}'@'%' identified by '${MYSQL_ROOT_PASSWORD}';"
+			echo "create user if not exists '${LP_DEV_USER_ALIAS}'@'%' identified by '${MYSQL_ROOT_PASSWORD}';"
 			cat <<- SQL
 			create user if not exists '${LP_DEV_USER_ALIAS}'@'%' identified by '${MYSQL_ROOT_PASSWORD}';
 			grant all privileges on *.* to '${LP_DEV_USER_ALIAS}'@'%';
