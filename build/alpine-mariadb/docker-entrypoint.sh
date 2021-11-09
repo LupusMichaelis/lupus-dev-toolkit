@@ -44,8 +44,8 @@ function init()
 		then
 			echo "create user '${LP_DEV_USER_ALIAS}'@'%' identified by '${MYSQL_ROOT_PASSWORD}';"
 			cat <<- SQL
-			create user if not exists '${LP_DEV_USER_ALIAS}'@'%' identified by '${password}';
-			grant all privileges on *.* to '${user}'@'%';
+			create user if not exists '${LP_DEV_USER_ALIAS}'@'%' identified by '${MYSQL_ROOT_PASSWORD}';
+			grant all privileges on *.* to '${LP_DEV_USER_ALIAS}'@'%';
 			SQL
 		fi
 
