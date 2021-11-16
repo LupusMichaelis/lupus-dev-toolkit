@@ -16,9 +16,11 @@ function init()
 		--auth-root-socket-user="${MYSQL_SYSUSER}"
 
 	echo "$@" \
+		--skip-networking \
 		--datadir "${MYSQL_DATA_PATH}"
 
 	"$@" \
+		--skip-networking \
 		--datadir "${MYSQL_DATA_PATH}" \
 		&
 
