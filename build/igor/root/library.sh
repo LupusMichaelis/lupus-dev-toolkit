@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+set -euo pipefail
+
+[ -v DEBUG ] \
+	&& set -x || set +x
+
 lp-assert-environement-is-set()
 {
 	lupusmichaelis-deprecated "${FUNCNAME[0]}"

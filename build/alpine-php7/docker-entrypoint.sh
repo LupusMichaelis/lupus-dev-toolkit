@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-set -e
+set -euo pipefail
 
 [ -v DEBUG ] \
-	&& set -x
+	&& set -x || set +x
 
 . "$LUPUSMICHAELIS_DIR/library.sh"
 

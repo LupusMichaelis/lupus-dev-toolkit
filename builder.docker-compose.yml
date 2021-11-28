@@ -1,6 +1,7 @@
 ##############################################################################
 #
-# Building customized images
+# See ./build-images
+# This is a compose file to build images
 #
 ##############################################################################
 
@@ -10,6 +11,11 @@ x-dev-env: &dev-env
     env_file:
         - .env
     environment:
+        - LUPUSMICHAELIS_DEV_UID=${LUPUSMICHAELIS_DEV_UID?Please export LUPUSMICHAELIS_DEV_UID}
+        - LUPUSMICHAELIS_DEV_GID=${LUPUSMICHAELIS_DEV_GID?Please export LUPUSMICHAELIS_DEV_GID}
+        - LUPUSMICHAELIS_DEV_USER_ALIAS=${LUPUSMICHAELIS_DEV_USER_ALIAS?Please export}
+
+        # Compatibility
         - LP_DEV_UID=${LP_DEV_UID?Please export LP_DEV_UID}
         - LP_DEV_GID=${LP_DEV_GID?Please export LP_DEV_GID}
         - LP_DEV_USER_ALIAS=${LP_DEV_USER_ALIAS?Please export}
@@ -22,7 +28,7 @@ services:
     igor:
         build:
             context: ./build/igor
-        image: lupusmichaelis/igor:1.0.0
+        image: lupusmichaelis/igor:1.1.0
 
     ############################################################################
     # OSes
@@ -30,13 +36,16 @@ services:
     alpine:
         build:
             context: ./build/alpine
-        image: lupusmichaelis/alpine:1.0.1
+            args:
+                LUPUSMICHAELIS_OFFICIAL_ALPINE_VERSION: 3.14.0
+                LUPUSMICHAELIS_IGOR_VERSION: 1.1.0
+        image: lupusmichaelis/alpine:1.1.0
 
     alpine-dev:
         <<: *dev-env
         build:
             context: ./build/alpine-dev
-        image: lupusmichaelis/alpine-dev:1.0.2
+        image: lupusmichaelis/alpine-dev:1.1.0
 
     debian-jessie:
         <<: *dev-env
@@ -257,3 +266,5 @@ services:
         depends_on:
             - debian-buster
         image: lupusmichaelis/debian-buster-node:1.0.3
+
+# vim: ts=4:sw=4:et

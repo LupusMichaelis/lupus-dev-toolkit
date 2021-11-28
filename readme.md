@@ -71,7 +71,6 @@ docker build --build-arg ANVIL=/var/run/anvil -t hirsute .
 docker run --rm -it hirsute bash
 ```
 
-
 # Internals
 
 ## Ygor
