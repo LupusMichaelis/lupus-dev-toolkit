@@ -1,15 +1,20 @@
 #!/usr/bin/env bash
 
+set -euo pipefail
+
+[ -v DEBUG ] \
+	&& set -x || set +x
+
 lp-assert-environement-is-set()
 {
 	lupusmichaelis-deprecated "${FUNCNAME[0]}"
-	lupusmichaelis-assert-environement-is-set $@
+	lupusmichaelis-assert-environement-is-set "$@"
 }
 
 lp-die()
 {
 	lupusmichaelis-deprecated "${FUNCNAME[0]}"
-	lupusmichaelis-die $@
+	lupusmichaelis-die "$@"
 }
 
 lupusmichaelis-deprecated()
@@ -32,8 +37,7 @@ lupusmichaelis-assert-environement-is-set()
 
 lupusmichaelis-die()
 {
-
-	if [ -z "$2" ]
+	if (( 1 == $# ))
 	then
 		local -r code=1
 	else

@@ -1,6 +1,4 @@
+# syntax=docker/dockerfile-upstream:master-labs
 FROM scratch
 
-COPY library.sh \
-    install-entrypoint.sh \
-    docker-entrypoint.sh \
-    /
+COPY root/ /

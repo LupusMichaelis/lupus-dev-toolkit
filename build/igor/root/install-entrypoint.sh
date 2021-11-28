@@ -5,10 +5,12 @@
 # lp stands for Lupus Michaelis
 # ep stands for entry point
 
+set -euo pipefail
+
 . "$LUPUSMICHAELIS_DIR/library.sh"
 
-[[ ! -z "$DEBUG" ]] \
-	&& set -ex
+[ -v DEBUG ] \
+	&& set -x || set +x
 
 lp-ep-get-all()
 {
