@@ -56,7 +56,10 @@ services:
         <<: *dev-env
         build:
             context: ./build/debian-buster
-        image: lupusmichaelis/debian-buster:1.0.1
+            args:
+                LUPUSMICHAELIS_IGOR_VERSION: 1.1.0
+                LUPUSMICHAELIS_OFFICIAL_DEBIAN_VERSION: buster
+        image: lupusmichaelis/debian-buster:1.1.0
 
     ############################################################################
     # Web server
@@ -185,7 +188,8 @@ services:
 
     debian-jessie-php56:
         <<: *dev-env
-        build: ./build/debian-jessie-php56
+        build:
+            context: ./build/debian-jessie-php56
         depends_on:
             - debian-jessie
         image: lupusmichaelis/debian-jessie-php56:1.0.2
@@ -263,8 +267,10 @@ services:
         <<: *dev-env
         build:
             context: ./build/debian-buster-node
+            args:
+                LUPUSMICHAELIS_DEBIAN_VERSION: 1.1.0
         depends_on:
             - debian-buster
-        image: lupusmichaelis/debian-buster-node:1.0.3
+        image: lupusmichaelis/debian-buster-node:1.1.0
 
 # vim: ts=4:sw=4:et

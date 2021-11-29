@@ -1,16 +1,21 @@
+# syntax=docker/dockerfile-upstream:master-labs
+
+ARG LUPUSMICHAELIS_IGOR_VERSION
+ARG LUPUSMICHAELIS_OFFICIAL_DEBIAN_VERSION
+
 ### Reference igor script container ############################################
-FROM lupusmichaelis/igor:1.0.0 AS igor
+FROM lupusmichaelis/igor:$LUPUSMICHAELIS_IGOR_VERSION AS igor
 
 ### Comman base to actual image and gosu builder environment ###################
-FROM debian:buster AS debian-buster
+FROM debian:$LUPUSMICHAELIS_OFFICIAL_DEBIAN_VERSION AS debian-buster
 
 RUN sed -i 's/main/main non-free contrib/g' /etc/apt/sources.list
 COPY ./etc/apt/apt.conf.d/ /etc/apt/apt.conf.d/
-RUN apt update \
+RUN apt update -yqq \
     && apt dist-upgrade \
-        -y \
+        -yqq \
     && apt install \
-        -y \
+        -yqq \
         ca-certificates \
     && apt-get clean \
     && echo Apt done
@@ -18,11 +23,8 @@ RUN apt update \
 ### Build gosu #################################################################
 FROM debian-buster AS gosu-builder
 
-RUN apt update \
-    && apt dist-upgrade \
-        -y \
-    && apt install \
-        -y \
+RUN apt install \
+        -yqq \
         gcc \
         git \
         golang \
@@ -34,6 +36,16 @@ RUN go get github.com/tianon/gosu
 ### Actual image ###############################################################
 FROM debian-buster
 
+ARG LUPUSMICHAELIS_IGOR_VERSION
+ENV LUPUSMICHAELIS_IGOR_VERSION=${LUPUSMICHAELIS_IGOR_VERSION}
+
+ARG LUPUSMICHAELIS_OFFICIAL_DEBIAN_VERSION
+ENV LUPUSMICHAELIS_OFFICIAL_DEBIAN_VERSION=${LUPUSMICHAELIS_OFFICIAL_DEBIAN_VERSION}
+
+
+ENTRYPOINT ["/usr/local/bin/lupusmichaelis-docker-entrypoint.sh"]
+CMD ["bash"]
+
 USER 0
 
 LABEL description="Alpine Linux with user"
@@ -41,11 +53,8 @@ ENV PATH "${PATH}":/go/bin/
 COPY --from=gosu-builder /root/go/bin/gosu /go/bin/
 
 ### Configure system ###########################################################
-RUN sed -i 's/main/main non-free contrib/g' /etc/apt/sources.list
-COPY ./etc/apt/apt.conf.d/ /etc/apt/apt.conf.d/
-RUN apt update \
-    && apt install \
-        -y \
+RUN apt install \
+        -yqq \
         bash \
 	&& apt-get clean \
         && echo Apt done
@@ -54,16 +63,11 @@ RUN apt update \
 RUN rmdir /home
 ENV ANVIL /home/anvil
 
-ENV LUPUSMICHAELIS_DIR /usr/local/lib/lupusmichaelis
-RUN mkdir -p "${LUPUSMICHAELIS_DIR}"
-
 ENV LUPUSMICHAELIS_DOCKER_ENTRIES_DIR ${LUPUSMICHAELIS_DIR}/docker-entries
 RUN mkdir -p "${LUPUSMICHAELIS_DOCKER_ENTRIES_DIR}"
 
-COPY --from=igor library.sh \
-    install-entrypoint.sh \
-    docker-entrypoint.sh \
-    "${LUPUSMICHAELIS_DIR}/"
+ENV LUPUSMICHAELIS_DIR /usr/local/lib/lupusmichaelis
+RUN mkdir -p "${LUPUSMICHAELIS_DIR}"
 
 RUN ln -s \
     ${LUPUSMICHAELIS_DIR}/install-entrypoint.sh \
@@ -73,5 +77,7 @@ RUN ln -s \
     ${LUPUSMICHAELIS_DIR}/docker-entrypoint.sh \
     /usr/local/bin/lupusmichaelis-docker-entrypoint.sh
 
-ENTRYPOINT ["/usr/local/bin/lupusmichaelis-docker-entrypoint.sh"]
-CMD ["bash"]
+COPY --from=igor library.sh \
+    install-entrypoint.sh \
+    docker-entrypoint.sh \
+    "${LUPUSMICHAELIS_DIR}/"

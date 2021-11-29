@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile-upstream:master-labs
 FROM lupusmichaelis/debian-buster:1.0.1
 
 LABEL description="Debian Buster Linux with Node"
