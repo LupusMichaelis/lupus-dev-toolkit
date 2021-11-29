@@ -111,6 +111,15 @@ services:
             - alpine-lighttpd
         image: lupusmichaelis/alpine-lighttpd-proxy-single:1.0.6
 
+    alpine-apache:
+        build:
+            context: ./build/alpine-apache
+            args:
+                LUPUSMICHAELIS_ALPINE_VERSION: 1.1.0
+        depends_on:
+            - alpine
+        image: lupusmichaelis/alpine-apache:1.1.0
+
     ############################################################################
     # PHP
     #
