@@ -47,17 +47,6 @@ services:
             context: ./build/alpine-dev
         image: lupusmichaelis/alpine-dev:1.1.0
 
-    debian-jessie:
-        <<: *dev-env
-        build: ./build/debian-jessie
-        image: lupusmichaelis/debian-jessie:1.0.1
-
-    debian-buster:
-        <<: *dev-env
-        build:
-            context: ./build/debian-buster
-        image: lupusmichaelis/debian-buster:1.0.1
-
     ############################################################################
     # Web server
     #
@@ -65,14 +54,6 @@ services:
         build:
             context: ./build/alpine-proxy
         image: lupusmichaelis/alpine-proxy:1.0.0
-
-    debian-jessie-apache2-php56:
-        build: ./build/debian-jessie-apache2-php56
-        image: lupusmichaelis/debian-jessie-apache2-php56:1.0.1
-        ports:
-            - 80:80
-        volumes:
-            - ./conf/apache2/vhosts.conf:/etc/apache2/conf.d/vhosts.conf:ro
 
     alpine-lighttpd:
         build:
@@ -183,13 +164,6 @@ services:
             - alpine-php7
         image: lupusmichaelis/alpine-php7-fpm-composer:1.0.0
 
-    debian-jessie-php56:
-        <<: *dev-env
-        build: ./build/debian-jessie-php56
-        depends_on:
-            - debian-jessie
-        image: lupusmichaelis/debian-jessie-php56:1.0.2
-
     ############################################################################
     # MX
     #
@@ -258,13 +232,5 @@ services:
         depends_on:
             - alpine-nodejs
         image: lupusmichaelis/alpine-elm:1.0.4
-
-    debian-buster-node:
-        <<: *dev-env
-        build:
-            context: ./build/debian-buster-node
-        depends_on:
-            - debian-buster
-        image: lupusmichaelis/debian-buster-node:1.0.3
 
 # vim: ts=4:sw=4:et
