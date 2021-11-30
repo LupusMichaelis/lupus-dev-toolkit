@@ -21,7 +21,16 @@ declare -ar packages=(
 
 apk add --no-cache ${packages[@]}
 
-rm /etc/apache2/conf.d/userdir.conf
+tar c -j -f /etc-apache2.tar.bz -C /etc/apache2 .
+
+declare -ar discarded_conf=(
+	/etc/apache2/conf.d/default.conf
+	/etc/apache2/conf.d/http2.conf
+	/etc/apache2/conf.d/mpm.conf
+	/etc/apache2/conf.d/userdir.conf
+)
+
+rm -f ${discarded_conf[@]}
 
 sed \
 	-e 's/^#\(LoadModule mpm_event_module modules\/mod_mpm_event\.so\)$/\1/' \
@@ -30,4 +39,14 @@ sed \
 	-i /etc/apache2/httpd.conf
 eos
 
+COPY entrypoint /tmp/alpine-entrypoint
+RUN lupusmichaelis-install-entrypoint.sh /tmp/alpine-entrypoint
+
+COPY httpd.conf /etc/apache2/
 COPY conf.d/ /etc/apache2/conf.d/
+
+ENV LUPUSMICHAELIS_APACHE_ADMIN_EMAIL=noc@example.com
+ENV LUPUSMICHAELIS_APACHE_USER=apache
+ENV LUPUSMICHAELIS_APACHE_GROUP=apache
+ENv LUPUSMICHAELIS_APACHE_SERVER_NAME=lupusmichaelis.local
+ENV LUPUSMICHAELIS_APACHE_LOCALHOST_ROOT=/var/www/localhost/htdocs

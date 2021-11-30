@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+[ -v DEBUG ] &&
+	set -x || set +x
+
+mkdir -p LUPUSMICHAELIS_APACHE_LOCALHOST_ROOT
+chown -R $LUPUSMICHAELIS_APACHE_USER:$LUPUSMICHAELIS_APACHE_GROUP \
+	$LUPUSMICHAELIS_APACHE_LOCALHOST_ROOT
