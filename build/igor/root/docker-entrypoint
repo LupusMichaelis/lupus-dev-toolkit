@@ -5,7 +5,7 @@ set -euo pipefail
 [ -v DEBUG ] \
 	&& set -x || set +x
 
-. "$LUPUSMICHAELIS_DIR/library.sh"
+. "$LUPUSMICHAELIS_DIR/lib/library"
 
 lp-distribution-get()
 {

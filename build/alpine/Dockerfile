@@ -7,23 +7,26 @@ FROM lupusmichaelis/igor:$LUPUSMICHAELIS_IGOR_VERSION AS igor
 
 ### Subsystem to build gosu ####################################################
 FROM alpine:$LUPUSMICHAELIS_OFFICIAL_ALPINE_VERSION AS gosu-builder
+COPY \
+	lupusmichaelis-packaging-add \
+	lupusmichaelis-packaging-init \
+	$LUPUSMICHAELIS_DIR/bin/
+RUN lupusmichaelis-packaging-init
 RUN <<eos
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 set -euo pipefail
 [ -v DEBUG ] &&
 	set -x || set +x
 
-apk update
-apk upgrade --no-cache
-
-apk add --no-cache \
-	gcc \
-	git \
-	go \
+declare -a packages=(
+	gcc
+	git
+	go
 	musl-dev
+)
 
-echo Apk done
+lupusmichaelis-packaging-add ${packages[@]}
 eos
 
 RUN go get github.com/tianon/gosu
@@ -39,18 +42,7 @@ COPY --from=gosu-builder /root/go/bin/gosu /home/go/bin/
 
 ### Configure system ###########################################################
 USER 0
-RUN <<eos
-#!/usr/bin/env sh
-
-set -euo pipefail
-[ -v DEBUG ] &&
-	set -x || set +x
-
-apk update
-apk upgrade --no-cache
-apk add --no-cache bash
-echo Apk done
-eos
+RUN lupusmichaelis-packaging-init
 ### Configure workspace ########################################################
 ENV ANVIL /home/anvil
 WORKDIR ${ANVIL}
@@ -68,15 +60,34 @@ ARG LUPUSMICHAELIS_IGOR_VERSION
 ENV LUPUSMICHAELIS_IGOR_VERSION=${LUPUSMICHAELIS_IGOR_VERSION}
 
 COPY --from=igor \
-    library.sh \
-    install-entrypoint.sh \
-    docker-entrypoint.sh \
-    ${LUPUSMICHAELIS_DIR}/
+	library \
+	install-entrypoint \
+	docker-entrypoint \
+	packaging-add \
+	packaging-init \
+	${LUPUSMICHAELIS_DIR}/
 
-RUN ln -s \
-    ${LUPUSMICHAELIS_DIR}/install-entrypoint.sh \
-    /usr/local/bin/lupusmichaelis-install-entrypoint.sh
+RUN <<eos
+#!/usr/bin/env bash
 
-RUN ln -s \
-    ${LUPUSMICHAELIS_DIR}/docker-entrypoint.sh \
-    /usr/local/bin/lupusmichaelis-docker-entrypoint.sh
+set -euo pipefail
+[ -v DEBUG ] &&
+	set -x || set +x
+
+declare -ar utilities=(
+	install-entrypoint
+	docker-entrypoint
+	packaging-add
+	packaging-init
+)
+
+for utility in $utilities
+do
+	ln -s \
+		${LUPUSMICHAELIS_DIR}/$utility \
+		/usr/local/bin/lupusmichaelis-$utility
+done
+
+eos
+
+RUN lupusmichaelis-packaging-init

@@ -28,7 +28,7 @@ services:
     igor:
         build:
             context: ./build/igor
-        image: lupusmichaelis/igor:1.1.0
+        image: lupusmichaelis/igor:1.1.1
 
     ############################################################################
     # OSes
@@ -38,8 +38,8 @@ services:
             context: ./build/alpine
             args:
                 LUPUSMICHAELIS_OFFICIAL_ALPINE_VERSION: 3.14.0
-                LUPUSMICHAELIS_IGOR_VERSION: 1.1.0
-        image: lupusmichaelis/alpine:1.1.0
+                LUPUSMICHAELIS_IGOR_VERSION: 1.1.1
+        image: lupusmichaelis/alpine:1.1.1
 
     alpine-dev:
         <<: *dev-env

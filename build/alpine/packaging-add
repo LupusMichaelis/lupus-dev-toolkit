@@ -1,0 +1,7 @@
+#!/usr/bin/env sh
+
+set -euo pipefail
+[ -v DEBUG ] &&
+	set -x || set +x
+
+apk add --no-cache "$@"
