@@ -2,16 +2,72 @@
 ARG LUPUSMICHAELIS_OFFICIAL_ALPINE_VERSION
 ARG LUPUSMICHAELIS_IGOR_VERSION
 
-### Subsystem  igor ############################################################
+## Subsystem  igor #############################################################
 FROM lupusmichaelis/igor:$LUPUSMICHAELIS_IGOR_VERSION AS igor
 
-### Subsystem to build gosu ####################################################
-FROM alpine:$LUPUSMICHAELIS_OFFICIAL_ALPINE_VERSION AS gosu-builder
+## Subsystem Alpine with Igor ##################################################
+FROM alpine:$LUPUSMICHAELIS_OFFICIAL_ALPINE_VERSION AS base-with-igor
+
+### Configure system ###########################################################
+USER 0
+
+ENV LUPUSMICHAELIS_DIR /usr/local/lib/lupusmichaelis
+RUN mkdir -p ${LUPUSMICHAELIS_DIR}/bin && \
+	mkdir -p ${LUPUSMICHAELIS_DIR}/lib
+
+ENV LUPUSMICHAELIS_DOCKER_ENTRIES_DIR=${LUPUSMICHAELIS_DIR}/docker-entries
+RUN mkdir -p ${LUPUSMICHAELIS_DOCKER_ENTRIES_DIR}
+
+ARG LUPUSMICHAELIS_OFFICIAL_ALPINE_VERSION
+ENV LUPUSMICHAELIS_OFFICIAL_ALPINE_VERSION=${LUPUSMICHAELIS_OFFICIAL_ALPINE_VERSION}
+
+ARG LUPUSMICHAELIS_IGOR_VERSION
+ENV LUPUSMICHAELIS_IGOR_VERSION=${LUPUSMICHAELIS_IGOR_VERSION}
+
+COPY --from=igor \
+	library \
+	${LUPUSMICHAELIS_DIR}/lib/
+
+COPY --from=igor \
+	library \
+	install-entrypoint \
+	docker-entrypoint \
+	${LUPUSMICHAELIS_DIR}/bin/
+
 COPY \
-	lupusmichaelis-packaging-add \
-	lupusmichaelis-packaging-init \
-	$LUPUSMICHAELIS_DIR/bin/
+	packaging-add \
+	packaging-init \
+	${LUPUSMICHAELIS_DIR}/bin/
+
+RUN "${LUPUSMICHAELIS_DIR}/bin/packaging-add" bash
+
+RUN <<eos
+#!/usr/bin/env bash
+
+set -euo pipefail
+[ -v DEBUG ] &&
+	set -x || set +x
+
+declare -ar utilities=(
+	install-entrypoint
+	docker-entrypoint
+	packaging-add
+	packaging-init
+)
+
+for utility in ${utilities[@]}
+do
+	ln -s \
+		${LUPUSMICHAELIS_DIR}/bin/$utility \
+		/usr/local/bin/lupusmichaelis-$utility
+done
+
+eos
+
 RUN lupusmichaelis-packaging-init
+
+## Subsystem to build gosu #####################################################
+FROM base-with-igor AS gosu-builder
 RUN <<eos
 #!/usr/bin/env bash
 
@@ -31,63 +87,15 @@ eos
 
 RUN go get github.com/tianon/gosu
 
-### Actual System ##############################################################
-FROM alpine:$LUPUSMICHAELIS_OFFICIAL_ALPINE_VERSION
+## Actual System ###############################################################
+FROM base-with-igor
 LABEL description="Alpine Linux with gosu and igor helpers"
-ENTRYPOINT ["/usr/local/bin/lupusmichaelis-docker-entrypoint.sh"]
+ENTRYPOINT ["/usr/local/bin/lupusmichaelis-docker-entrypoint"]
 CMD ["bash"]
 
 ENV PATH "${PATH}":/home/go/bin/
 COPY --from=gosu-builder /root/go/bin/gosu /home/go/bin/
 
-### Configure system ###########################################################
-USER 0
-RUN lupusmichaelis-packaging-init
 ### Configure workspace ########################################################
 ENV ANVIL /home/anvil
 WORKDIR ${ANVIL}
-
-ENV LUPUSMICHAELIS_DIR /usr/local/lib/lupusmichaelis
-RUN mkdir -p ${LUPUSMICHAELIS_DIR}
-
-ENV LUPUSMICHAELIS_DOCKER_ENTRIES_DIR=${LUPUSMICHAELIS_DIR}/docker-entries
-RUN mkdir -p ${LUPUSMICHAELIS_DOCKER_ENTRIES_DIR}
-
-ARG LUPUSMICHAELIS_OFFICIAL_ALPINE_VERSION
-ENV LUPUSMICHAELIS_OFFICIAL_ALPINE_VERSION=${LUPUSMICHAELIS_OFFICIAL_ALPINE_VERSION}
-
-ARG LUPUSMICHAELIS_IGOR_VERSION
-ENV LUPUSMICHAELIS_IGOR_VERSION=${LUPUSMICHAELIS_IGOR_VERSION}
-
-COPY --from=igor \
-	library \
-	install-entrypoint \
-	docker-entrypoint \
-	packaging-add \
-	packaging-init \
-	${LUPUSMICHAELIS_DIR}/
-
-RUN <<eos
-#!/usr/bin/env bash
-
-set -euo pipefail
-[ -v DEBUG ] &&
-	set -x || set +x
-
-declare -ar utilities=(
-	install-entrypoint
-	docker-entrypoint
-	packaging-add
-	packaging-init
-)
-
-for utility in $utilities
-do
-	ln -s \
-		${LUPUSMICHAELIS_DIR}/$utility \
-		/usr/local/bin/lupusmichaelis-$utility
-done
-
-eos
-
-RUN lupusmichaelis-packaging-init
