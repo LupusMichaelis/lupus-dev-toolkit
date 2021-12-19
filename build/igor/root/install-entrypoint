@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 
 # main function controls execution flow
-
-# lp stands for Lupus Michaelis
 # ep stands for entry point
 
 set -euo pipefail
@@ -12,7 +10,13 @@ set -euo pipefail
 [ -v DEBUG ] \
 	&& set -x || set +x
 
-lp-ep-get-all()
+lupusmichaelis-deprecated lp-ep-get-all lupusmichaelis-ep-get-all
+lupusmichaelis-deprecated lp-ep-get-last lupusmichaelis-ep-get-last
+lupusmichaelis-deprecated lp-ep-shift-files lupusmichaelis-ep-shift-files
+lupusmichaelis-deprecated lp-ep-get-next-in-sequence lupusmichaelis-ep-get-next-in-sequence
+lupusmichaelis-deprecated lp-is-non-zero-power-of lupusmichaelis-is-non-zero-power-of
+
+lupusmichaelis-ep-get-all()
 {
 	find "$LUPUSMICHAELIS_DOCKER_ENTRIES_DIR" \
 		-regex '.*/[0-9]\+_.*' \
@@ -20,9 +24,9 @@ lp-ep-get-all()
 		"$@"
 }
 
-lp-ep-get-last()
+lupusmichaelis-ep-get-last()
 {
-	lp-ep-get-all \
+	lupusmichaelis-ep-get-all \
 		-print \
 		-quit \
 		| head -1 \
@@ -30,9 +34,9 @@ lp-ep-get-last()
 }
 
 
-lp-ep-shift-files()
+lupusmichaelis-ep-shift-files()
 {
-	for file in $(lp-ep-get-all)
+	for file in $(lupusmichaelis-ep-get-all)
 	do
 		mv \
 			"$LUPUSMICHAELIS_DOCKER_ENTRIES_DIR/$file" \
@@ -40,12 +44,12 @@ lp-ep-shift-files()
 	done
 }
 
-lp-ep-get-next-in-sequence()
+lupusmichaelis-ep-get-next-in-sequence()
 {
-	echo $(( $(lp-ep-get-last) + 1 ))
+	echo $(( $(lupusmichaelis-ep-get-last) + 1 ))
 }
 
-lp-is-non-zero-power-of()
+lupusmichaelis-is-non-zero-power-of()
 {
 	local -r power=$1
 	local -r next=$2
@@ -82,14 +86,14 @@ main()
 	shift
 
 	[[ -x "$source" ]] \
-		|| lp-die "Target should be an executable file"
+		|| lupusmichaelis-die "Target should be an executable file"
 
-	local -r next=$(lp-ep-get-next-in-sequence)
+	local -r next=$(lupusmichaelis-ep-get-next-in-sequence)
 
 	# Ensure that the entry files are well aligned, to have chronology through a natural
 	# sort
-	lp-is-non-zero-power-of 10 "$next" \
-		&& lp-ep-shift-files
+	lupusmichaelis-is-non-zero-power-of 10 "$next" \
+		&& lupusmichaelis-ep-shift-files
 
 	local -r target="$LUPUSMICHAELIS_DOCKER_ENTRIES_DIR/$next"_"$(basename "$source")"
 	mv "$source" "$target"
