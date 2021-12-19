@@ -7,23 +7,9 @@ set -euo pipefail
 
 . "$LUPUSMICHAELIS_DIR/lib/library"
 
-lp-distribution-get()
-{
-	lupusmichaelis-deprecated "${FUNCNAME[0]}"
-	lupusmichaelis-distribution-get "$@"
-}
-
-lp-init()
-{
-	lupusmichaelis-deprecated "${FUNCNAME[0]}"
-	lupusmichaelis-init "$@"
-}
-
-lp-set-dev-user()
-{
-	lupusmichaelis-deprecated "${FUNCNAME[0]}"
-	lupusmichaelis-set-dev-user "$@"
-}
+lupusmichaelis-deprecated lp-distribution-get lupusmichaelis-distribution-get
+lupusmichaelis-deprecated lp-init lupusmichaelis-init
+lupusmichaelis-deprecated lp-set-dev-user lupusmichaelis-set-dev-user
 
 lupusmichaelis-distribution-get()
 {

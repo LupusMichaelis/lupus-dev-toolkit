@@ -5,22 +5,25 @@ set -euo pipefail
 [ -v DEBUG ] \
 	&& set -x || set +x
 
-lp-assert-environement-is-set()
-{
-	lupusmichaelis-deprecated "${FUNCNAME[0]}"
-	lupusmichaelis-assert-environement-is-set "$@"
-}
-
-lp-die()
-{
-	lupusmichaelis-deprecated "${FUNCNAME[0]}"
-	lupusmichaelis-die "$@"
-}
-
 lupusmichaelis-deprecated()
 {
-	printf "Function '%s' is deprecated\n" "$1"
+	local -r old="$1"
+	local -r new="$2"
+
+	local -r generated_function=$(cat <<- eos
+	function $old()
+	{
+		printf "Function '%s' is deprecated, use '%s' instead\n" "$old" "$new"
+		$new \$@
+	}
+	eos
+	)
+
+	eval "$generated_function"
 }
+
+lupusmichaelis-deprecated lp-assert-environement-is-set lupusmichaelis-assert-environement-is-set
+lupusmichaelis-deprecated lp-die lupusmichaelis-die
 
 lupusmichaelis-assert-environement-is-set()
 {
