@@ -7,7 +7,7 @@
 
 set -euo pipefail
 
-. "$LUPUSMICHAELIS_DIR/library.sh"
+. "$LUPUSMICHAELIS_DIR/lib/library"
 
 [ -v DEBUG ] \
 	&& set -x || set +x
