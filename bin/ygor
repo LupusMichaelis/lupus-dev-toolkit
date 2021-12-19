@@ -5,7 +5,6 @@ set -euo pipefail
 [ -v DEBUG ] \
 	&& set -x || set +x
 
-
 # Ygor, DEFINE!!! ##############################################################
 
 YARN="npx yarn"
