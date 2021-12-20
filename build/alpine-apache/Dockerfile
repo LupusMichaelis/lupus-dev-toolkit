@@ -6,13 +6,11 @@ FROM lupusmichaelis/alpine:$LUPUSMICHAELIS_ALPINE_VERSION
 CMD [ "/usr/sbin/httpd", "-X" ]
 
 RUN <<eos
-#!/usr/bin/env bash
 
-set -euo pipefail
-[ -v DEBUG ] &&
-	set -x || set +x
+[ -v DEBUG ] && set -x || set +x
 
 declare -ar packages=(
+	sed
 	apache2
 	apache2-http2
 	apache2-proxy
@@ -40,7 +38,7 @@ sed \
 eos
 
 COPY entrypoint /tmp/alpine-entrypoint
-RUN lupusmichaelis-install-entrypoint.sh /tmp/alpine-entrypoint
+RUN lupusmichaelis-install-entrypoint /tmp/alpine-entrypoint
 
 COPY httpd.conf /etc/apache2/
 COPY conf.d/ /etc/apache2/conf.d/

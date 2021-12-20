@@ -129,7 +129,7 @@ services:
                 LUPUSMICHAELIS_ALPINE_VERSION: 1.1.2
         depends_on:
             - alpine
-        image: lupusmichaelis/alpine-apache:1.1.0
+        image: lupusmichaelis/alpine-apache:1.1.2
 
     ############################################################################
     # PHP
