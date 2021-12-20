@@ -8,12 +8,13 @@ FROM lupusmichaelis/igor:$LUPUSMICHAELIS_IGOR_VERSION AS igor
 ## Subsystem Alpine with Igor ##################################################
 FROM alpine:$LUPUSMICHAELIS_OFFICIAL_ALPINE_VERSION AS base-with-igor
 
+SHELL [ "/bin/sh", "-euo", "pipefail", "-c" ]
+
 ### Configure system ###########################################################
 USER 0
 
 ENV LUPUSMICHAELIS_DIR /usr/local/lib/lupusmichaelis
-RUN mkdir -p ${LUPUSMICHAELIS_DIR}/bin && \
-	mkdir -p ${LUPUSMICHAELIS_DIR}/lib
+RUN mkdir -p ${LUPUSMICHAELIS_DIR}/bin ${LUPUSMICHAELIS_DIR}/lib
 
 ENV LUPUSMICHAELIS_DOCKER_ENTRIES_DIR=${LUPUSMICHAELIS_DIR}/docker-entries
 RUN mkdir -p ${LUPUSMICHAELIS_DOCKER_ENTRIES_DIR}
@@ -68,10 +69,8 @@ RUN lupusmichaelis-packaging-init
 
 ## Subsystem to build gosu #####################################################
 FROM base-with-igor AS gosu-builder
+SHELL [ "/bin/bash", "-euo", "pipefail", "-c" ]
 RUN <<eos
-#!/usr/bin/env bash
-
-set -euo pipefail
 [ -v DEBUG ] &&
 	set -x || set +x
 
@@ -90,6 +89,7 @@ RUN go get github.com/tianon/gosu
 ## Actual System ###############################################################
 FROM base-with-igor
 LABEL description="Alpine Linux with gosu and igor helpers"
+SHELL [ "/bin/bash", "-euo", "pipefail", "-c" ]
 ENTRYPOINT ["/usr/local/bin/lupusmichaelis-docker-entrypoint"]
 CMD ["bash"]
 
