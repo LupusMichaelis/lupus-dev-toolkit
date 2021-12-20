@@ -1,9 +1,14 @@
-FROM lupusmichaelis/alpine:1.0.1
+# syntax=docker/dockerfile-upstream:master-labs
+ARG LUPUSMICHAELIS_ALPINE_VERSION
+
+FROM lupusmichaelis/alpine:$LUPUSMICHAELIS_ALPINE_VERSION
 LABEL description="Alpine Linux with HTTP Proxy"
+
+ARG LUPUSMICHAELIS_ALPINE_VERSION
+ENV LUPUSMICHAELIS_ALPINE_VERSION=${LUPUSMICHAELIS_ALPINE_VERSION}
 
 USER 0
 
-RUN apk add --no-cache \
-    squid
+RUN lupusmichaelis-packaging-add squid
 
 CMD ["squid"]

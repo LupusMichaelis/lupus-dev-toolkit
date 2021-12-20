@@ -55,7 +55,9 @@ services:
     alpine-proxy:
         build:
             context: ./build/alpine-proxy
-        image: lupusmichaelis/alpine-proxy:1.0.0
+            args:
+                LUPUSMICHAELIS_ALPINE_VERSION: 1.1.2
+        image: lupusmichaelis/alpine-proxy:1.1.2
 
     alpine-lighttpd:
         build:
