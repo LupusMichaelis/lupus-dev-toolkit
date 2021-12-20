@@ -38,14 +38,16 @@ services:
             context: ./build/alpine
             args:
                 LUPUSMICHAELIS_OFFICIAL_ALPINE_VERSION: 3.14.0
-                LUPUSMICHAELIS_IGOR_VERSION: 1.1.1
-        image: lupusmichaelis/alpine:1.1.1
+                LUPUSMICHAELIS_IGOR_VERSION: 1.1.2
+        image: lupusmichaelis/alpine:1.1.2
 
     alpine-dev:
         <<: *dev-env
         build:
             context: ./build/alpine-dev
-        image: lupusmichaelis/alpine-dev:1.1.0
+            args:
+                LUPUSMICHAELIS_ALPINE_VERSION: 1.1.2
+        image: lupusmichaelis/alpine-dev:1.1.2
 
     ############################################################################
     # Web server
