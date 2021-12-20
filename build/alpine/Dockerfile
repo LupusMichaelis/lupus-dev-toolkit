@@ -43,11 +43,7 @@ COPY \
 RUN "${LUPUSMICHAELIS_DIR}/bin/packaging-add" bash
 
 RUN <<eos
-#!/usr/bin/env bash
-
-set -euo pipefail
-[ -v DEBUG ] &&
-	set -x || set +x
+[ -v DEBUG ] && set -x || set +x
 
 declare -ar utilities=(
 	install-entrypoint

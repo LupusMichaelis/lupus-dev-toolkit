@@ -1,19 +1,17 @@
-FROM lupusmichaelis/alpine-postfix:1.0.2
+# syntax=docker/dockerfile-upstream:master-labs
+ARG LUPUSMICHAELIS_ALPINE_DEV_VERSION
+FROM lupusmichaelis/alpine-dev:$LUPUSMICHAELIS_ALPINE_DEV_VERSION
 
 LABEL description="Alpine Linux with Postfix MTA and Mutt MUA"
+CMD ["mutt", "-f", "~/Maildir"]
 
 ### Configure system ###########################################################
 
 USER 0
-RUN apk add --no-cache \
-        mutt \
-        w3m \
-    && echo Apk done
+RUN lupusmichaelis-packaging-add mutt w3m
 
-COPY docker-entrypoint.sh /tmp/alpine-postfix-mutt.sh
-RUN lupusmichaelis-install-entrypoint.sh /tmp/alpine-postfix-mutt.sh
+COPY entrypoint /tmp/alpine-postfix-mutt
+RUN lupusmichaelis-install-entrypoint /tmp/alpine-postfix-mutt
 
 COPY muttrc /tmp/.muttrc
 COPY mailcap /tmp/.mailcap
-
-CMD ["mutt", "-f", "~/Maildir"]

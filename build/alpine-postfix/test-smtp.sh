@@ -1,22 +1,22 @@
-#!/bin/sh
+#!/bin/bash
 
 smtp-session()
 {
-cat << TEST
-EHLO $(hostname)
-MAIL FROM: <m@lupusmic.org>
-RCPT TO: <m@lupusmic.org>
-DATA
-Subject: My test email
+	cat <<- TEST
+	EHLO $(hostname)
+	MAIL FROM: <m@lupusmic.org>
+	RCPT TO: <m@lupusmic.org>
+	DATA
+	Subject: My test email
 
-Try me out!
+	Try me out!
 
-.
-quit
-TEST
+	.
+	quit
+	TEST
 }
 
 smtp-test()
 {
-    smtp-session | telnet $(y d last-ip) smtp
+	smtp-session | telnet $(y d last-ip) smtp
 }

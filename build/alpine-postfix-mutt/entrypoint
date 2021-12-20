@@ -7,4 +7,6 @@ cp \
 
 mkdir -p /home/Mail{,dir/{cur,new,tmp}}
 
-chown -R "${LP_DEV_USER_ALIAS}" /home
+chown -R "${LUPUSMICHAELIS_DEV_USER_ALIAS}" /home
+
+gosu "${LUPUSMICHAELIS_DEV_USER_ALIAS}" $@

@@ -1,0 +1,19 @@
+#!/bin/bash
+
+[ -v DEBUG ] && set -x || set +x
+
+if [ -v LUPUSMICHAELIS_DEV_USER_ALIAS ]
+then
+	echo '/.+@.+/ '${LUPUSMICHAELIS_DEV_USER_ALIAS} \
+		> /etc/postfix/virtual-regexp
+
+	mkdir -p ~$LUPUSMICHAELIS_DEV_USER_ALIAS/Mail{,dir/{cur,new,tmp}}
+fi
+
+touch /etc/postfix/virtual
+postmap \
+    /etc/postfix/aliases \
+    /etc/postfix/virtual \
+    /etc/postfix/virtual-regexp
+
+exec $@
