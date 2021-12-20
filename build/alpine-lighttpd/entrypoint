@@ -2,24 +2,22 @@
 
 set -euo pipefail
 
-[ -v DEBUG ] \
-	&& set -x
+[ -v DEBUG ] && set -x || set +x
 
-. "$LUPUSMICHAELIS_DIR/library.sh"
-. "$LUPUSMICHAELIS_DIR/lp-lighttpd.sh"
-
+. "$LUPUSMICHAELIS_DIR/lib/library"
+. "$LUPUSMICHAELIS_DIR/lib/lighttpd"
 
 main()
 {
 	if [ "enable" = "$LIGHTTPD_SECURE" ]
 	then
-		lp-lighttpd-generate-tls
+		lupusmichaelis-lighttpd-generate-tls
 	fi
 
 	if [ "enable" = "$LIGHTTPD_PROXY" ]
 	then
-		lp-assert-environement-is-set BACKEND
-		lp-assert-environement-is-set BACKEND_DOCROOT
+		lupusmichaelis-assert-environement-is-set BACKEND
+		lupusmichaelis-assert-environement-is-set BACKEND_DOCROOT
 	fi
 
 	local -a outputs=(

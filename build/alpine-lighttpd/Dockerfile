@@ -1,27 +1,27 @@
 # syntax=docker/dockerfile-upstream:master-labs
-FROM lupusmichaelis/alpine:1.0.1
+ARG LUPUSMICHAELIS_ALPINE_VERSION
+
+FROM lupusmichaelis/alpine:$LUPUSMICHAELIS_ALPINE_VERSION
 LABEL description="Alpine Linux with Lighttpd"
 
 CMD ["lighttpd", "-D", "-f", "/etc/lighttpd/lighttpd.conf"]
 
 USER 0
-RUN apk update \
-		&& apk upgrade --no-cache \
-		&& apk add --no-cache \
-			ca-certificates \
-			lighttpd \
-			openssl \
-		&& echo Apk done
 
-RUN <<eot
+RUN <<eos
+[ -v DEBUG ] &&
+	set -x || set +x
+
+declare -a packages=(
+	ca-certificates
+	lighttpd
+	openssl
+)
+
+lupusmichaelis-packaging-add ${packages[@]}
+
 mkdir -p /var/run/lighttpd
 chown lighttpd:lighttpd /var/run/lighttpd /dev/fd/1 /dev/fd/2
-eot
-
-RUN <<eot
-#!/bin/bash
-
-set -euo pipefail
 
 sed -i \
 	-e '/^# server\.port = 81/s/^.*$/server.port = 80/' \
@@ -30,24 +30,20 @@ sed -i \
 	-e 's@^server\.errorlog.*$@server.errorlog = "/dev/fd/2"@' \
 	-e 's@^accesslog\.filename.*@accesslog.filename = "/dev/fd/1"@' \
 	/etc/lighttpd/lighttpd.conf
-eot
+eos
 
-COPY docker-entrypoint.sh /tmp/alpine-lighttpd-proxy.sh
-RUN lupusmichaelis-install-entrypoint.sh /tmp/alpine-lighttpd-proxy.sh
+COPY entrypoint /tmp/alpine-lighttpd-proxy
+RUN lupusmichaelis-install-entrypoint /tmp/alpine-lighttpd-proxy
 
 COPY mod_fastcgi.conf debug.conf /etc/lighttpd/
 
 WORKDIR "/var/www/localhost/htdocs"
 
-COPY library.sh ${LUPUSMICHAELIS_DIR}/lp-lighttpd.sh
+COPY library ${LUPUSMICHAELIS_DIR}/lib/lighttpd
 
 ARG LIGHTTPD_PROXY=disable
 ENV LIGHTTPD_PROXY=${LIGHTTPD_PROXY}
 RUN <<eot
-#!/bin/bash
-
-set -euo pipefail
-
 if [ "${LIGHTTPD_PROXY}" = 'enable' ]
 then
 	sed -i \
@@ -62,10 +58,6 @@ eot
 ARG LIGHTTPD_SECURE=disable
 ENV LIGHTTPD_SECURE=${LIGHTTPD_SECURE}
 RUN <<eot
-#!/bin/bash
-
-set -euo pipefail
-
 if [ "${LIGHTTPD_SECURE}" = 'enable' ]
 then
 	cat <<- eoc > /etc/lighttpd/lupusmichaelis.conf
@@ -84,10 +76,6 @@ ENV LIGHTTPD_REWRITE=${LIGHTTPD_REWRITE}
 ARG LIGHTTPD_TARGET=/index.php
 ENV LIGHTTPD_TARGET=${LIGHTTPD_TARGET}
 RUN <<eos
-#!/bin/bash
-
-set -euo pipefail
-
 case "${LIGHTTPD_REWRITE}" in
 	always)
 		cat <<- eoc
@@ -111,7 +99,6 @@ printf "include \"mod_rewrite.conf\"\n" >> /etc/lighttpd/lighttpd.conf
 sed -i \
 	-e '/"mod_rewrite"/s/#//' \
 	/etc/lighttpd/lighttpd.conf
-
 eos
 
 COPY security-header.conf /etc/lighttpd/security-header.conf

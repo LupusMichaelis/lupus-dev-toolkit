@@ -1,6 +1,6 @@
 #!/bin/bash
 
-lp-lighttpd-generate-tls()
+lupusmichaelis-lighttpd-generate-tls()
 {
 	openssl \
 		req \

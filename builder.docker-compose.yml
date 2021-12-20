@@ -62,64 +62,71 @@ services:
     alpine-lighttpd:
         build:
             context: ./build/alpine-lighttpd
+            args:
+                LUPUSMICHAELIS_ALPINE_VERSION: 1.1.2
         depends_on:
             - alpine
-        image: lupusmichaelis/alpine-lighttpd:1.0.6
+        image: lupusmichaelis/alpine-lighttpd:1.1.2
 
     alpine-lighttpd-secure:
         build:
             context: ./build/alpine-lighttpd
             args:
+                LUPUSMICHAELIS_ALPINE_VERSION: 1.1.2
                 LIGHTTPD_SECURE: enable
         depends_on:
             - alpine-lighttpd
-        image: lupusmichaelis/alpine-lighttpd-secure:1.0.5
+        image: lupusmichaelis/alpine-lighttpd-secure:1.1.2
 
     alpine-lighttpd-proxy:
         build:
             context: ./build/alpine-lighttpd
             args:
+                LUPUSMICHAELIS_ALPINE_VERSION: 1.1.2
                 LIGHTTPD_PROXY: enable
         depends_on:
             - alpine-lighttpd
-        image: lupusmichaelis/alpine-lighttpd-proxy:1.0.6
+        image: lupusmichaelis/alpine-lighttpd-proxy:1.1.2
 
     alpine-lighttpd-secure-front:
         build:
             context: ./build/alpine-lighttpd
             args:
+                LUPUSMICHAELIS_ALPINE_VERSION: 1.1.2
                 LIGHTTPD_SECURE: enable
                 LIGHTTPD_PROXY: enable
                 LIGHTTPD_REWRITE: when-not-found
         depends_on:
             - alpine-lighttpd
-        image: lupusmichaelis/alpine-lighttpd-secure-front:1.0.6
+        image: lupusmichaelis/alpine-lighttpd-secure-front:1.1.2
 
     alpine-lighttpd-front:
         build:
             context: ./build/alpine-lighttpd
             args:
+                LUPUSMICHAELIS_ALPINE_VERSION: 1.1.2
                 LIGHTTPD_PROXY: enable
                 LIGHTTPD_REWRITE: when-not-found
         depends_on:
             - alpine-lighttpd
-        image: lupusmichaelis/alpine-lighttpd-front:1.0.6
+        image: lupusmichaelis/alpine-lighttpd-front:1.1.2
 
     alpine-lighttpd-proxy-single:
         build:
             context: ./build/alpine-lighttpd
             args:
+                LUPUSMICHAELIS_ALPINE_VERSION: 1.1.2
                 LIGHTTPD_PROXY: enable
                 LIGHTTPD_REWRITE: always
         depends_on:
             - alpine-lighttpd
-        image: lupusmichaelis/alpine-lighttpd-proxy-single:1.0.6
+        image: lupusmichaelis/alpine-lighttpd-proxy-single:1.1.2
 
     alpine-apache:
         build:
             context: ./build/alpine-apache
             args:
-                LUPUSMICHAELIS_ALPINE_VERSION: 1.1.0
+                LUPUSMICHAELIS_ALPINE_VERSION: 1.1.2
         depends_on:
             - alpine
         image: lupusmichaelis/alpine-apache:1.1.0
