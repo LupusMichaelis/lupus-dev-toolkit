@@ -2,20 +2,19 @@
 
 set -euo pipefail
 
-[ -v DEBUG ] \
-	&& set -x || set +x
+[ -v DEBUG ] && set -x || set +x
 
 . "$LUPUSMICHAELIS_DIR/lib/library"
 
 main()
 {
-	lp-assert-environement-is-set ANVIL
-	lp-assert-environement-is-set LP_DEV_UID
-	lp-assert-environement-is-set LP_DEV_USER_ALIAS
+	lupusmichaelis-assert-environement-is-set ANVIL
+	lupusmichaelis-assert-environement-is-set LUPUSMICHAELIS_DEV_UID
+	lupusmichaelis-assert-environement-is-set LUPUSMICHAELIS_DEV_USER_ALIAS
 
 	mkdir -p "$ANVIL/public"
 	mkdir -p /var/log/php7
-	chown "$LP_DEV_UID" \
+	chown "$LUPUSMICHAELIS_DEV_UID" \
 		/var/log/php7 \
 
 	if [ 'enable' = "$PHP_FPM" ]

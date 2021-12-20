@@ -1,5 +1,7 @@
 # syntax=docker/dockerfile-upstream:master-labs
-FROM lupusmichaelis/alpine-dev:1.0.2
+ARG LUPUSMICHAELIS_ALPINE_DEV_VERSION
+
+FROM lupusmichaelis/alpine-dev:$LUPUSMICHAELIS_ALPINE_DEV_VERSION
 
 LABEL description="Alpine Linux with PHP7"
 
@@ -11,20 +13,16 @@ USER root
 ARG PHP_MODULES="dom iconv json mbstring openssl tokenizer phar session xml xmlwriter"
 ENV PHP_MODULES=${PHP_MODULES}
 
-RUN apk add --no-cache \
+RUN lupusmichaelis-packaging-add \
         php7 \
         $(for module in $PHP_MODULES; do echo "php7-$module"; done)
 
-COPY docker-entrypoint.sh /tmp/alpine-php7.sh
-RUN lupusmichaelis-install-entrypoint.sh /tmp/alpine-php7.sh
+COPY entrypoint /tmp/alpine-php7
+RUN lupusmichaelis-install-entrypoint /tmp/alpine-php7
 
 ARG PHP_FPM
 ENV PHP_FPM=${PHP_FPM:-disable}
 RUN <<eos
-#!/bin/bash
-
-set -euo pipefail
-
 if [ 'enable' = "$PHP_FPM" ]
 then
 	apk add --no-cache \
