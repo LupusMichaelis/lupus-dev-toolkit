@@ -2,10 +2,11 @@
 
 set -euo pipefail
 
-[ -v DEBUG ] \
-	&& set -x
+. $LUPUSMICHAELIS_DIR/lib/library
 
-function init()
+lupusmichaelis-debug-handle
+
+init()
 {
 	sql_tmp=$(mktemp)
 
@@ -42,13 +43,20 @@ function init()
             echo
 		fi
 
-		if [[ -v MYSQL_ROOT_PASSWORD && -n "$MYSQL_ROOT_PASSWORD" ]]
+		if [[ -v LUPUSMICHAELIS_DEV_USER_ALIAS && -n "$LUPUSMICHAELIS_DEV_USER_ALIAS" ]]
 		then
-			echo "create user if not exists '${LP_DEV_USER_ALIAS}'@'%' identified by '${MYSQL_ROOT_PASSWORD}';"
 			cat <<- SQL
-			create user if not exists '${LP_DEV_USER_ALIAS}'@'%' identified by '${MYSQL_ROOT_PASSWORD}';
-			grant all privileges on *.* to '${LP_DEV_USER_ALIAS}'@'%';
+			create user if not exists '${LUPUSMICHAELIS_DEV_USER_ALIAS}'@'localhost';
+			grant all privileges on *.* to '${LUPUSMICHAELIS_DEV_USER_ALIAS}'@'localhost
 			SQL
+
+			if [[ -v MYSQL_ROOT_PASSWORD && -n "$MYSQL_ROOT_PASSWORD" ]]
+			then
+				cat <<- SQL
+				create user if not exists '${LUPUSMICHAELIS_DEV_USER_ALIAS}'@'%' identified by '${MYSQL_ROOT_PASSWORD}';
+				grant all privileges on *.* to '${LUPUSMICHAELIS_DEV_USER_ALIAS}'@'%';
+				SQL
+			fi
 		fi
 
 		if [ -f $INIT_DIR/credentials ]
@@ -83,5 +91,5 @@ function init()
 
 init "$@"
 
-exec "$@" \
+exec gosu ${MYSQL_SYSUSER} "$@" \
 	--datadir "${MYSQL_DATA_PATH}"
