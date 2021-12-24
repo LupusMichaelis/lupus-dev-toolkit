@@ -1,9 +1,30 @@
 #!/usr/bin/env bash
 
-set -euo pipefail
+lupusmichaelis-debug-handle()
+{
+	[[ -v DEBUG  &&
+		-n "$DEBUG" ]] &&
+		lupusmichaelis-is-truish "$DEBUG" &&
+		set -x ||
+		set +x
+}
 
-[ -v DEBUG ] \
-	&& set -x || set +x
+# Test the value is truish from a C semantic perspective
+lupusmichaelis-is-truish()
+{
+	local -r target="$1"
+	case "$target" in
+		0|no|false)
+			false
+			;;
+		1|yes|true)
+			;&
+		*)
+			true
+	esac
+}
+
+lupusmichaelis-debug-handle
 
 lupusmichaelis-deprecated()
 {

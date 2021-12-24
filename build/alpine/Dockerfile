@@ -31,7 +31,7 @@ COPY --from=igor \
 
 COPY --from=igor \
 	library \
-	install-entrypoint \
+	install-initializer \
 	docker-entrypoint \
 	${LUPUSMICHAELIS_DIR}/bin/
 
@@ -41,12 +41,14 @@ COPY \
 	${LUPUSMICHAELIS_DIR}/bin/
 
 RUN "${LUPUSMICHAELIS_DIR}/bin/packaging-add" bash
+SHELL [ "/bin/bash", "-euo", "pipefail", "-c" ]
 
 RUN <<eos
-[ -v DEBUG ] && set -x || set +x
+source $LUPUSMICHAELIS_DIR/lib/library
+lupusmichaelis-debug-handle
 
 declare -ar utilities=(
-	install-entrypoint
+	install-initializer
 	docker-entrypoint
 	packaging-add
 	packaging-init
@@ -55,8 +57,8 @@ declare -ar utilities=(
 for utility in ${utilities[@]}
 do
 	ln -s \
-		${LUPUSMICHAELIS_DIR}/bin/$utility \
-		/usr/local/bin/lupusmichaelis-$utility
+		"${LUPUSMICHAELIS_DIR}/bin/$utility" \
+		"/usr/local/bin/lupusmichaelis-$utility"
 done
 
 eos
@@ -67,8 +69,8 @@ RUN lupusmichaelis-packaging-init
 FROM base-with-igor AS gosu-builder
 SHELL [ "/bin/bash", "-euo", "pipefail", "-c" ]
 RUN <<eos
-[ -v DEBUG ] &&
-	set -x || set +x
+source $LUPUSMICHAELIS_DIR/lib/library
+lupusmichaelis-debug-handle
 
 declare -a packages=(
 	gcc
