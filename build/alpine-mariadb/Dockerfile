@@ -12,6 +12,7 @@ ENV MYSQL_ROOT_PASSWORD ''
 ENV INIT_DIR /home/initialize
 
 CMD [ "mysqld_safe" ]
+ENTRYPOINT ["/usr/local/bin/entrypoint"]
 
 USER root
 RUN lupusmichaelis-packaging-add \
@@ -21,6 +22,8 @@ RUN lupusmichaelis-packaging-add \
 
 # This is a bit extreme, but so we can install as mysql user from the entrypoint
 RUN chmod +s /usr/bin/mariadb-install-db
+
+VOLUME "${MYSQL_DATA_PATH}"/
 
 # Prepare directories
 RUN <<eos
@@ -34,14 +37,8 @@ mkdir -p ${mysql_path_list[@]}
 chown -R ${MYSQL_SYSUSER}:${MYSQL_SYSGROUP} ${mysql_path_list[@]}
 eos
 
-VOLUME "${MYSQL_DATA_PATH}"/
-
 # MariaDB will look of my.cnf
 RUN mv /etc/my.cnf.d/mariadb-server.cnf /etc/my.cnf.d/00-mariadb-server.cnf
 COPY mariadb.cnf /etc/my.cnf.d/10-lupusmichaelis.cnf
-
-ENTRYPOINT ["entrypoint"]
-
 COPY entrypoint /usr/local/bin/entrypoint
-
 COPY ./initialize/ ${INIT_DIR}
