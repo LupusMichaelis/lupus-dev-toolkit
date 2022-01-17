@@ -8,28 +8,25 @@ lupusmichaelis-debug-handle
 
 init()
 {
-	sql_tmp=$(mktemp)
+	local -r sql_tmp=$(mktemp)
+	local -ar myargs=(
+		--user="${MYSQL_SYSUSER}"
+		--datadir="${MYSQL_DATA_PATH}"
+	)
 
-    mysql_install_db \
-		--skip-test-db \
-		--user="${MYSQL_SYSUSER}" \
-		--datadir="${MYSQL_DATA_PATH}" \
-		--auth-root-socket-user="${MYSQL_SYSUSER}"
+	mysql_install_db --skip-test-db ${myargs[@]} ||
+		true # Let's ignore failing installation, we don't care at this point
 
-	echo "$@" \
-		--skip-networking \
-		--datadir "${MYSQL_DATA_PATH}"
-
-	"$@" \
-		--skip-networking \
-		--datadir "${MYSQL_DATA_PATH}" \
-		&
-
-	pid="$!"
-
+	mysqld_safe --skip-networking ${myargs[@]} &
+	local -r pid="$!"
 	sleep 2 # Wait for daemon to start up
 
+	mysql_upgrade ||
+		true # it fails if database already upgraded
+
 	{
+		local schema
+		local space
 		if [ -d $INIT_DIR/schema ]
 		then
 			for schema in $(ls $INIT_DIR/schema/*.sql)
@@ -47,7 +44,7 @@ init()
 		then
 			cat <<- SQL
 			create user if not exists '${LUPUSMICHAELIS_DEV_USER_ALIAS}'@'localhost';
-			grant all privileges on *.* to '${LUPUSMICHAELIS_DEV_USER_ALIAS}'@'localhost
+			grant all privileges on *.* to '${LUPUSMICHAELIS_DEV_USER_ALIAS}'@'localhost';
 			SQL
 
 			if [[ -v MYSQL_ROOT_PASSWORD && -n "$MYSQL_ROOT_PASSWORD" ]]
@@ -65,6 +62,11 @@ init()
 			echo "use \`mysql\`;"
 			echo
 
+			local user
+			local host
+			local space
+			local table
+			local password
 			while IFS=';' read -r user host space table password
 			do
 				if [ "$table" != '*' ]
@@ -81,15 +83,29 @@ init()
 			echo 'flush privileges;'
             echo
 		fi
-	} | tee $sql_tmp | mysql
+	} | tee "$sql_tmp" | mysql
 
 	test $? -ne 0 && echo "Error on data populating"
 
 	mysqladmin shutdown
-	wait $pid
+	wait "$pid"
 }
 
-init "$@"
+run()
+{
+	local mysqld_cmd=(
+		gosu ${MYSQL_SYSUSER} mysqld_safe
+			--datadir "${MYSQL_DATA_PATH}"
+	)
 
-exec gosu ${MYSQL_SYSUSER} "$@" \
-	--datadir "${MYSQL_DATA_PATH}"
+	if (( $# > 0 )) && [[ "$1" != mysqld_safe ]]
+	then
+		${mysqld_cmd[@]} &
+		exec "$@"
+	else
+		exec ${mysqld_cmd[@]}
+	fi
+}
+
+init
+run "$@"

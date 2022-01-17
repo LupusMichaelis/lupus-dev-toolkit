@@ -216,11 +216,14 @@ services:
     ############################################################################
     # Databases
     alpine-mariadb:
-        build: ./build/alpine-mariadb
+        build:
+            context: ./build/alpine-mariadb
+            args:
+                LUPUSMICHAELIS_ALPINE_VERSION: 1.1.3
         environment:
             - 'MYSQL_ROOT_PASSWORD=yolo'
             - 'MYSQL_DATA_PATH=/var/lib/mysql'
-        image: lupusmichaelis/alpine-mariadb:1.0.7
+        image: lupusmichaelis/alpine-mariadb:1.1.4
         restart: "no"
 
         healthcheck:
