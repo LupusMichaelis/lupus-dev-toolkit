@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile-upstream:master-labs
-ARG LUPUSMICHAELIS_ALPINE_DEV_VERSION
+ARG LUPUSMICHAELIS_ALPINE_NODEJS_VERSION
 
-FROM lupusmichaelis/alpine-dev:$LUPUSMICHAELIS_ALPINE_DEV_VERSION
+FROM lupusmichaelis/alpine-nodejs:$LUPUSMICHAELIS_ALPINE_NODEJS_VERSION
 
 LABEL description="Alpine Linux with Elm 0.19.1"
 CMD ["npm", "run", "start"]
@@ -14,14 +14,10 @@ declare -ar package_list=(
 	ca-certificates
 	gmp # gmp required by elm
 	libc6-compat # libc-compat required by elm-test
-	npm
 	openssl
 )
 
 lupusmichaelis-packaging-add ${package_list[@]}
-
-npm c -g set package-lock false
-npm c -g set optional false
 
 eos
 

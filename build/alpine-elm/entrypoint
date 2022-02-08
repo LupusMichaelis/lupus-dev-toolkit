@@ -9,18 +9,27 @@ alpine-elm-entrypoint()
 {
 	lupusmichaelis-assert-environement-is-set LUPUSMICHAELIS_DEV_USER_ALIAS
 
-	if [ ! -f package.json ]
+	if [ ! -f elm.json ]
 	then
 		gosu "${LUPUSMICHAELIS_DEV_USER_ALIAS}" \
 			cp \
 				"${LUPUSMICHAELIS_DIR}/elm.json-dist" \
 				elm.json
+	fi
+
+	if [ ! -f package.json ]
+	then
 		gosu "${LUPUSMICHAELIS_DEV_USER_ALIAS}" \
 			cp \
 				"${LUPUSMICHAELIS_DIR}/package.json-dist" \
 				package.json
+	fi
+
+	if [ ! -d src ]
+	then
 		gosu "${LUPUSMICHAELIS_DEV_USER_ALIAS}" \
 			mkdir -p src
+
 		gosu "${LUPUSMICHAELIS_DEV_USER_ALIAS}" \
 			cp "$LUPUSMICHAELIS_DIR/Main.elm" src/
 	fi
