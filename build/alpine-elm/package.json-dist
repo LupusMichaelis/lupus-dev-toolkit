@@ -1,11 +1,17 @@
 {
-  "name": "elm-project",
+  "name": "Elm Project",
   "version": "0.0.1",
-  "description": "An initial Elm project",
+  "description": "An Elm project",
   "main": "index.js",
   "scripts": {
+	"build": "elm make src/Main.elm",
+	"start": "elm-live --ssl --host=0.0.0.0 --port=443 src/Main.elm",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
-  "license": "ISC"
+  "license": "AGPL",
+  "dependencies": {
+    "elm": "^0.19.1",
+    "elm-live": "^4.0.2"
+  }
 }

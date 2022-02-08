@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+. "$LUPUSMICHAELIS_DIR/lib/library"
+
+lupusmichaelis-debug-handle
+
+alpine-elm-entrypoint()
+{
+	lupusmichaelis-assert-environement-is-set LUPUSMICHAELIS_DEV_USER_ALIAS
+
+	if [ ! -f package.json ]
+	then
+		gosu "${LUPUSMICHAELIS_DEV_USER_ALIAS}" \
+			cp \
+				"${LUPUSMICHAELIS_DIR}/elm.json-dist" \
+				elm.json
+		gosu "${LUPUSMICHAELIS_DEV_USER_ALIAS}" \
+			cp \
+				"${LUPUSMICHAELIS_DIR}/package.json-dist" \
+				package.json
+		gosu "${LUPUSMICHAELIS_DEV_USER_ALIAS}" \
+			mkdir -p src
+		gosu "${LUPUSMICHAELIS_DEV_USER_ALIAS}" \
+			cp "$LUPUSMICHAELIS_DIR/Main.elm" src/
+	fi
+
+	gosu "${LUPUSMICHAELIS_DEV_USER_ALIAS}" \
+		npm i
+	gosu "${LUPUSMICHAELIS_DEV_USER_ALIAS}" \
+		npm run build
+}
+
+alpine-elm-entrypoint "$@"
