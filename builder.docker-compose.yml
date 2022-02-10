@@ -250,10 +250,15 @@ services:
     alpine-nodejs:
         <<: *dev-env
         build:
+            args:
+                LUPUSMICHAELIS_ALPINE_DEV_VERSION: 1.1.3
             context: ./build/alpine-nodejs
-        image: lupusmichaelis/alpine-nodejs:1.0.4
         depends_on:
-            - alpine
+            - alpine-dev
+        environment:
+            - LUPUSMICHAELIS_DEV_USER_ALIAS=kevin
+            - LUPUSMICHAELIS_DEV_UID=${LUPUSMICHAELIS_DEV_UID?Please export LUPUSMICHAELIS_DEV_UID}
+        image: lupusmichaelis/alpine-nodejs:1.1.3
 
     alpine-react:
         <<: *dev-env
