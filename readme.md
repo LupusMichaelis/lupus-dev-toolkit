@@ -9,68 +9,6 @@ provide for it, and go through the
 [project](/LupusMichaelis/lupus-dev-toolkit/projects/1)
 to see what is to be done.
 
-# Usage
-
-## Make your own derived image
-
-Let's say you want to use an Ubuntu based distribution:
-
-```Dockerfile
-# Base image to access igor helpers
-FROM lupusmichaelis/igor:1.0.0 as igor
-FROM ubuntu:hirsute
-
-# Setup igor
-COPY --from=igor / /usr/
-
-ENV LUPUSMICHAELIS_DIR /usr/local/lib/lupusmichaelis
-RUN mkdir -p ${LUPUSMICHAELIS_DIR}
-
-ENV LUPUSMICHAELIS_DOCKER_ENTRIES_DIR ${LUPUSMICHAELIS_DIR}/docker-entries
-RUN mkdir -p ${LUPUSMICHAELIS_DOCKER_ENTRIES_DIR}
-
-COPY --from=igor \
-    library.sh \
-    install-entrypoint.sh \
-    docker-entrypoint.sh \
-    ${LUPUSMICHAELIS_DIR}/
-
-RUN ln -s \
-    ${LUPUSMICHAELIS_DIR}/install-entrypoint.sh \
-    /usr/local/bin/lupusmichaelis-install-entrypoint.sh
-
-RUN ln -s \
-    ${LUPUSMICHAELIS_DIR}/docker-entrypoint.sh \
-    /usr/local/bin/lupusmichaelis-docker-entrypoint.sh
-
-# The usual working directory is defined through ANVIL (can be override at container setup)
-ARG ANVIL
-ENV ANVIL=$ANVIL
-
-# This script will manage all docker entrypoint added from children images
-ENTRYPOINT ["/usr/local/bin/lupusmichaelis-docker-entrypoint.sh"]
-
-# Create and register a script that will be executed during container setup
-RUN set -ex; \
-	apt update; apt install -y bash; \
-	{ \
-		echo '#!/usr/bin/env bash'; \
-		echo 'echo "Yolo, World!"'; \
-	} > /tmp/ubuntu-entrypoint.sh; \
-	chmod +x /tmp/ubuntu-entrypoint.sh
-RUN lupusmichaelis-install-entrypoint.sh /tmp/ubuntu-entrypoint.sh
-
-#
-CMD ["bash"]
-```
-
-You'll build and run as this (or via docker compose):
-
-```bash
-docker build --build-arg ANVIL=/var/run/anvil -t hirsute .
-docker run --rm -it hirsute bash
-```
-
 # Internals
 
 ## Ygor
