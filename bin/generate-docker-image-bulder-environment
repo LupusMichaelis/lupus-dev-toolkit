@@ -5,7 +5,10 @@ set -euo pipefail
 [ -v DEBUG ] \
 	&& set -x || set +x
 
-if [ -f ./.env ]
+declare -r bin_path=$(dirname "$(realpath "${BASH_SOURCE[0]}")")
+declare -r install_path=$(realpath "$bin_path/../")
+
+if [ -f "$install_path/.env" ]
 then
 	echo File .env already exists.
 	exit 1
@@ -23,4 +26,4 @@ fi
     echo LUPUSMICHAELIS_DEV_USER_ALIAS=dev
     echo REPOSITORY_DIR=$HOME/repositories
     echo WORKSHOP_DIR=$HOME/workshop
-} > .env
+} > "$install_path/.env"

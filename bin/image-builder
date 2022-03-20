@@ -1,0 +1,93 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+set +m
+shopt -s lastpipe
+
+if [[ -v DEBUG && -n "$DEBUG" ]]
+then
+	set -x
+fi
+
+declare -r bin_path=$(dirname "$(realpath "${BASH_SOURCE[0]}")")
+declare -r install_path=$(realpath "$bin_path/../")
+declare -r command_name="$0"
+
+export COMPOSE_DOCKER_CLI_BUILD=1
+export DOCKER_BUILDKIT=1
+
+declare -r namespace=lupusmichaelis
+
+if [ "$(whereis yq)" == yq ]
+then
+    yq()
+    {
+        docker run --rm -i -v "${PWD}":/workdir mikefarah/yq "$@"
+    }
+fi
+
+image-builder-docker-sign()
+{
+	local -r name="$1"
+	local -r version="$2"
+
+	docker trust sign "$namespace/$name:$version"
+}
+
+image-builder-build-all()
+{
+    docker-compose -f builder.docker-compose.yml build --parallel --progress plain \
+        && cat builder.docker-compose.yml \
+            | yq e '.services.*.image' - \
+            | xargs -n 1 docker trust sign --local
+}
+
+image-builder-push-image()
+{
+    for imagetag in $(cat builder.docker-compose.yml | yq e '.services.*.image' -)
+    do
+        image=$(echo $imagetag | cut -d':' -f1)
+        docker tag "$imagetag" "$image:latest"
+        docker push "$imagetag"
+        docker push "$image:latest"
+    done
+}
+
+image-builder-main()
+{
+    test -f "$install_path/.env" ||
+        $install_path/bin/generate-docker-image-bulder-environment
+    case "$1" in
+        bootstrap)
+            docker-compose -f builder.docker-compose.yml build bootstrap
+            ;;
+        make)
+            local -r image_name="$2"
+            local -r image_tag_name="$3"
+            docker-compose -f builder.docker-compose.yml run --rm bootstrap "$image_name" "$image_tag_name"
+            ;;
+        make-all)
+            local -ar git_tag_list=$(git-tag)
+            local git_tag_name
+            local git_tag_version
+            for tag in ${git_tag_list[@]}
+            do
+                printf '%b' "$tag" | awk -F '[/@]' -- '{ print $2 " " $3 }' | read git_tag_name git_tag_version
+                "${BASH_SOURCE[0]}" make "$git_tag_name" "$git_tag_version"
+            done
+            ;;
+        *)
+            image-builder-usage
+    esac
+}
+
+git-tag()
+{
+    git for-each-ref --sort=taggerdate --format '%(refname)' refs/tags |
+        while read tag
+        do echo ${tag#refs/tags/}
+        done |
+            grep "$namespace"
+}
+
+image-builder-main "$@"

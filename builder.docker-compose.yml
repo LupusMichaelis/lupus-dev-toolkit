@@ -23,6 +23,19 @@ x-dev-env: &dev-env
 
 services:
     ############################################################################
+    # Bootstrap to build images
+    #
+    bootstrap:
+        build:
+            args:
+                LUPUSMICHAELIS_OFFICIAL_ALPINE_VERSION: 3.14.0
+            context: ./
+        image: lupusmichaelis-bootstrap
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock:rw
+            - ./.git:/dev-tools.git:ro
+
+    ############################################################################
     # Scripts to manage docker images
     #
     igor:
