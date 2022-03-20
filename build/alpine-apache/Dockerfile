@@ -6,8 +6,8 @@ FROM lupusmichaelis/alpine:$LUPUSMICHAELIS_ALPINE_VERSION
 CMD [ "/usr/sbin/httpd", "-X" ]
 
 RUN <<eos
-
-[ -v DEBUG ] && set -x || set +x
+source $LUPUSMICHAELIS_DIR/lib/library
+lupusmichaelis-debug-handle
 
 declare -ar packages=(
 	sed
@@ -17,7 +17,7 @@ declare -ar packages=(
 	apache2-ssl
 )
 
-apk add --no-cache ${packages[@]}
+lupusmichaelis-packaging-add ${packages[@]}
 
 tar c -j -f /etc-apache2.tar.bz -C /etc/apache2 .
 
@@ -37,8 +37,8 @@ sed \
 	-i /etc/apache2/httpd.conf
 eos
 
-COPY entrypoint /tmp/alpine-entrypoint
-RUN lupusmichaelis-install-entrypoint /tmp/alpine-entrypoint
+COPY entrypoint /tmp/alpine-apache-entrypoint
+RUN lupusmichaelis-install-initializer /tmp/alpine-apache-entrypoint
 
 COPY httpd.conf /etc/apache2/
 COPY conf.d/ /etc/apache2/conf.d/
