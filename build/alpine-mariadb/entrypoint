@@ -1,6 +1,7 @@
 #!/bin/bash
 
 set -euo pipefail
+shopt -s lastpipe
 
 . $LUPUSMICHAELIS_DIR/lib/library
 

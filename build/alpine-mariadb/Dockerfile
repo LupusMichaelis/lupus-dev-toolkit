@@ -5,6 +5,8 @@ FROM lupusmichaelis/alpine:$LUPUSMICHAELIS_ALPINE_VERSION
 ARG LUPUSMICHAELIS_ALPINE_VERSION
 ENV LUPUSMICHAELIS_ALPINE_VERSION=${LUPUSMICHAELIS_ALPINE_VERSION}
 
+ARG LUPUSMICHAELIS_ALPINE_MARDIADB_VERSION
+
 ENV MYSQL_SYSUSER mysql
 ENV MYSQL_SYSGROUP mysql
 ENV MYSQL_DATA_PATH /var/lib/mysql
@@ -12,7 +14,7 @@ ENV MYSQL_ROOT_PASSWORD ''
 ENV INIT_DIR /home/initialize
 
 CMD [ "mysqld_safe" ]
-ENTRYPOINT ["/usr/local/bin/entrypoint"]
+ENTRYPOINT ["/usr/local/bin/lupusmichaelis-mariadb-entrypoint"]
 
 USER root
 RUN lupusmichaelis-packaging-add \
@@ -40,5 +42,5 @@ eos
 # MariaDB will look of my.cnf
 RUN mv /etc/my.cnf.d/mariadb-server.cnf /etc/my.cnf.d/00-mariadb-server.cnf
 COPY mariadb.cnf /etc/my.cnf.d/10-lupusmichaelis.cnf
-COPY entrypoint /usr/local/bin/entrypoint
+COPY entrypoint /usr/local/bin/lupusmichaelis-mariadb-entrypoint
 COPY ./initialize/ ${INIT_DIR}
