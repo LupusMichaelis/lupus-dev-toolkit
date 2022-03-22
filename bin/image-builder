@@ -6,7 +6,7 @@ shopt -s lastpipe
 
 if [[ -v DEBUG && -n "$DEBUG" ]]
 then
-    set -x
+	set -x
 fi
 
 declare -r bin_path=$(dirname "$(realpath "${BASH_SOURCE[0]}")")
@@ -21,150 +21,150 @@ declare -r namespace=lupusmichaelis
 
 if [ "$(whereis yq)" == yq: ]
 then
-    yq()
-    {
-        docker run --rm -i -v "${PWD}":/workdir:ro mikefarah/yq "$@"
-    }
+	yq()
+	{
+		docker run --rm -i -v "${PWD}":/workdir:ro mikefarah/yq "$@"
+	}
 fi
 
 image-builder-docker-sign()
 {
-    local -r name="$1"
-    local -r version="$2"
+	local -r name="$1"
+	local -r version="$2"
 
-    docker trust sign "$namespace/$name:$version"
+	docker trust sign "$namespace/$name:$version"
 }
 
 image-builder-push-image-all()
 {
-    local -ar git_tag_list=$(git-tag)
-    local git_tag_name
-    local git_tag_version
-    for tag in ${git_tag_list[@]}
-    do
-        printf '%b' "$tag" |
-            awk -F '[/@]' -- '{ print $2 " " $3 }' |
-            read git_tag_name git_tag_version
-        docker push "$namespace/$git_tag_name:$git_tag_version"
-    done
+	local -ar git_tag_list=$(git-tag)
+	local git_tag_name
+	local git_tag_version
+	for tag in ${git_tag_list[@]}
+	do
+		printf '%b' "$tag" |
+			awk -F '[/@]' -- '{ print $2 " " $3 }' |
+			read git_tag_name git_tag_version
+		docker push "$namespace/$git_tag_name:$git_tag_version"
+	done
 }
 
 image-builder-push-image-latest()
 {
-    local image_tag
-    local image_name
-    local image_version
-    local git_tag
-    local git_revision
+	local image_tag
+	local image_name
+	local image_version
+	local git_tag
+	local git_revision
 
-    for image_tag in $(
-        cat builder.docker-compose.yml |
-            yq e '.services.*.image' - |
-            grep "$namespace/"
-    )
-    do
-        printf '%b' "$image_tag" |
-            awk -F '[/:]' -- '{ print $2 " " $3 }' |
-            read image_name image_version
+	for image_tag in $(
+		cat builder.docker-compose.yml |
+			yq e '.services.*.image' - |
+			grep "$namespace/"
+	)
+	do
+		printf '%b' "$image_tag" |
+			awk -F '[/:]' -- '{ print $2 " " $3 }' |
+			read image_name image_version
 
-        git_tag="$namespace/$image_name@$image_version"
-        if [ -z "$(git tag -l "$git_tag")" ]
-        then
-            git_revision=$(
-                git blame builder.docker-compose.yml |
-                    grep "image: $image_tag" |
-                    awk '{print $1}'
-            )
+		git_tag="$namespace/$image_name@$image_version"
+		if [ -z "$(git tag -l "$git_tag")" ]
+		then
+			git_revision=$(
+				git blame builder.docker-compose.yml |
+					grep "image: $image_tag" |
+					awk '{print $1}'
+			)
 
-            if [ -z "$git_revision" ]
-            then
-                image-builder-error 42 "Cannot find tag '$git_tag' for image '$image_tag'"
-            else
-                git tag "$git_tag" "$git_revision"
-            fi
-        fi
+			if [ -z "$git_revision" ]
+			then
+				image-builder-error 42 "Cannot find tag '$git_tag' for image '$image_tag'"
+			else
+				git tag "$git_tag" "$git_revision"
+			fi
+		fi
 
-        if [ -z "$(docker image ls -q "$image_tag")" ]
-        then
-            image-builder-make "$image_name" "$image_version"
-        fi
+		if [ -z "$(docker image ls -q "$image_tag")" ]
+		then
+			image-builder-make "$image_name" "$image_version"
+		fi
 
-        docker tag "$image_tag" "$namespace/$image_name:latest"
-        docker push "$image_tag"
-        docker push "$namespace/$image_name:latest"
-    done
+		docker tag "$image_tag" "$namespace/$image_name:latest"
+		docker push "$image_tag"
+		docker push "$namespace/$image_name:latest"
+	done
 }
 
 image-builer-error()
 {
-    printf "%b\n" "$2"
-    return "$1"
+	printf "%b\n" "$2"
+	return "$1"
 }
 
 image-builder-make()
 {
-    local -r image_name="$1"
-    local -r image_tag_name="$2"
-    printf "Making image '%s' version '%s'\n" "$image_name" "$image_tag_name"
-    docker-compose -f builder.docker-compose.yml run --rm bootstrap "$image_name" "$image_tag_name"
+	local -r image_name="$1"
+	local -r image_tag_name="$2"
+	printf "Making image '%s' version '%s'\n" "$image_name" "$image_tag_name"
+	docker-compose -f builder.docker-compose.yml run --rm bootstrap "$image_name" "$image_tag_name"
 }
 
 image-builder-main()
 {
-    test -f "$install_path/.env" ||
-        $install_path/bin/generate-docker-image-bulder-environment
-    case "$1" in
-        bootstrap)
-            docker-compose -f builder.docker-compose.yml build bootstrap
-            ;;
-        wip)
-            shift
-            docker-compose -f builder.docker-compose.yml build "$1"
-            ;;
-        push-latest)
-            image-builder-push-image-latest
-            ;;
-        push-all)
-            image-builder-push-image-all
-            ;;
-        push)
-            image-builder-push-image-all
-            image-builder-push-image-latest
-            ;;
-        sign)
-            local -r image_name="$2"
-            local -r image_tag_name="$3"
-            printf "Signing image '%s' version '%s'\n" "$image_name" "$image_tag_name"
-            image-builder-docker-sign "$image_name" "$image_tag_name"
-            ;;
-        make)
-            shift
-            image-builder-make "$@"
-            ;;
-        make-all)
-            local -ar git_tag_list=$(git-tag)
-            local git_tag_name
-            local git_tag_version
-            for tag in ${git_tag_list[@]}
-            do
-                printf '%b' "$tag" |
-                    awk -F '[/@]' -- '{ print $2 " " $3 }' |
-                    read git_tag_name git_tag_version
-                "${BASH_SOURCE[0]}" make "$git_tag_name" "$git_tag_version"
-            done
-            ;;
-        *)
-            image-builder-usage
-    esac
+	test -f "$install_path/.env" ||
+		$install_path/bin/generate-docker-image-bulder-environment
+	case "$1" in
+		bootstrap)
+			docker-compose -f builder.docker-compose.yml build bootstrap
+			;;
+		wip)
+			shift
+			docker-compose -f builder.docker-compose.yml build "$1"
+			;;
+		push-latest)
+			image-builder-push-image-latest
+			;;
+		push-all)
+			image-builder-push-image-all
+			;;
+		push)
+			image-builder-push-image-all
+			image-builder-push-image-latest
+			;;
+		sign)
+			local -r image_name="$2"
+			local -r image_tag_name="$3"
+			printf "Signing image '%s' version '%s'\n" "$image_name" "$image_tag_name"
+			image-builder-docker-sign "$image_name" "$image_tag_name"
+			;;
+		make)
+			shift
+			image-builder-make "$@"
+			;;
+		make-all)
+			local -ar git_tag_list=$(git-tag)
+			local git_tag_name
+			local git_tag_version
+			for tag in ${git_tag_list[@]}
+			do
+				printf '%b' "$tag" |
+					awk -F '[/@]' -- '{ print $2 " " $3 }' |
+					read git_tag_name git_tag_version
+				"${BASH_SOURCE[0]}" make "$git_tag_name" "$git_tag_version"
+			done
+			;;
+		*)
+			image-builder-usage
+	esac
 }
 
 git-tag()
 {
-    git for-each-ref --sort=taggerdate --format '%(refname)' refs/tags |
-        while read tag
-        do echo ${tag#refs/tags/}
-        done |
-            grep "$namespace/"
+	git for-each-ref --sort=taggerdate --format '%(refname)' refs/tags |
+		while read tag
+		do echo ${tag#refs/tags/}
+		done |
+			grep "$namespace/"
 }
 
 image-builder-main "$@"
