@@ -6,15 +6,16 @@ shopt -s lastpipe
 
 if [[ -v DEBUG && -n "$DEBUG" ]]
 then
-	set -x
+    set -x
 fi
 
 declare -r bin_path=$(dirname "$(realpath "${BASH_SOURCE[0]}")")
 declare -r install_path=$(realpath "$bin_path/../")
 declare -r command_name="$0"
 
-export COMPOSE_DOCKER_CLI_BUILD=1
-export DOCKER_BUILDKIT=1
+COMPOSE_DOCKER_CLI_BUILD=1
+DOCKER_BUILDKIT=1
+export COMPOSE_DOCKER_CLI_BUILD DOCKER_BUILDKIT
 
 declare -r namespace=lupusmichaelis
 
@@ -28,10 +29,10 @@ fi
 
 image-builder-docker-sign()
 {
-	local -r name="$1"
-	local -r version="$2"
+    local -r name="$1"
+    local -r version="$2"
 
-	docker trust sign "$namespace/$name:$version"
+    docker trust sign "$namespace/$name:$version"
 }
 
 image-builder-push-image-all()
@@ -115,6 +116,10 @@ image-builder-main()
     case "$1" in
         bootstrap)
             docker-compose -f builder.docker-compose.yml build bootstrap
+            ;;
+        wip)
+            shift
+            docker-compose -f builder.docker-compose.yml build "$1"
             ;;
         push-latest)
             image-builder-push-image-latest
