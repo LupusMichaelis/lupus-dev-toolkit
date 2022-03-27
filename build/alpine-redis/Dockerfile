@@ -1,0 +1,16 @@
+# syntax=docker/dockerfile-upstream:master-labs
+ARG LUPUSMICHAELIS_ALPINE_VERSION
+FROM lupusmichaelis/alpine:$LUPUSMICHAELIS_ALPINE_VERSION
+
+ARG LUPUSMICHAELIS_ALPINE_VERSION
+ENV LUPUSMICHAELIS_ALPINE_VERSION=${LUPUSMICHAELIS_ALPINE_VERSION}
+
+ARG LUPUSMICHAELIS_ALPINE_REDIS_VERSION
+ENV LUPUSMICHAELIS_ALPINE_REDIS_VERSION=${LUPUSMICHAELIS_ALPINE_REDIS_VERSION}
+
+HEALTHCHECK --interval=10s --timeout=20s --retries=10 \
+    CMD /usr/bin/redis-cli ping
+CMD [ "/usr/bin/redis-server" ]
+
+RUN lupusmichaelis-packaging-add \
+        redis
