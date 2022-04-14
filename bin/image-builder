@@ -121,6 +121,11 @@ image-builder-main()
 			shift
 			docker-compose -f builder.docker-compose.yml build "$1"
 			;;
+		test)
+			shift
+			docker-compose -f builder.docker-compose.yml build "$1"
+			docker-compose -f builder.docker-compose.yml run --rm "$1"
+			;;
 		push-latest)
 			image-builder-push-image-latest
 			;;
