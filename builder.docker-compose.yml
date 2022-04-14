@@ -203,6 +203,16 @@ services:
             - alpine-php7
         image: lupusmichaelis/alpine-php7-fpm-composer:1.1.2
 
+    alpine-php8:
+        <<: *dev-env
+        build:
+            context: ./build/alpine-php8
+            args:
+                LUPUSMICHAELIS_ALPINE_DEV_VERSION: 1.1.2
+        depends_on:
+            - alpine-dev
+        image: lupusmichaelis/alpine-php8:1.1.2
+
     ############################################################################
     # MX
     #

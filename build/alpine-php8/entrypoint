@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+[ -v DEBUG ] && set -x || set +x
+
+. "$LUPUSMICHAELIS_DIR/lib/library"
+
+main()
+{
+	lupusmichaelis-assert-environement-is-set ANVIL
+	lupusmichaelis-assert-environement-is-set LUPUSMICHAELIS_DEV_UID
+	lupusmichaelis-assert-environement-is-set LUPUSMICHAELIS_DEV_USER_ALIAS
+
+	mkdir -p "$ANVIL/public"
+	mkdir -p /var/log/php8
+	chown "$LUPUSMICHAELIS_DEV_UID" \
+		/var/log/php8 \
+
+	if [ 'enable' = "$PHP_FPM" ]
+	then
+		exec /usr/sbin/php-fpm7 --nodaemonize
+	elif [[ 'enable' = "$PHP_COMPOSER" && 'composer' -ne "$1" ]]
+	then
+		composer "$@"
+	else
+		"$@"
+	fi
+}
+
+main "$@"
