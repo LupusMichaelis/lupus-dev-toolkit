@@ -210,6 +210,7 @@ image-builder-main()
 			image-builder-docker-compose build "$@"
 			;;
 		wip-run)
+			image-builder-docker-compose build "$1"
 			image-builder-docker-compose run --rm "$@"
 			;;
 		push)
