@@ -27,6 +27,11 @@ then
 	}
 fi
 
+image-builder-docker-compose()
+{
+	docker-compose -f builder.docker-compose.yml "$@"
+}
+
 image-builder-docker-sign()
 {
 	local -r name="$1"
@@ -35,7 +40,7 @@ image-builder-docker-sign()
 	docker trust sign "$namespace/$name:$version"
 }
 
-image-builder-push-image-all()
+image-builder-push-all()
 {
 	local -ar git_tag_list=$(git-tag)
 	local git_tag_name
@@ -49,13 +54,56 @@ image-builder-push-image-all()
 	done
 }
 
-image-builder-push-image-latest()
+image-builder-push-latest()
 {
+	local -r image_name="$1"
+
 	local image_tag
 	local image_name
 	local image_version
 	local git_tag
 	local git_revision
+
+	cat builder.docker-compose.yml |
+			yq e '.services.*.image' - |
+			grep "$namespace/$image_name" |
+			read image_tag
+
+	printf '%b' "$image_tag" |
+		awk -F '[/:]' -- '{ print $3 }' |
+		read image_version
+
+	git_tag="$namespace/$image_name@$image_version"
+	if [ -z "$(git tag -l "$git_tag")" ]
+	then
+		git_revision=$(
+			git blame builder.docker-compose.yml |
+				grep "image: $image_tag" |
+				awk '{print $1}'
+		)
+
+		if [ -z "$git_revision" ]
+		then
+			image-builder-error 42 "Cannot find tag '$git_tag' for image '$image_tag'"
+		else
+			git tag "$git_tag" "$git_revision"
+		fi
+	fi
+
+	if [ -z "$(docker image ls -q "$image_tag")" ]
+	then
+		image-builder-make "$image_name" "$image_version"
+	fi
+
+	docker tag "$image_tag" "$namespace/$image_name:latest"
+	docker push "$image_tag"
+	docker push "$namespace/$image_name:latest"
+}
+
+image-builder-push-latest-all()
+{
+	local image_tag
+	local image_name
 
 	for image_tag in $(
 		cat builder.docker-compose.yml |
@@ -64,34 +112,10 @@ image-builder-push-image-latest()
 	)
 	do
 		printf '%b' "$image_tag" |
-			awk -F '[/:]' -- '{ print $2 " " $3 }' |
-			read image_name image_version
+			awk -F '[/:]' -- '{ print $2 }' |
+			read image_name
 
-		git_tag="$namespace/$image_name@$image_version"
-		if [ -z "$(git tag -l "$git_tag")" ]
-		then
-			git_revision=$(
-				git blame builder.docker-compose.yml |
-					grep "image: $image_tag" |
-					awk '{print $1}'
-			)
-
-			if [ -z "$git_revision" ]
-			then
-				image-builder-error 42 "Cannot find tag '$git_tag' for image '$image_tag'"
-			else
-				git tag "$git_tag" "$git_revision"
-			fi
-		fi
-
-		if [ -z "$(docker image ls -q "$image_tag")" ]
-		then
-			image-builder-make "$image_name" "$image_version"
-		fi
-
-		docker tag "$image_tag" "$namespace/$image_name:latest"
-		docker push "$image_tag"
-		docker push "$namespace/$image_name:latest"
+		image-builder-push-latest "$image_name"
 	done
 }
 
@@ -106,35 +130,91 @@ image-builder-make()
 	local -r image_name="$1"
 	local -r image_tag_name="$2"
 	printf "Making image '%s' version '%s'\n" "$image_name" "$image_tag_name"
-	docker-compose -f builder.docker-compose.yml run --rm bootstrap "$image_name" "$image_tag_name"
+	image-builder-docker-compose run --rm bootstrap "$image_name" "$image_tag_name"
+}
+
+image-builder-usage()
+{
+	local -r bold="[1m"
+	local -r undecorate="[0m"
+	local -r bold_command_name="$bold$command_name$undecorate"
+
+	local usage
+	readarray usage <<-	eos
+	: $bold_command_name push [ image-name ] [ image-tag-name ]
+	: 	TODO
+
+	: $bold_command_name push-latest [ image-name ]
+	: 	Attempts to determine the most recent image version based on builder compose file, marks it as latest
+	: 	then push
+
+	: $bold_command_name push-all
+	: 	Get all Git tags and attempt to push corresponding image
+
+	: $bold_command_name push-all-latest
+	: 	Attempts to determine the most recent image version based on builder compose file, marks it as latest
+	: 	then push, for all
+
+	: $bold_command_name make-all
+	: 	Build all tags of all images
+
+	: $bold_command_name make [ image-name ] [ image-tag-name ]
+	: 	Make a container image based on service name and a version name
+	: 	Image tag example:	$namespace/alpine-panic:1.0.42
+	: 	Git tag example:	$namespace/alpine-panic@1.0.42
+
+	: $bold_command_name wip [ service-name ]
+	: 	Build an image by service name with unclean work in progress file tree
+
+	: $bold_command_name wip-run [ service-name ] [ docker-compose-run-arguments ]
+	: 	Build an image and run an ephemeral container with provided arguments
+
+	: $bold_command_name sign [ image-name ] [ image-tag-name ]
+	: 	Sign an image
+
+	: $bold_command_name bootstrap
+	: 	Build the bootstrap image used to build other images
+	eos
+	typeset -r usage
+	printf "%b" "${usage[@]#: }"
+
+	return 42
 }
 
 image-builder-main()
 {
 	test -f "$install_path/.env" ||
 		$install_path/bin/generate-docker-image-bulder-environment
-	case "$1" in
+
+	if (( $# < 1 ))
+	then
+		image-builder-usage
+		return
+	fi
+
+	local -r action="$1"; shift
+	case "$action" in
 		bootstrap)
-			docker-compose -f builder.docker-compose.yml build bootstrap
+			image-builder-docker-compose build bootstrap
 			;;
 		wip)
-			shift
-			docker-compose -f builder.docker-compose.yml build "$1"
+			image-builder-docker-compose build "$@"
 			;;
-		test)
-			shift
-			docker-compose -f builder.docker-compose.yml build "$1"
-			docker-compose -f builder.docker-compose.yml run --rm "$1"
-			;;
-		push-latest)
-			image-builder-push-image-latest
-			;;
-		push-all)
-			image-builder-push-image-all
+		wip-run)
+			image-builder-docker-compose build "$1"
+			image-builder-docker-compose run --rm "$@"
 			;;
 		push)
-			image-builder-push-image-all
-			image-builder-push-image-latest
+			image-builder-push "$@"
+			;;
+		push-latest)
+			image-builder-push-latest "$@"
+			;;
+		push-all)
+			image-builder-push-all
+			;;
+		push-all-latest)
+			image-builder-push-latest-all
 			;;
 		sign)
 			local -r image_name="$2"
@@ -143,7 +223,6 @@ image-builder-main()
 			image-builder-docker-sign "$image_name" "$image_tag_name"
 			;;
 		make)
-			shift
 			image-builder-make "$@"
 			;;
 		make-all)
