@@ -138,6 +138,7 @@ image-builder-make()
 	local -r image_name="$1"
 	local -r image_tag_name="$2"
 	printf "Making image '%s' version '%s'\n" "$image_name" "$image_tag_name"
+	#TODO compare image tag name to image name in builder file
 	image-builder-docker-compose run --rm bootstrap "$image_name" "$image_tag_name"
 }
 

@@ -82,7 +82,20 @@ main()
 
 	if [ -v LUPUSMICHAELIS_DEV_USER_ALIAS ]
 	then
-		exec gosu "$LUPUSMICHAELIS_DEV_USER_ALIAS" "$@"
+	{
+		local su_program
+		if [ "$(whereis gosu)" != 'gosu:' ]
+		then
+			su_program=gosu
+		elif [ "$(whereis su-exec)" != 'su-exec:' ]
+		then
+			su_program=su-exec
+		else
+			lupusmichaelis-die 'Container user expect to lower credentials, no handler found'
+		fi
+
+		exec "$su_program" "$LUPUSMICHAELIS_DEV_USER_ALIAS" "$@"
+	}
 	else
 		exec "$@"
 	fi

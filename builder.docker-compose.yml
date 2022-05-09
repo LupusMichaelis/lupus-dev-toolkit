@@ -41,7 +41,7 @@ services:
     igor:
         build:
             context: ./build/igor
-        image: lupusmichaelis/igor:1.1.3
+        image: lupusmichaelis/igor:1.1.4
 
     ############################################################################
     # OSes
