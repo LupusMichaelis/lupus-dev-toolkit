@@ -207,11 +207,10 @@ image-builder-main()
 			image-builder-docker-compose build bootstrap
 			;;
 		wip)
-			image-builder-docker-compose build "$action"
+			image-builder-docker-compose build "$@"
 			;;
 		wip-run)
-			image-builder-docker-compose build "$action"
-			image-builder-docker-compose run --rm "$action" "$@"
+			image-builder-docker-compose run --rm "$@"
 			;;
 		push)
 			image-builder-push "$@"
