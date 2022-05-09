@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+[ -v DEBUG ] &&
+	set -x || set +x
+
+# Disable and clean up cache files
+echo -e 'Dir::Cache::pkgcache "";\nDir::Cache::srcpkgcache "";' |
+	tee /etc/apt/apt.conf.d/00_disable-cache-files
+
+rm -f /var/cache/apt/pkgcache.bin /var/cache/apt/srcpkgcache.bin
+
+# Disable and clean up cache directories
+echo -e 'Dir::Cache "";\nDir::Cache::archives "";' |
+	tee /etc/apt/apt.conf.d/00_disable-cache-directories
+rm -rf /var/cache/apt/archives/partial/* /var/cache/apt/archives/*
+
+apt-get update
+apt-get dist-upgrade -yqq

@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+# Dash compatible debug functions from $LUPUSMICHAELIS_DIR/lib/library
+lupusmichaelis_debug_handle()
+{
+	test xxx != ${DEBUG-xxx} &&
+		test -n "$DEBUG" &&
+		lupusmichaelis_is_truish "$DEBUG" &&
+		set -x ||
+		set +x
+}
+
+# Test the value is truish from a C semantic perspective
+lupusmichaelis_is_truish()
+{
+	local -r target="$1"
+	case "$target" in
+		0|no|false)
+			false
+			;;
+		*)
+			true
+	esac
+}
+
+lupusmichaelis_debug_handle
+
+exec apt-get install -yqq "$@"
