@@ -253,6 +253,7 @@ services:
             args:
                 LUPUSMICHAELIS_ALPINE_VERSION: 1.1.3
                 LUPUSMICHAELIS_ALPINE_MARIADB_VERSION: 1.1.7
+                LUPUSMICHAELIS_ALPINE_MARIADB_SECURE: disable
             context: ./build/alpine-mariadb
         environment:
             - 'MYSQL_ROOT_PASSWORD=yolo'
