@@ -7,8 +7,84 @@ shopt -s lastpipe
 
 lupusmichaelis-debug-handle
 
+init-secure()
+{
+	lupusmichaelis-assert-environement-is-set MYSQL_SSL_PATH
+	mkdir -p "$MYSQL_SSL_PATH"
+
+	local -r ssl_ca_key="$MYSQL_SSL_PATH/ca-key.pem"
+	local -r ssl_ca_cert="$MYSQL_SSL_PATH/ca-cert.pem"
+	local -r ssl_server_key="$MYSQL_SSL_PATH/server-key.pem"
+	local -r ssl_server_req="$MYSQL_SSL_PATH/server-req.pem"
+	local -r ssl_server_cert="$MYSQL_SSL_PATH/server-cert.pem"
+
+	# Based on https://www.cyberciti.biz/faq/how-to-setup-mariadb-ssl-and-secure-connections-from-clients/
+
+	# Create the certificate's key
+	openssl genrsa 4096 > "$ssl_ca_key"
+
+	# Generate the CA certificate
+	openssl \
+		req \
+			-new \
+			-subj '/CN=lupusmic.org/O=None/C=FR' \
+			-x509 \
+			-nodes \
+			-days 365 \
+			-key "$ssl_ca_key" \
+			-out "$ssl_ca_cert"
+
+	# Generate server certificates
+	openssl \
+		req \
+			-newkey rsa:4096 \
+			-subj '/CN=lupusmic.org/O=None/C=FR' \
+			-days 365 \
+			-nodes \
+			-keyout "$ssl_server_key" \
+			-out "$ssl_server_req"
+
+	# XXX why???
+	openssl \
+		rsa \
+			-in "$ssl_server_key" \
+			-out "$ssl_server_key"
+
+	# Sign the server certificate with CA certificate
+	openssl \
+		x509 \
+			-req \
+			-in "$ssl_server_req" \
+			-days 365 \
+			-CA "$ssl_ca_cert" \
+			-CAkey "$ssl_ca_key" \
+			-set_serial 01 \
+			-out "$ssl_server_cert"
+
+	cat <<- eos > /etc/my.cnf.d/11-lupusmichaelis-secure.cnf
+	[mysqld]
+
+	ssl_ca=$ssl_ca_cert
+	ssl_cert=$ssl_server_cert
+	ssl_key=$ssl_server_key
+	require_secure_transport=ON
+	eos
+
+	chown -R "$MYSQL_SYSUSER:$MYSQL_SYSGROUP" "$MYSQL_SSL_PATH"
+}
+
+does-require-secured()
+{
+	[[ -v LUPUSMICHAELIS_ALPINE_MARIADB_SECURE  && enable = "$LUPUSMICHAELIS_ALPINE_MARIADB_SECURE" ]]
+}
+
 init()
 {
+	if does-require-secured
+	then
+		init-secure
+	fi
+
 	local -r sql_tmp=$(mktemp)
 	local -ar myargs=(
 		--user="${MYSQL_SYSUSER}"

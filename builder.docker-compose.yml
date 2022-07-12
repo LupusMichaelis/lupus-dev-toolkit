@@ -242,12 +242,25 @@ services:
         build:
             args:
                 LUPUSMICHAELIS_ALPINE_VERSION: 1.1.3
-                LUPUSMICHAELIS_ALPINE_MARIADB_VERSION: 1.1.6
+                LUPUSMICHAELIS_ALPINE_MARIADB_VERSION: 1.1.7
             context: ./build/alpine-mariadb
         environment:
             - 'MYSQL_ROOT_PASSWORD=yolo'
             - 'MYSQL_DATA_PATH=/var/lib/mysql'
-        image: lupusmichaelis/alpine-mariadb:1.1.6
+        image: lupusmichaelis/alpine-mariadb:1.1.7
+        restart: "no"
+
+    alpine-mariadb-secure:
+        build:
+            args:
+                LUPUSMICHAELIS_ALPINE_VERSION: 1.1.3
+                LUPUSMICHAELIS_ALPINE_MARIADB_VERSION: 1.1.7
+                LUPUSMICHAELIS_ALPINE_MARIADB_SECURE: enable
+            context: ./build/alpine-mariadb
+        environment:
+            - 'MYSQL_ROOT_PASSWORD=yolo'
+            - 'MYSQL_DATA_PATH=/var/lib/mysql'
+        image: lupusmichaelis/alpine-mariadb-secure:1.1.7
         restart: "no"
 
     alpine-redis:
