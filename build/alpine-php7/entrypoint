@@ -20,11 +20,13 @@ main()
 	if [ 'enable' = "$PHP_FPM" ]
 	then
 		exec /usr/sbin/php-fpm7 --nodaemonize
-	elif [[ 'enable' = "$PHP_COMPOSER" && 'composer' -ne "$1" ]]
+	elif [[ 'enable' = "$PHP_COMPOSER" &&
+		-v 1 &&
+		'composer' -ne "$1" ]]
 	then
-		composer "$@"
+		exec composer "$@"
 	else
-		"$@"
+		exec "$@"
 	fi
 }
 
