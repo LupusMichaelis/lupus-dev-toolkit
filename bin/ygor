@@ -210,7 +210,7 @@ ygor-docker-usage()
 ygor-docker-clean()
 {
 	ids=$(docker ps -qf status=exited)
-	if [[ ! -z $did ]]; then
+	if [[ ! -z "$ids" ]]; then
 		docker rm $ids
 	else
 		ygor-die "No container to burn down"
