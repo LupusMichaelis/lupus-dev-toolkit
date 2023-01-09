@@ -54,6 +54,14 @@ image-builder-push-all()
 	done
 }
 
+image-builder-push()
+{
+	local -r image_name="$1"
+	local -r image_tag="$2"
+	printf "Pushing image '%s' version '%s'\n" "$image_name" "$image_tag"
+	docker push "$namespace/$image_name:$image_tag"
+}
+
 image-builder-push-latest()
 {
 	local -r image_name="$1"
