@@ -1,0 +1,15 @@
+builder:
+  image: docker:20.10.16
+  services:
+    - docker:20.10.16-dind
+  variables:
+    DOCKER_TLS_CERTDIR: "/certs"
+    COMPOSE_DOCKER_CLI_BUILD: 1
+    DOCKER_BUILDKIT: 1
+  before_script:
+    - apk update && apk add bash curl git util-linux
+  script:
+    - ./bin/image-builder make-all
+    # Add those variables to "Settings > CICD > Variables"
+    - docker login -u "$DOCKER_REGISTRY_USER" -p "$DOCKER_REGISTRY_PASSWORD"
+    - ./bin/image-builder push-all

@@ -1,0 +1,62 @@
+#!/bin/bash
+
+set -euo pipefail
+shopt -s lastpipe
+
+declare -ar conflicting=(
+	docker
+	docker-engine
+	docker.io
+	containerd
+	runc
+)
+
+declare -ar install_dependencies=(
+    ca-certificates
+    curl
+	git
+    gnupg
+    lsb-release
+)
+
+declare -ar docker_packages=(
+	docker-ce-cli
+	docker-compose-plugin
+)
+
+main()
+{
+	declare -r arch="$(dpkg --print-architecture)"
+
+	apt-get update
+	apt-remove ${conflicting[@]} ||
+		:
+	apt-install ${install_dependencies[@]}
+		
+	declare -r debian_flavour="$(lsb_release -cs)"
+	mkdir -p /etc/apt/keyrings
+	curl -fsSL https://download.docker.com/linux/ubuntu/gpg |
+		gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+
+	cat <<-eos > /etc/apt/sources.list.d/docker.list
+	deb [arch=$arch signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian $debian_flavour stable
+	eos
+
+	cat /etc/apt/sources.list.d/docker.list
+
+	apt-get update
+
+	apt-install "${docker_packages[@]}"
+}
+
+apt-install()
+{
+	apt-get install --yes --quiet=2 "$@"
+}
+
+apt-remove()
+{
+	apt-get remove --yes --quiet=2 "$@"
+}
+
+main "$@"
