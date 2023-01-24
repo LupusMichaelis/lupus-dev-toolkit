@@ -1,4 +1,4 @@
-# syntax=docker/dockerfile-upstream:master-labs
+# syntax=docker/dockerfile:1.5.1
 ARG LUPUSMICHAELIS_OFFICIAL_DEBIAN_VERSION
 ARG LUPUSMICHAELIS_IGOR_VERSION
 

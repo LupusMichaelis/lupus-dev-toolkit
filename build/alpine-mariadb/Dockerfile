@@ -1,4 +1,4 @@
-# syntax=docker/dockerfile-upstream:master-labs
+# syntax=docker/dockerfile:1.5.1
 ARG LUPUSMICHAELIS_ALPINE_VERSION
 FROM lupusmichaelis/alpine:$LUPUSMICHAELIS_ALPINE_VERSION
 
