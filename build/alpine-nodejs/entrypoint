@@ -1,22 +1,23 @@
 #!/usr/bin/env bash
 
-set -e
+set -euo pipefail
+shopt -s lastpipe
 
-. "$LUPUSMICHAELIS_DIR/library.sh"
+. "$LUPUSMICHAELIS_DIR/lib/library"
 
-lp-assert-environement-is-set LP_DEV_USER_ALIAS
+lupusmichaelis-assert-environement-is-set LUPUSMICHAELIS_DEV_USER_ALIAS
 
 if [ ! -f package.json ]
 then
-	gosu "${LP_DEV_USER_ALIAS}" \
+	gosu "${LUPUSMICHAELIS_DEV_USER_ALIAS}" \
 		cp \
 			"${LUPUSMICHAELIS_DIR}/node.package.json-dist" \
 			package.json
 
-	gosu "${LP_DEV_USER_ALIAS}" \
+	gosu "${LUPUSMICHAELIS_DEV_USER_ALIAS}" \
 		npm i --save \
 			json-server@0.9.5
 else
-	gosu "${LP_DEV_USER_ALIAS}" \
+	gosu "${LUPUSMICHAELIS_DEV_USER_ALIAS}" \
 		npm i
 fi

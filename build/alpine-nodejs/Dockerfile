@@ -1,25 +1,25 @@
-FROM lupusmichaelis/alpine-dev:1.0.2
+# syntax=docker/dockerfile:1.5.1
+ARG LUPUSMICHAELIS_ALPINE_DEV_VERSION
+FROM lupusmichaelis/alpine-dev:$LUPUSMICHAELIS_ALPINE_DEV_VERSION
 
 LABEL description="Alpine Linux with user and NodeJS"
 
 ### Add Node JS packages #######################################################
 
+CMD ["npm", "run"]
 USER root
-
-RUN apk update \
-    && apk add --no-cache \
-        nodejs \
-        npm
-
-RUN npm c -g set package-lock false \
-    && npm c -g set optional false \
-    && npm c -g set ssl-strict=false \
-    && npm c -g set registry http://registry.npmjs.org/
-
 ENV PATH "$ANVIL/node_modules/.bin:$PATH"
 
-COPY docker-entrypoint.sh /tmp/alpine-nodejs.sh
-RUN lupusmichaelis-install-entrypoint.sh /tmp/alpine-nodejs.sh
-COPY ./package.json-dist "${LUPUSMICHAELIS_DIR}/node.package.json-dist"
+RUN <<eos
+lupusmichaelis-packaging-add nodejs npm
 
-CMD ["npm", "run"]
+npm c -g set package-lock false
+npm c -g set optional false
+npm c -g set ssl-strict=false
+npm c -g set registry http://registry.npmjs.org/
+
+eos
+
+COPY entrypoint /tmp/alpine-nodejs.sh
+RUN lupusmichaelis-install-initializer /tmp/alpine-nodejs.sh
+COPY ./package.json-dist "${LUPUSMICHAELIS_DIR}/node.package.json-dist"
