@@ -13,11 +13,7 @@ ENV PATH "$ANVIL/node_modules/.bin:$PATH"
 RUN <<eos
 lupusmichaelis-packaging-add nodejs npm
 
-npm c -g set package-lock false
 npm c -g set optional false
-npm c -g set ssl-strict=false
-npm c -g set registry http://registry.npmjs.org/
-
 eos
 
 COPY entrypoint /tmp/alpine-nodejs.sh
