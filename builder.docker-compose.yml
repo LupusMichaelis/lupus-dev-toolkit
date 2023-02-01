@@ -299,6 +299,17 @@ services:
             - LUPUSMICHAELIS_DEV_UID=${LUPUSMICHAELIS_DEV_UID?Please export LUPUSMICHAELIS_DEV_UID}
         image: lupusmichaelis/alpine-nodejs:1.1.4
 
+    alpine-ember:
+        <<: *dev-env
+        build:
+            args:
+                LUPUSMICHAELIS_ALPINE_DEV_NODEJS_VERSION: 1.1.4
+                LUPUSMICHAELIS_ALPINE_DEV_EMBER_VERSION: 1.1.4
+            context: ./build/alpine-ember
+        depends_on:
+            - alpine-nodejs
+        image: lupusmichaelis/alpine-ember:1.1.4
+
     alpine-react:
         <<: *dev-env
         build:

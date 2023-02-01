@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+shopt -s lastpipe
+
+. "$LUPUSMICHAELIS_DIR/lib/library"
+
+lupusmichaelis-assert-environement-is-set LUPUSMICHAELIS_DEV_USER_ALIAS
+
+if [ ! -f package.json ]
+then
+	gosu "${LUPUSMICHAELIS_DEV_USER_ALIAS}" \
+		npm i ---save \
+			ember-cli@1.8.14
+else
+	gosu "${LUPUSMICHAELIS_DEV_USER_ALIAS}" \
+		npm i
+fi
