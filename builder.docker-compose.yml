@@ -303,9 +303,12 @@ services:
         <<: *dev-env
         build:
             context: ./build/alpine-react
+            args:
+                LUPUSMICHAELIS_ALPINE_DEV_NODEJS_VERSION: 1.1.4
+                LUPUSMICHAELIS_ALPINE_DEV_REACT_VERSION: 1.1.4
         depends_on:
             - alpine-nodejs
-        image: lupusmichaelis/alpine-react:1.0.4
+        image: lupusmichaelis/alpine-react:1.1.4
 
     alpine-react-ts:
         <<: *dev-env

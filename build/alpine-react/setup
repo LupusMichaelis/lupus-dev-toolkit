@@ -1,7 +1,15 @@
 #!/usr/bin/env bash
 
-create-react-app . \
-	--use-npm
+set -euo pipefail
+shopt -s lastpipe
 
-npm i -g \
-    react-router-dom
+main()
+{
+	create-react-app . \
+		--use-npm
+
+	npm i -g \
+		react-router-dom
+}
+
+main "$@"
