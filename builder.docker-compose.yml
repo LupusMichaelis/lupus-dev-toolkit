@@ -314,9 +314,12 @@ services:
         <<: *dev-env
         build:
             context: ./build/alpine-react-ts
+            args:
+                LUPUSMICHAELIS_ALPINE_DEV_REACT_VERSION: 1.1.4
+                LUPUSMICHAELIS_ALPINE_DEV_REACT_TS_VERSION: 1.1.4
         depends_on:
             - alpine-react
-        image: lupusmichaelis/alpine-react-ts:1.0.4
+        image: lupusmichaelis/alpine-react-ts:1.1.4
 
     alpine-elm:
         <<: *dev-env

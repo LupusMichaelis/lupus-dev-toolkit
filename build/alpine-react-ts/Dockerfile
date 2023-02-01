@@ -1,8 +1,9 @@
-FROM lupusmichaelis/alpine-react:1.0.4
+# syntax=docker/dockerfile:1.5.1
+ARG LUPUSMICHAELIS_ALPINE_DEV_REACT_TS_VERSION
+ARG LUPUSMICHAELIS_ALPINE_DEV_REACT_VERSION
+FROM lupusmichaelis/alpine-react:$LUPUSMICHAELIS_ALPINE_DEV_REACT_VERSION
 
-LABEL description="Alpine Linux with user and React on NodeJS using TypeScript"
-
-### Add Node JS packages #######################################################
+LABEL description="Alpine Linux with dev user and React on NodeJS using TypeScript"
 
 USER root
 
@@ -19,5 +20,3 @@ RUN npm install -g \
     @types/react-router-dom
 
 COPY setup "${LUPUSMICHAELIS_DIR}/setup-react-ts"
-
-CMD ["npm", "start"]
