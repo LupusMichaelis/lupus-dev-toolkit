@@ -1,26 +1,53 @@
 #!/usr/bin/env bash
 
 set -euo pipefail
-set +m
 shopt -s lastpipe
 
-if [[ -v DEBUG && -n "$DEBUG" ]]
-then
-	set -x
-fi
+image-builder-debug-handle()
+{
+   [[ -v DEBUG  &&
+       -n "$DEBUG" ]] &&
+       image-builder-is-truish "$DEBUG" &&
+       set -x ||
+       set +x
+}
+
+# Test the value is truish from a C semantic perspective
+image-builder-is-truish()
+{
+  local -r target="$1"
+  case "$target" in
+      0|no|false)
+          false
+          ;;
+      1|yes|true)
+          ;&
+      *)
+          true
+  esac
+}
+
+image-builder-has-exe()
+{
+	local exe="$1"
+	type "$exe" >& /dev/null
+}
+
+image-builder-debug-handle
 
 declare -r bin_path=$(dirname "$(realpath "${BASH_SOURCE[0]}")")
 declare -r install_path=$(realpath "$bin_path/../")
-declare -r command_name="$0"
+declare -r command_name="$(basename $0)"
+declare -r namespace=lupusmichaelis
 
 COMPOSE_DOCKER_CLI_BUILD=1
 DOCKER_BUILDKIT=1
 export COMPOSE_DOCKER_CLI_BUILD DOCKER_BUILDKIT
 
-declare -r namespace=lupusmichaelis
-
-if [ "$(whereis yq)" == yq: ]
+if image-builder-has-exe yq
 then
+	:
+else
 	yq()
 	{
 		docker run --rm -i -v "${PWD}":/workdir:ro mikefarah/yq "$@"
