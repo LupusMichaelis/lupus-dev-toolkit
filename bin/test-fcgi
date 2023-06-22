@@ -1,0 +1,49 @@
+#!/bin/bash
+
+set -euo pipefail
+shopt -s lastpipe
+
+declare -r command_name="$(basename $0)"
+
+test-fcgi-usage()
+{
+	cat <<- eos
+	$command_name <ip> <port> <filename> <http-method>
+
+	port: default should be 9000
+	eos
+}
+
+test-fcgi-die()
+{
+	printf '%b: error: %b\n' "$command_name" "$@"
+	exit 1
+}
+
+test-fcgi-main()
+{
+	if type cgi-fcgi >& /dev/null
+	then
+		:
+	else
+		test-fcgi-die 'cgi-fcgi not found'
+	fi
+
+	if test $# -lt 5
+	then
+		test-fcgi-usage
+		return 1
+	fi
+
+	local -r ip="$1"
+	local -r port="$2"
+	local -r filename="$3"
+	local -r method="$4"
+
+	SCRIPT_NAME="$filename" \
+	SCRIPT_FILENAME="$filename" \
+	REQUEST_METHOD="$method" \
+	cgi-fcgi -bind -connect "$ip:$port"
+}
+
+test-fcgi-main "$@"
