@@ -8,8 +8,6 @@ FROM lupusmichaelis/igor:$LUPUSMICHAELIS_IGOR_VERSION AS igor
 ## Subsystem Alpine with Igor ##################################################
 FROM alpine:$LUPUSMICHAELIS_OFFICIAL_ALPINE_VERSION AS base-with-igor
 
-SHELL [ "/bin/sh", "-euo", "pipefail", "-c" ]
-
 ### Configure system ###########################################################
 USER 0
 
@@ -82,7 +80,7 @@ declare -a packages=(
 lupusmichaelis-packaging-add ${packages[@]}
 eos
 
-RUN go get github.com/tianon/gosu
+RUN go install github.com/tianon/gosu@1.16
 
 ## Actual System ###############################################################
 FROM base-with-igor
