@@ -89,6 +89,12 @@ image-builder-push()
 	docker push "$namespace/$image_name:$image_tag"
 }
 
+image-builder-list-services()
+{
+	image-builder-docker-compose config |
+		yq e '.services | to_entries | .[].key' -
+}
+
 image-builder-push-latest()
 {
 	local -r image_name="$1"
@@ -208,6 +214,9 @@ image-builder-usage()
 	: $bold_command_name sign [ image-name ] [ image-tag-name ]
 	: 	Sign an image
 
+	: $bold_command_name list
+	: 	List services to build
+
 	: $bold_command_name bootstrap
 	: 	Build the bootstrap image used to build other images
 	eos
@@ -239,6 +248,9 @@ image-builder-main()
 		wip-run)
 			image-builder-docker-compose build "$1"
 			image-builder-docker-compose run --rm "$@"
+			;;
+		list)
+			image-builder-list-services
 			;;
 		push)
 			image-builder-push "$@"
