@@ -12,9 +12,19 @@ ENV COMPOSE_DOCKER_CLI_BUILD=1
 ENV DOCKER_BUILDKIT=1
 
 RUN <<eos
-apk add --no-cache git docker-cli docker-compose
+#!/bin/bash
 
-cat <<- 'eof' >> /checkout-and-build
+set -euo pipefail
+
+declare -ar packages=(
+	docker-cli
+	docker-cli-compose
+	git
+)
+
+apk add --no-cache ${packages[@]}
+
+cat <<- 'eof' > /checkout-and-build
 #!/bin/bash
 
 set -euo pipefail
@@ -27,10 +37,10 @@ declare -r full_image_name="$namespace/$image_name:$image_version"
 declare -r image_tag="$namespace/$image_name@$image_version"
 
 git clone /dev-tools.git /dev-tools
-git reset --hard "$image_tag"
+git checkout "$image_tag"
 cp /dev-tools.env /dev-tools/.env
 
-docker-compose -f builder.docker-compose.yml build --progress plain "$image_name"
+docker compose -f builder.docker-compose.yml build --progress plain "$image_name"
 
 eof
 chmod +x /checkout-and-build

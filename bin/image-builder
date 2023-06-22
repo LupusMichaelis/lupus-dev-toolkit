@@ -204,7 +204,7 @@ image-builder-main()
 	local -r action="$1"; shift
 	case "$action" in
 		bootstrap)
-			image-builder-docker-compose build bootstrap
+			image-builder-docker-compose build --progress=plain bootstrap
 			;;
 		wip)
 			image-builder-docker-compose build "$@"
