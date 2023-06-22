@@ -4,9 +4,6 @@
 #
 ##############################################################################
 
-version: '3.4'
-
-
 x-dev-env: &dev-env
     environment:
         - LP_DEV_UID=${LP_DEV_UID?Please export LP_DEV_UID}
