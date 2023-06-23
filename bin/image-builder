@@ -242,6 +242,9 @@ image-builder-main()
 		bootstrap)
 			image-builder-docker-compose build --progress=plain bootstrap
 			;;
+		dc)
+			image-builder-docker-compose $@
+			;;
 		wip)
 			image-builder-docker-compose build "$@"
 			;;
