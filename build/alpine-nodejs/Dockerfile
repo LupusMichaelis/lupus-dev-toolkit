@@ -10,11 +10,7 @@ CMD ["npm", "run"]
 USER root
 ENV PATH "$ANVIL/node_modules/.bin:$PATH"
 
-RUN <<eos
-lupusmichaelis-packaging-add nodejs npm
-
-npm c -g set optional false
-eos
+RUN lupusmichaelis-packaging-add nodejs npm
 
 COPY entrypoint /tmp/alpine-nodejs.sh
 RUN lupusmichaelis-install-initializer /tmp/alpine-nodejs.sh
