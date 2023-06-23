@@ -56,7 +56,7 @@ fi
 
 image-builder-docker-compose()
 {
-	docker compose -f builder.docker-compose.yml "$@"
+	docker compose --env-file=$install_path/.env -f $install_path/build/docker-compose.yml "$@"
 }
 
 image-builder-docker-sign()

@@ -6,8 +6,6 @@
 ##############################################################################
 
 x-dev-env: &dev-env
-  env_file:
-    - .env
   environment:
     - LUPUSMICHAELIS_DEV_UID=${LUPUSMICHAELIS_DEV_UID?Please export LUPUSMICHAELIS_DEV_UID}
     - LUPUSMICHAELIS_DEV_GID=${LUPUSMICHAELIS_DEV_GID?Please export LUPUSMICHAELIS_DEV_GID}
@@ -31,8 +29,8 @@ services:
     image: lupusmichaelis-bootstrap
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:rw
-      - ./.git:/dev-tools.git:ro
-      - ./.env:/dev-tools.env:ro
+      - ../.git:/dev-tools.git:ro
+      - ../.env:/dev-tools.env:ro
 
   ############################################################################
   # Scripts to manage docker images
