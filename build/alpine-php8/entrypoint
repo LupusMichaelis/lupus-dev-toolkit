@@ -13,13 +13,13 @@ main()
 	lupusmichaelis-assert-environement-is-set LUPUSMICHAELIS_DEV_USER_ALIAS
 
 	mkdir -p "$ANVIL/public"
-	mkdir -p /var/log/php8
+	mkdir -p /var/log/php81
 	chown "$LUPUSMICHAELIS_DEV_UID" \
-		/var/log/php8 \
+		/var/log/php81 \
 
 	if [ 'enable' = "$PHP_FPM" ]
 	then
-		exec /usr/sbin/php-fpm7 --nodaemonize
+		exec /usr/sbin/php-fpm81 --nodaemonize
 	elif [[ 'enable' = "$PHP_COMPOSER" && 'composer' -ne "$1" ]]
 	then
 		composer "$@"

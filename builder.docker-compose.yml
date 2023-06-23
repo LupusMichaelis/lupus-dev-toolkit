@@ -174,7 +174,7 @@ services:
         image: lupusmichaelis/alpine-apache:1.2.0
 
     ############################################################################
-    # PHP
+    # PHP 7
     #
     alpine-php7:
         <<: *dev-env
@@ -220,6 +220,9 @@ services:
             - alpine-php7
         image: lupusmichaelis/alpine-php7-fpm-composer:1.2.0
 
+    ############################################################################
+    # PHP 8
+    #
     alpine-php8:
         <<: *dev-env
         build:
@@ -227,8 +230,30 @@ services:
             args:
                 LUPUSMICHAELIS_ALPINE_DEV_VERSION: 1.2.0
         depends_on:
-            - alpine-dev
+            - alpine-legacy-dev
         image: lupusmichaelis/alpine-php8:1.2.0
+
+    alpine-php8-fpm:
+        <<: *dev-env
+        build:
+            context: ./build/alpine-php8
+            args:
+                LUPUSMICHAELIS_ALPINE_DEV_VERSION: 1.2.0
+                PHP_FPM: enable
+        depends_on:
+            - alpine-php8
+        image: lupusmichaelis/alpine-php8-fpm:1.2.0
+
+    alpine-php8-composer:
+        <<: *dev-env
+        build:
+            context: ./build/alpine-php8
+            args:
+                LUPUSMICHAELIS_ALPINE_DEV_VERSION: 1.2.0
+                PHP_COMPOSER: enable
+        depends_on:
+            - alpine-php8
+        image: lupusmichaelis/alpine-php8-composer:1.2.0
 
     alpine-php8-fpm-composer:
         <<: *dev-env
@@ -236,8 +261,8 @@ services:
             context: ./build/alpine-php8
             args:
                 LUPUSMICHAELIS_ALPINE_DEV_VERSION: 1.2.0
-                PHP_COMPOSER: enable
                 PHP_FPM: enable
+                PHP_COMPOSER: enable
         depends_on:
             - alpine-php8
         image: lupusmichaelis/alpine-php8-fpm-composer:1.2.0
