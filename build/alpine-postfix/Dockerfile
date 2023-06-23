@@ -58,4 +58,4 @@ sed -i \
 eos
 
 COPY entrypoint /tmp/alpine-postfix
-RUN lupusmichaelis-install-entrypoint /tmp/alpine-postfix
+RUN lupusmichaelis-install-initializer /tmp/alpine-postfix

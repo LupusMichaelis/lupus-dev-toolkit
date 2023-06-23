@@ -11,7 +11,7 @@ USER 0
 RUN lupusmichaelis-packaging-add mutt w3m
 
 COPY entrypoint /tmp/alpine-postfix-mutt
-RUN lupusmichaelis-install-entrypoint /tmp/alpine-postfix-mutt
+RUN lupusmichaelis-install-initializer /tmp/alpine-postfix-mutt
 
 COPY muttrc /tmp/.muttrc
 COPY mailcap /tmp/.mailcap
