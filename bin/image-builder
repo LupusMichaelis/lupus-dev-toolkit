@@ -5,26 +5,26 @@ shopt -s lastpipe
 
 image-builder-debug-handle()
 {
-   [[ -v DEBUG  &&
-       -n "$DEBUG" ]] &&
-       image-builder-is-truish "$DEBUG" &&
-       set -x ||
-       set +x
+	[[ -v DEBUG	&&
+		-n "$DEBUG" ]] &&
+		image-builder-is-truish "$DEBUG" &&
+		set -x ||
+		set +x
 }
 
 # Test the value is truish from a C semantic perspective
 image-builder-is-truish()
 {
-  local -r target="$1"
-  case "$target" in
-      0|no|false)
-          false
-          ;;
-      1|yes|true)
-          ;&
-      *)
-          true
-  esac
+	local -r target="$1"
+	case "$target" in
+	  0|no|false)
+		  false
+		  ;;
+	  1|yes|true)
+		  ;&
+	  *)
+		  true
+	esac
 }
 
 image-builder-has-exe()
@@ -182,43 +182,43 @@ image-builder-usage()
 	local -r bold_command_name="$bold$command_name$undecorate"
 
 	local usage
-	readarray usage <<-	eos
+    readarray usage <<- eos
 	: $bold_command_name push [ image-name ] [ image-tag-name ]
-	: 	TODO
+	:   TODO
 
 	: $bold_command_name push-latest [ image-name ]
-	: 	Attempts to determine the most recent image version based on builder compose file, marks it as latest
-	: 	then push
+	:   Attempts to determine the most recent image version based on builder compose file, marks it as latest
+	:   then push
 
 	: $bold_command_name push-all
-	: 	Get all Git tags and attempt to push corresponding image
+	:   Get all Git tags and attempt to push corresponding image
 
 	: $bold_command_name push-all-latest
-	: 	Attempts to determine the most recent image version based on builder compose file, marks it as latest
-	: 	then push, for all
+	:   Attempts to determine the most recent image version based on builder compose file, marks it as latest
+	:   then push, for all
 
 	: $bold_command_name make-all
-	: 	Build all tags of all images
+	:   Build all tags of all images
 
 	: $bold_command_name make [ image-name ] [ image-tag-name ]
-	: 	Make a container image based on service name and a version name
-	: 	Image tag example:	$namespace/alpine-panic:1.0.42
-	: 	Git tag example:	$namespace/alpine-panic@1.0.42
+	:   Make a container image based on service name and a version name
+	:   Image tag example:  $namespace/alpine-panic:1.0.42
+	:   Git tag example:    $namespace/alpine-panic@1.0.42
 
 	: $bold_command_name wip [ service-name ]
-	: 	Build an image by service name with unclean work in progress file tree
+	:   Build an image by service name with unclean work in progress file tree
 
 	: $bold_command_name wip-run [ service-name ] [ docker-compose-run-arguments ]
-	: 	Build an image and run an ephemeral container with provided arguments
+	:   Build an image and run an ephemeral container with provided arguments
 
 	: $bold_command_name sign [ image-name ] [ image-tag-name ]
-	: 	Sign an image
+	:   Sign an image
 
 	: $bold_command_name list
-	: 	List services to build
+	:   List services to build
 
 	: $bold_command_name bootstrap
-	: 	Build the bootstrap image used to build other images
+	:   Build the bootstrap image used to build other images
 	eos
 	typeset -r usage
 	printf "%b" "${usage[@]#: }"
