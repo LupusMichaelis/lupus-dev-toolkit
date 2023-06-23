@@ -33,7 +33,7 @@ sed -i \
 eos
 
 COPY entrypoint /tmp/alpine-lighttpd-proxy
-RUN lupusmichaelis-install-entrypoint /tmp/alpine-lighttpd-proxy
+RUN lupusmichaelis-install-initializer /tmp/alpine-lighttpd-proxy
 
 COPY mod_fastcgi.conf debug.conf /etc/lighttpd/
 
