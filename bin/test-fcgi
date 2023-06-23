@@ -3,6 +3,9 @@
 set -euo pipefail
 shopt -s lastpipe
 
+[ -v DEBUG ] \
+	&& set -x || set +x
+
 declare -r command_name="$(basename $0)"
 
 test-fcgi-usage()

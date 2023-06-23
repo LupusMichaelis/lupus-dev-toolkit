@@ -1,5 +1,11 @@
 #!/bin/bash
 
+set -euo pipefail
+shopt -s lastpipe
+
+[ -v DEBUG ] \
+	&& set -x || set +x
+
 ELMFORMAT="npx elm-format"
 
 die()

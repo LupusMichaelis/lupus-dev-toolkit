@@ -1,6 +1,10 @@
 #!/bin/bash
 
-set -e
+set -euo pipefail
+shopt -s lastpipe
+
+[ -v DEBUG ] \
+	&& set -x || set +x
 
 for file in $@
 do

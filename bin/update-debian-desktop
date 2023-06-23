@@ -1,5 +1,11 @@
 #!/bin/bash
 
+set -euo pipefail
+shopt -s lastpipe
+
+[ -v DEBUG ] \
+	&& set -x || set +x
+
 if [[ "deborphan:" == $(whereis -b deborphan) ]]; then
 	apt -y install deborphan
 fi

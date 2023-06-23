@@ -17,13 +17,13 @@ fi
 # Set those variables to your liking, they'll be used by Docker Compose to know where to
 # look and how set set up your machines
 
-{
-    echo LP_DEV_GID=$(id -g)
-    echo LP_DEV_UID=$UID
-    echo LP_DEV_USER_ALIAS=dev
-    echo LUPUSMICHAELIS_DEV_GID=$(id -g)
-    echo LUPUSMICHAELIS_DEV_UID=$UID
-    echo LUPUSMICHAELIS_DEV_USER_ALIAS=dev
-    echo REPOSITORY_DIR=$HOME/repositories
-    echo WORKSHOP_DIR=$HOME/workshop
-} > "$install_path/.env"
+cat <<- eos > "$install_path/.env"
+LP_DEV_GID=$(id -g)
+LP_DEV_UID=$UID
+LP_DEV_USER_ALIAS=dev
+LUPUSMICHAELIS_DEV_GID=$(id -g)
+LUPUSMICHAELIS_DEV_UID=$UID
+LUPUSMICHAELIS_DEV_USER_ALIAS=dev
+REPOSITORY_DIR=$HOME/repositories
+WORKSHOP_DIR=$HOME/workshop
+eos

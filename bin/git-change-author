@@ -1,6 +1,12 @@
 #!/bin/sh
 # https://help.github.com/en/articles/changing-author-info
 
+set -euo pipefail
+shopt -s lastpipe
+
+[ -v DEBUG ] \
+	&& set -x || set +x
+
 authorname="$1":
 fromemail="$2";
 toemail="$3";

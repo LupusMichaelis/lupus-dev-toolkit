@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 set -euo pipefail
+shopt -s lastpipe
 
 [ -v DEBUG ] \
 	&& set -x || set +x
