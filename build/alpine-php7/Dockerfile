@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1.5.1
 ARG LUPUSMICHAELIS_ALPINE_DEV_VERSION
 
-FROM lupusmichaelis/alpine-dev:$LUPUSMICHAELIS_ALPINE_DEV_VERSION
+FROM lupusmichaelis/alpine-legacy-dev:$LUPUSMICHAELIS_ALPINE_DEV_VERSION
 
 LABEL description="Alpine Linux with PHP7"
 
@@ -18,7 +18,7 @@ RUN lupusmichaelis-packaging-add \
         $(for module in $PHP_MODULES; do echo "php7-$module"; done)
 
 COPY entrypoint /tmp/alpine-php7
-RUN lupusmichaelis-install-entrypoint /tmp/alpine-php7
+RUN lupusmichaelis-install-initializer /tmp/alpine-php7
 
 ARG PHP_FPM
 ENV PHP_FPM=${PHP_FPM:-disable}

@@ -24,6 +24,6 @@ RUN sed \
     -i /etc/php7/php.ini
 
 COPY docker-entrypoint.sh /tmp/alpine-php7-fpm.sh
-RUN lupusmichaelis-install-entrypoint.sh /tmp/alpine-php7-fpm.sh
+RUN lupusmichaelis-install-initializer /tmp/alpine-php7-fpm.sh
 
 CMD ["/usr/sbin/php-fpm7", "--nodaemonize"]
