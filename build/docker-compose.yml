@@ -49,6 +49,8 @@ services:
       args:
         LUPUSMICHAELIS_OFFICIAL_ALPINE_VERSION: 3.18.2
         LUPUSMICHAELIS_IGOR_VERSION: 1.2.0
+    depends_on:
+      - igor
     image: lupusmichaelis/alpine:1.2.0
 
   alpine-dev:
@@ -58,6 +60,8 @@ services:
       args:
         LUPUSMICHAELIS_ALPINE_BASE_IMAGE: alpine
         LUPUSMICHAELIS_ALPINE_VERSION: 1.2.0
+    depends_on:
+      - alpine
     image: lupusmichaelis/alpine-dev:1.2.0
 
   # Alpine Legacy images is provided to have old PHP7 as I'm coerced
@@ -67,6 +71,8 @@ services:
       args:
         LUPUSMICHAELIS_OFFICIAL_ALPINE_VERSION: 3.15.9
         LUPUSMICHAELIS_IGOR_VERSION: 1.2.0
+    depends_on:
+      - igor
     image: lupusmichaelis/alpine-legacy:1.2.0
 
   # Alpine Legacy Dev image is provided to have old PHP7 as I'm coerced
@@ -77,6 +83,8 @@ services:
       args:
         LUPUSMICHAELIS_ALPINE_BASE_IMAGE: alpine-legacy
         LUPUSMICHAELIS_ALPINE_VERSION: 1.2.0
+    depends_on:
+      - alpine
     image: lupusmichaelis/alpine-legacy-dev:1.2.0
 
   debian:
@@ -85,6 +93,8 @@ services:
       args:
         LUPUSMICHAELIS_OFFICIAL_DEBIAN_VERSION: bullseye
         LUPUSMICHAELIS_IGOR_VERSION: 1.2.0
+    depends_on:
+      - igor
     environment:
       DEBUG: 1
     image: lupusmichaelis/debian:1.2.0
@@ -97,6 +107,8 @@ services:
       context: ./build/alpine-proxy
       args:
         LUPUSMICHAELIS_ALPINE_VERSION: 1.2.0
+    depends_on:
+      - alpine
     image: lupusmichaelis/alpine-proxy:1.2.0
 
   alpine-lighttpd:
@@ -115,7 +127,7 @@ services:
         LUPUSMICHAELIS_ALPINE_VERSION: 1.2.0
         LIGHTTPD_SECURE: enable
     depends_on:
-      - alpine-lighttpd
+      - alpine
     image: lupusmichaelis/alpine-lighttpd-secure:1.2.0
 
   alpine-lighttpd-proxy:
@@ -125,7 +137,7 @@ services:
         LUPUSMICHAELIS_ALPINE_VERSION: 1.2.0
         LIGHTTPD_PROXY: enable
     depends_on:
-      - alpine-lighttpd
+      - alpine
     image: lupusmichaelis/alpine-lighttpd-proxy:1.2.0
 
   alpine-lighttpd-secure-front:
@@ -137,7 +149,7 @@ services:
         LIGHTTPD_PROXY: enable
         LIGHTTPD_REWRITE: when-not-found
     depends_on:
-      - alpine-lighttpd
+      - alpine
     image: lupusmichaelis/alpine-lighttpd-secure-front:1.2.0
 
   alpine-lighttpd-front:
@@ -148,7 +160,7 @@ services:
         LIGHTTPD_PROXY: enable
         LIGHTTPD_REWRITE: when-not-found
     depends_on:
-      - alpine-lighttpd
+      - alpine
     image: lupusmichaelis/alpine-lighttpd-front:1.2.0
 
   alpine-lighttpd-proxy-single:
@@ -159,7 +171,7 @@ services:
         LIGHTTPD_PROXY: enable
         LIGHTTPD_REWRITE: always
     depends_on:
-      - alpine-lighttpd
+      - alpine
     image: lupusmichaelis/alpine-lighttpd-proxy-single:1.2.0
 
   alpine-apache:
@@ -192,7 +204,7 @@ services:
         LUPUSMICHAELIS_ALPINE_DEV_VERSION: 1.2.0
         PHP_FPM: enable
     depends_on:
-      - alpine-php7
+      - alpine-legacy-dev
     image: lupusmichaelis/alpine-php7-fpm:1.2.0
 
   alpine-php7-composer:
@@ -203,7 +215,7 @@ services:
         LUPUSMICHAELIS_ALPINE_DEV_VERSION: 1.2.0
         PHP_COMPOSER: enable
     depends_on:
-      - alpine-php7
+      - alpine-legacy-dev
     image: lupusmichaelis/alpine-php7-composer:1.2.0
 
   alpine-php7-fpm-composer:
@@ -215,7 +227,7 @@ services:
         PHP_FPM: enable
         PHP_COMPOSER: enable
     depends_on:
-      - alpine-php7
+      - alpine-legacy-dev
     image: lupusmichaelis/alpine-php7-fpm-composer:1.2.0
 
   ############################################################################
@@ -228,7 +240,7 @@ services:
       args:
         LUPUSMICHAELIS_ALPINE_DEV_VERSION: 1.2.0
     depends_on:
-      - alpine-legacy-dev
+      - alpine-dev
     image: lupusmichaelis/alpine-php8:1.2.0
 
   alpine-php8-fpm:
@@ -239,7 +251,7 @@ services:
         LUPUSMICHAELIS_ALPINE_DEV_VERSION: 1.2.0
         PHP_FPM: enable
     depends_on:
-      - alpine-php8
+      - alpine-dev
     image: lupusmichaelis/alpine-php8-fpm:1.2.0
 
   alpine-php8-composer:
@@ -250,7 +262,7 @@ services:
         LUPUSMICHAELIS_ALPINE_DEV_VERSION: 1.2.0
         PHP_COMPOSER: enable
     depends_on:
-      - alpine-php8
+      - alpine-dev
     image: lupusmichaelis/alpine-php8-composer:1.2.0
 
   alpine-php8-fpm-composer:
@@ -262,7 +274,7 @@ services:
         PHP_FPM: enable
         PHP_COMPOSER: enable
     depends_on:
-      - alpine-php8
+      - alpine-dev
     image: lupusmichaelis/alpine-php8-fpm-composer:1.2.0
 
   ############################################################################
@@ -273,6 +285,8 @@ services:
       context: ./build/alpine-postfix
       args:
         LUPUSMICHAELIS_ALPINE_DEV_VERSION: 1.2.0
+    depends_on:
+      - alpine-dev
     environment:
       - LUPUSMICHAELIS_DEV_USER_ALIAS=kevin
       - LUPUSMICHAELIS_DEV_UID=${LUPUSMICHAELIS_DEV_UID?Please export LUPUSMICHAELIS_DEV_UID}
@@ -283,6 +297,8 @@ services:
       context: ./build/alpine-postfix-mutt
       args:
         LUPUSMICHAELIS_ALPINE_DEV_VERSION: 1.2.0
+    depends_on:
+      - alpine-dev
     environment:
       - LUPUSMICHAELIS_DEV_USER_ALIAS=kevin
       - LUPUSMICHAELIS_DEV_UID=${LUPUSMICHAELIS_DEV_UID?Please export LUPUSMICHAELIS_DEV_UID}
@@ -297,6 +313,8 @@ services:
         LUPUSMICHAELIS_ALPINE_MARIADB_VERSION: 1.2.0
         LUPUSMICHAELIS_ALPINE_MARIADB_SECURE: disable
       context: ./build/alpine-mariadb
+    depends_on:
+      - alpine
     environment:
       - 'MYSQL_ROOT_PASSWORD=yolo'
       - 'MYSQL_DATA_PATH=/var/lib/mysql'
@@ -310,6 +328,8 @@ services:
         LUPUSMICHAELIS_ALPINE_MARIADB_VERSION: 1.2.0
         LUPUSMICHAELIS_ALPINE_MARIADB_SECURE: enable
       context: ./build/alpine-mariadb
+    depends_on:
+      - alpine
     environment:
       - 'MYSQL_ROOT_PASSWORD=yolo'
       - 'MYSQL_DATA_PATH=/var/lib/mysql'
@@ -322,6 +342,8 @@ services:
         LUPUSMICHAELIS_ALPINE_VERSION: 1.2.0
         LUPUSMICHAELIS_ALPINE_REDIS_VERSION: 1.2.0
       context: ./build/alpine-redis
+    depends_on:
+      - alpine
     image: lupusmichaelis/alpine-redis:1.2.0
     restart: "no"
 
