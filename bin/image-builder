@@ -89,6 +89,66 @@ image-builder-push()
 	docker push "$namespace/$image_name:$image_tag"
 }
 
+image-builder-service-dependency-map()
+{
+	image-builder-docker-compose config |
+		yq e '.services.[] | [{"key": key, "value": [.depends_on.[] | key] | . style="flow"}] | from_entries ' -
+}
+
+image-builder-service-ordered-build-list()
+{
+	local service
+	local dependency
+	local -a service_list
+	local -A dependency_list_by_service
+
+	# Collecting services with there dependencies from compose file
+	image-builder-service-dependency-map |
+		sort |
+		awk '-F:' '{ print $1 $2 }' |
+		while read service dependency
+		do
+			#echo "$service" "${dependency:1:-1}"
+			dependency="$(printf '%b' "$dependency" | sed -e 's/, /,/')"
+			dependency="${dependency:1:-1}"
+
+			if [ -n "$dependency" ]
+			then
+				# Reserve dependencies for later
+				dependency_list_by_service[$service]="$dependency"
+			else
+				# Collect services that have no dependencies
+				service_list+=("$service")
+			fi
+		done
+
+	# Ordering services to guarantee a dependancy always precedes a service
+	# This loop may go infinite if the dependencies are not checked by compose
+	local -a dependency_list
+	while (( ${#dependency_list_by_service[@]} > 0 ))
+	do
+		for service in ${!dependency_list_by_service[@]}
+		do
+			printf '%b' "${dependency_list_by_service[$service]}" |
+				readarray -d, dependency_list
+
+			local -i position=${#service_list[@]}
+			for service_dependency in ${dependency_list[@]}
+			do
+				# echo $service depends of $service_dependency
+				if $(echo "${service_list[@]}" |
+					grep '^'$service_dependency'\|\s'$service_dependency'\s\|'$service_dependency'$' >& /dev/null)
+				then
+					service_list+=($service)
+					unset dependency_list_by_service[$service]
+				fi
+			done
+		done
+	done
+
+	echo "${service_list[@]}"
+}
+
 image-builder-list-services()
 {
 	image-builder-docker-compose config |
@@ -254,6 +314,9 @@ image-builder-main()
 			;;
 		list)
 			image-builder-list-services
+			;;
+		deps)
+			image-builder-service-ordered-build-list
 			;;
 		push)
 			image-builder-push "$@"
