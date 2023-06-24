@@ -235,6 +235,20 @@ image-builder-make()
 	image-builder-docker-compose run --rm bootstrap "$image_name" "$image_tag_name"
 }
 
+image-builder-make-all()
+{
+	local -ar git_tag_list=$(git-tag)
+	local git_tag_name
+	local git_tag_version
+	for tag in ${git_tag_list[@]}
+	do
+		printf '%b' "$tag" |
+			awk -F '[/@]' -- '{ print $2 " " $3 }' |
+			read git_tag_name git_tag_version
+		image-builder-make "$git_tag_name" "$git_tag_version"
+	done
+}
+
 image-builder-usage()
 {
 	local -r bold="[1m"
@@ -340,16 +354,7 @@ image-builder-main()
 			image-builder-make "$@"
 			;;
 		make-all)
-			local -ar git_tag_list=$(git-tag)
-			local git_tag_name
-			local git_tag_version
-			for tag in ${git_tag_list[@]}
-			do
-				printf '%b' "$tag" |
-					awk -F '[/@]' -- '{ print $2 " " $3 }' |
-					read git_tag_name git_tag_version
-				"${BASH_SOURCE[0]}" make "$git_tag_name" "$git_tag_version"
-			done
+			image-builder-make-all "$@"
 			;;
 		*)
 			image-builder-usage
