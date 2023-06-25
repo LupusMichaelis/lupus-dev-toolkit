@@ -39,6 +39,7 @@ declare -r bin_path=$(dirname "$(realpath "${BASH_SOURCE[0]}")")
 declare -r install_path=$(realpath "$bin_path/../")
 declare -r command_name="$(basename $0)"
 declare -r namespace=lupusmichaelis
+declare -r builder_compose_file=$install_path/build/docker-compose.yml
 
 COMPOSE_DOCKER_CLI_BUILD=1
 DOCKER_BUILDKIT=1
@@ -56,7 +57,7 @@ fi
 
 image-builder-docker-compose()
 {
-	docker compose --env-file=$install_path/.env -f $install_path/build/docker-compose.yml "$@"
+	docker compose --env-file=$install_path/.env -f $builder_compose_file "$@"
 }
 
 image-builder-docker-sign()
@@ -165,7 +166,7 @@ image-builder-push-latest()
 	local git_tag
 	local git_revision
 
-	cat builder.docker-compose.yml |
+	cat $builder_compose_file |
 			yq e '.services.*.image' - |
 			grep "$namespace/$image_name" |
 			read image_tag
@@ -178,7 +179,7 @@ image-builder-push-latest()
 	if [ -z "$(git tag -l "$git_tag")" ]
 	then
 		git_revision=$(
-			git blame builder.docker-compose.yml |
+			git blame $builder_compose_file |
 				grep "image: $image_tag" |
 				awk '{print $1}'
 		)
@@ -207,7 +208,7 @@ image-builder-push-latest-all()
 	local image_name
 
 	for image_tag in $(
-		cat builder.docker-compose.yml |
+		cat $builder_compose_file |
 			yq e '.services.*.image' - |
 			grep "$namespace/"
 	)
@@ -232,20 +233,31 @@ image-builder-make()
 	local -r image_tag_name="$2"
 	printf "Making image '%s' version '%s'\n" "$image_name" "$image_tag_name"
 	#TODO compare image tag name to image name in builder file
-	image-builder-docker-compose run --rm bootstrap "$image_name" "$image_tag_name"
+	image-builder-docker-compose run -T --rm bootstrap "$image_name" "$image_tag_name"
 }
 
 image-builder-make-all()
 {
-	local -ar git_tag_list=$(git-tag)
-	local git_tag_name
-	local git_tag_version
-	for tag in ${git_tag_list[@]}
+	local -a git_tag_list
+	local -A name_to_version
+
+	local git_tag
+	git-tag | sort | while read git_tag
 	do
-		printf '%b' "$tag" |
+		local git_tag_name
+		local git_tag_version
+
+		echo "$git_tag" |
 			awk -F '[/@]' -- '{ print $2 " " $3 }' |
 			read git_tag_name git_tag_version
-		image-builder-make "$git_tag_name" "$git_tag_version"
+
+		name_to_version["$git_tag_name"]="$git_tag_version"
+	done
+
+	local name
+	for name in $(image-builder-service-ordered-build-list)
+	do
+		image-builder-make "$name" "${name_to_version[$name]}"
 	done
 }
 
