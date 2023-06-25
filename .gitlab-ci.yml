@@ -12,4 +12,6 @@ builder:
     - ./bin/image-builder make-all
     # Add those variables to "Settings > CICD > Variables"
     - docker login -u "$DOCKER_REGISTRY_USER" -p "$DOCKER_REGISTRY_PASSWORD"
-    - ./bin/image-builder push-all
+    - ./bin/image-builder push-all-latest
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
