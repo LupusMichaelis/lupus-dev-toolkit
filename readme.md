@@ -29,6 +29,8 @@ A library of helper functions to load in interactive sessions.
 
 ## Docker images
 
+[![pipeline status](https://gitlab.com/LupusMichaelis/lupus-dev-toolkit/badges/trunk/pipeline.svg)](https://gitlab.com/LupusMichaelis/lupus-dev-toolkit/-/commits/trunk)
+
 Images are defined in various directories listed under `build`.
 
 The `./bin/build-images` script helps to build, sign and push images to
