@@ -26,7 +26,7 @@ pusher:
     - apk update && apk add bash curl git util-linux
   script:
     # Add those variables to "Settings > CICD > Variables"
-    - docker login -u "$DOCKER_REGISTRY_USER" -p "$DOCKER_REGISTRY_PASSWORD"
+    - printf '%b' "$DOCKER_REGISTRY_PASSWORD" | docker login --username="$DOCKER_REGISTRY_USER" --password-stdin
     - ./bin/image-builder push-all-latest
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
