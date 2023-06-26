@@ -23,7 +23,7 @@ pusher:
     COMPOSE_DOCKER_CLI_BUILD: 1
     DOCKER_BUILDKIT: 1
   before_script:
-    - apk update && apk add bash curl git util-linux
+    - apk update && apk add bash curl git util-linux yq
   script:
     # Add those variables to "Settings > CICD > Variables"
     - printf '%b' "$DOCKER_REGISTRY_PASSWORD" | docker login --username="$DOCKER_REGISTRY_USER" --password-stdin
