@@ -168,7 +168,7 @@ image-builder-push-latest()
 
 	cat $builder_compose_file |
 			yq e '.services.*.image' - |
-			grep "$namespace/$image_name" |
+			grep "^$namespace/$image_name:" |
 			read image_tag
 
 	printf '%b' "$image_tag" |
