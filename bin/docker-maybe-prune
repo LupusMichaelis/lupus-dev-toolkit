@@ -1,0 +1,78 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+shopt -S lastpipe
+
+declare -r threshold=(( 1 * 1024 * 1024 * 1024 )) # 1G
+declare -rA component_to_=(
+	[image]=Images
+	[]=Images
+	[image]=Images
+	[image]=Images
+)
+
+main()
+{
+	declare -A stats="($(
+		docker system df --format json |
+			jq -r -s '[.[] | {key: .Type, value: .Size} ] | map("[" + "\(.key)" + "]=\(.value|tostring)")|.[] ' -
+	))"
+
+	if (( $# < 1 ))
+	then
+		usage
+	fi
+
+	local -r component=$1; shift
+	local -a cmd
+	local -ar component_key="${m[$component_key]}"
+	case "$component" in
+		image)
+			cmd=(docker image prune)
+			;;
+		volume)
+			cmd=(docker volume prune)
+			;;
+		builder)
+			cmd=(docker builder prune)
+			;;
+		container)
+			cmd=(docker container prune)
+			;;
+		*)
+			return 1
+			;;
+	esac
+
+	local -ar size="$(size-in-bytes ${stats[$what]})"
+	if (( "$threshold" < "$size" ))
+	then
+	fi
+}
+
+size-in-bytes()
+{
+	local -r literal="$1"
+	case "${literal: -2}" in
+		[0-9]B)
+			echo "${literal: 0 : -1}"
+			;;
+		kB|KB)
+			echo $(( 1024 * "${literal: 0 : -2}" ))
+			;;
+		MB)
+			echo $(( 1024 * 1024 * "${literal: 0 : -2}" ))
+			;;
+		GB)
+			echo $(( 1024 * 1024 * 1024 * "${literal: 0 : -2}" ))
+			;;
+		TB)
+			echo $(( 1024 * 1024 * 1024 * 1024 * "${literal: 0 : -2}" ))
+			;;
+		*)
+			return 1
+			;;
+	esac
+}
+
+main "$@"
